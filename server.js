@@ -6,15 +6,14 @@ var mongoose	= require('mongoose');
 
 var app			= express();                 // define our app using express
 
-var port 		= process.env.PORT || 8080;        // set our port
-var portSsl 	= process.env.PORT_SSL || 443
-var router 		= express.Router();              // get an instance of the express Router
+var port        = process.env.PORT || 443;
+var router      = express.Router();
 
 var Stock 		= require('./app/models/stock');
  
 var fs 			= require('fs');
-var http 		= require('http');
-var https 		= require('https');
+var fs          = require('fs');
+var https       = require('https');
 var privateKey  = fs.readFileSync('./credentials/ssl.key', 'utf8');
 var certificate = fs.readFileSync('./credentials/ssl.crt', 'utf8');
 
@@ -131,6 +130,5 @@ router.route('/stocks/:stock_id')
 app.use('/api', router);
 
 // start the server
-// httpServer.listen(port);
-httpsServer.listen(portSsl);
-console.log('Listening port:', portSsl);
+httpsServer.listen(port);
+console.log('Listening port:', port);
