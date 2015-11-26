@@ -1,28 +1,27 @@
 'use strict';
 
-var express		= require('express');        // call express
-var bodyParser	= require('body-parser');
-var mongoose	= require('mongoose');
+var express     = require('express');
+var bodyParser  = require('body-parser');
+var mongoose    = require('mongoose');
 
-var app			= express();                 // define our app using express
+var app         = express();
 
 var port        = process.env.PORT || 443;
 var router      = express.Router();
 
-var Stock 		= require('./app/models/stock');
+var Stock       = require('./app/models/stock');
  
-var fs 			= require('fs');
 var fs          = require('fs');
 var https       = require('https');
+var ca          = fs.readFileSync('./credentials/sub.class1.server.ca.pem');
 var privateKey  = fs.readFileSync('./credentials/ssl.key', 'utf8');
 var certificate = fs.readFileSync('./credentials/ssl.crt', 'utf8');
 
-var credentials = {key: privateKey, cert: certificate};
+var credentials = {ca: ca, key: privateKey, cert: certificate};
 
-var httpServer 	= http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
-var io 			= require('socket.io')(httpsServer);
+var io          = require('socket.io')(httpsServer);
 
 mongoose.connect('mongodb://localhost:27017/yxaquant');
 
@@ -37,9 +36,9 @@ app.set('view engine', 'jade');
 
 // websocket testing
 io.on('connection', function(socket){
-	setInterval(function(){
-		socket.send(new Date());
-	}, 1000);
+    setInterval(function(){
+        socket.send(new Date());
+    }, 1000);
 });
 
 // http testing
