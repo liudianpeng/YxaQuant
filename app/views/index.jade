@@ -4,6 +4,24 @@ html
     title= title
   body
     h1= message
-    h2= 'Server time is: '
-      span#server-time
+    table(border=1)
+      tbody
+        tr#SH000001
+          th.name 上证指数
+          td.quote
+          td.offset
+          td.percentage
+          td.time
+        tr#NASDAQ
+          th.name NASDAQ
+          td.quote
+          td.offset
+          td.percentage
+          td.time
+        tr#BTCNCNY
+          th.name 比特币人民币
+          td.quote
+          td.offset
+          td.percentage
+          td.time
     script(type='text/javascript', src='build/bundle.js').

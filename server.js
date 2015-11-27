@@ -12,6 +12,7 @@ var router      = express.Router();
 var Stock       = require('./app/models/stock');
  
 var fs          = require('fs');
+var http        = require('http');
 var https       = require('https');
 var ca          = fs.readFileSync('./credentials/sub.class1.server.ca.pem');
 var privateKey  = fs.readFileSync('./credentials/ssl.key', 'utf8');
@@ -22,6 +23,8 @@ var credentials = {ca: ca, key: privateKey, cert: certificate};
 var httpsServer = https.createServer(credentials, app);
 
 var io          = require('socket.io')(httpsServer);
+
+var quotes      = {};
 
 mongoose.connect('mongodb://localhost:27017/yxaquant');
 
@@ -36,10 +39,35 @@ app.set('view engine', 'jade');
 
 // websocket testing
 io.on('connection', function(socket){
-    setInterval(function(){
-        socket.send(new Date());
-    }, 1000);
+    socket.send(quotes);
 });
+
+setInterval(function(){
+    http.get('http://xueqiu.com/v4/stock/quotec.json?code=SH000001,NASDAQ,BTCNCNY', function(res){
+
+        res.on('data', function (chunk) {
+
+            var quotesLatest = JSON.parse(chunk.toString());
+            var quotesHasUpdate = {};
+
+            for(var key in quotesLatest) {
+
+                if(quotes[key] && quotes[key].quote === quotesLatest[key].quote) {
+                    continue;
+                }
+
+                quotes[key] = quotesLatest[key];
+                quotesHasUpdate[key] = quotesLatest[key];
+            }
+
+            if(Object.keys(quotesHasUpdate).length > 0){
+                io.sockets.send(quotes);
+                console.log('Data sent.', quotes);
+            }
+        });
+    });
+
+}, 300);
 
 // http testing
 app.get('/', function(req, res) {
