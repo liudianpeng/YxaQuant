@@ -49,10 +49,9 @@ setInterval(function(){
 
             var quotesLatest = JSON.parse(chunk.toString());
             var quotesHasUpdate = {};
-
             for(var key in quotesLatest) {
 
-                if(quotes[key] && quotes[key].quote === quotesLatest[key].quote) {
+                if(quotes[key] && quotes[key][0] === quotesLatest[key][0]) {
                     continue;
                 }
 
