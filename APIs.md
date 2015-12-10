@@ -139,7 +139,7 @@
 						"volumeTodo": "", // 待成交股数
 						"declarations": [ // 申报列表
 							{
-								"stock_id": "",
+								"stockId": "",
 								"serialNumber":"", // 通道流水号/合同号
 								"direction": true,
 								"price": 0.00,
@@ -151,7 +151,7 @@
 						],
 						"transactions":[ // 成交记录
 							{
-								"stock_id": "",
+								"stockId": "",
 								"serialNumber":"", // 通道流水号/合同号
 								"direction": true,
 								"price": 0.00,
@@ -162,6 +162,44 @@
 						]
 					}
 				]
+			}
+		]
+	}
+
+
+交易接口
+====================================
+
+*交易接口服务和量化服务建立Socket通信，每次传输一个JSON字符串，表示一个账户下的报/撤单请求或成交/撤单结果，格式同task.stocks[].accounts[]*
+
+	{
+		"id": "", // 账户ID
+		"name": "", // 账户名称
+		"volume": "", // 本任务本账户交易股数
+		"volumeCompleted": "", // 已成交股数
+		"volumeDeclared": "", // 已申报未成交股数
+		"volumeTodo": "", // 待成交股数
+		"declarations": [ // 申报列表（量化服务向交易接口服务发送的报单/撤单数据，反之无此属性）
+			{
+				"stockId": "",
+				"serialNumber":"", // 通道流水号/合同号
+				"direction": true,
+				"price": 0.00,
+				"time": "2015-07-08T01:30:00.000Z",
+				"volume": 0,
+				"volumeCompleted": 0,
+				"status": "not declared|declared|completed|partial completed"
+			}
+		],
+		"transactions":[ // 成交记录（交易接口服务向量化服务发送的成交/撤单结果数据，反之无此属性）
+			{
+				"stockId": "",
+				"serialNumber":"", // 通道流水号/合同号
+				"direction": true,
+				"price": 0.00,
+				"time": "2015-07-08T01:30:00.000Z",
+				"volume": 0,
+				"amount": 0.00
 			}
 		]
 	}
