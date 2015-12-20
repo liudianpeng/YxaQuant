@@ -1,3 +1,5 @@
+'use strict';
+
 var io     = require('socket.io-client');
 var $      = require('jquery');
 var socket = io();
