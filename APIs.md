@@ -54,14 +54,14 @@
 		"name": "", // 标的的显示名称
 		"code": "", // 标的的代号
 		"currency": "CNY", // 币种，仅针对有价证券
-		"price": 0.00, // 现价
+		"current": 0.00, // 现价
 		"percentage": 0.00, // 现价/昨收偏离率
-		"priceOpen": 0.00, // 今日开盘价格
-		"priceLastClose": 0.00, // 昨日收盘价格
-		"priceTodayMax": 0.00, // 盘中最高价
-		"priceTodayMin": 0.00, // 盘中最低价
-		"priceRiseStop": 0.00, // 涨停价
-		"priceFallStop": 0.00, // 跌停价
+		"open": 0.00, // 今日开盘价格
+		"lastClose": 0.00, // 昨日收盘价格
+		"todayMax": 0.00, // 盘中最高价
+		"todayMin": 0.00, // 盘中最低价
+		"riseStop": 0.00, // 涨停价
+		"fallStop": 0.00, // 跌停价
 		"amount": 0.00, // 成交额
 		"volume": 0, // 成交股数
 		"quoteQueue":{
@@ -181,6 +181,7 @@
 		"volumeTodo": "", // 待成交股数
 		"declarations": [ // 申报列表（量化服务向交易接口服务发送的报单/撤单数据，反之无此属性）
 			{
+				"id":"",
 				"stockId": "",
 				"serialNumber":"", // 通道流水号/合同号
 				"direction": true,
