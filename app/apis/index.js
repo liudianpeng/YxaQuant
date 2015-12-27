@@ -1,8 +1,7 @@
-var routeStock = require('./stock.js');
-
 module.exports = function(app, router) {
     // register routes
     console.log('binding routes...');
-	router = routeStock(router);
+    router = require('./stock.js')(router);
+    router = require('./account.js')(router);
     app.use('/api', router);
 }
