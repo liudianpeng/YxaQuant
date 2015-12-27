@@ -5,7 +5,7 @@ var bodyParser  = require('body-parser');
 var mongoose    = require('mongoose');
 
 var app         = express();
-var router		= express.Router();
+var Router      = express.Router();
 
 var port        = process.env.PORT_HTTPS || 443;
 var https       = require('https');
@@ -19,7 +19,7 @@ var io          = require('socket.io')(httpsServer);
 
 var quotes      = {};
 
-mongoose.connect('mongodb://localhost:27017/yxaquant');
+mongoose.connect('mongodb://localhost/yxaquant');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
