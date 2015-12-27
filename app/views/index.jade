@@ -3,25 +3,13 @@ html
   head
     title= title
   body
-    h1= message
-    table(border=1)
+    table(border=1,cellspacing=0,cellpadding=5)
       tbody
-        tr#SH000001
-          th.name 上证指数
-          td.quote
-          td.offset
-          td.percentage
-          td.time
-        tr#NASDAQ
-          th.name NASDAQ
-          td.quote
-          td.offset
-          td.percentage
-          td.time
-        tr#BTCNCNY
-          th.name 比特币人民币
-          td.quote
-          td.offset
-          td.percentage
-          td.time
+        each code in subscribes
+          tr(id=code)
+            th.name= code
+            td.quote= quotes[code] && quotes[code][0]
+            td.offset= quotes[code] && quotes[code][1]
+            td.percentage= quotes[code] && quotes[code][2]
+            td.time= quotes[code] && quotes[code][3]
     script(type='text/javascript', src='build/bundle.js').
