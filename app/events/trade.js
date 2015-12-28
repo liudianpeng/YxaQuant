@@ -1,7 +1,7 @@
 module.exports = function(socketServer) {
     socketServer.on('connection', function(socket){
         
-        console.log('Client connected to socket server.');
+        console.log('[' + new Date() + '] Client ' + socket.remoteAddress + ' connected to socket server.');
 
         socket.on('data', function(data){
             
@@ -12,7 +12,7 @@ module.exports = function(socketServer) {
         });
     })
     .on('error', function (e) {
-        console.log('Socket server error:', e);
+        console.log('[' + new Date() + '] Socket server error:', e);
     });
 
     return {

@@ -37,8 +37,8 @@ app.get('/', function(req, res) {
 });
 
 httpsServer.listen(portHttps);
-console.log('HTTPS server listening port:', portHttps);
+console.log('[' + new Date() + '] HTTPS server listening port:', portHttps);
 
 socketServer.listen(portSocket, function() {
-    console.log('Socket server listening port:', portSocket);
+    console.log('[' + new Date() + '] Socket server listening port:', portSocket);
 });
