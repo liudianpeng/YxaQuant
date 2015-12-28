@@ -30,8 +30,8 @@
 		"stocks": [ // 持有证券
 			{
 				"id": "", // stock.id
-				"volume": "", // 持有股数
-				"marketCapital": "", // 市值
+				"volume": "", // 持有股数, 融券时为负数
+				"marketCapital": "", // 市值, 融券时为负数
 				"cost": 0.00, // 成本价格
 				"profit": 0.00, // 浮动盈亏
 				"profitRatio": 0.00 // 浮动盈亏比例
@@ -117,7 +117,6 @@
 		"stocks":[
 			{
 				"id": "", 
-				"direction": true, // true: 买入, false: 卖出
 				"rules": {
 					"lowestPrice": 0.00, // 最低价格
 					"highestPrice": 0.00, // 最高价格
@@ -126,26 +125,31 @@
 				// 以下四项总量计算方式任选其一
 				"targetRatio": 0.00, // 目标持仓比例
 				"ratio": 0.00, // 本次交易比例
-				"volume": 0, // 本次交易股数
-				"volume": 0.00, // 本次交易金额
+				"volume": 0, // 本次交易股数, 正数买入, 负数卖出
+				"volume": 0.00, // 本次交易金额, 正数买入, 负数卖出
 				// 账户任务明细
 				"accounts":[
 					{
 						"id": "", // 账户ID
 						"name": "", // 账户名称
-						"volume": "", // 本任务本账户交易股数
-						"volumeCompleted": "", // 已成交股数
-						"volumeDeclared": "", // 已申报未成交股数
-						"volumeTodo": "", // 待成交股数
+						"volume": "", // 本任务本账户交易股数, 正数买入, 负数卖出
+						"volumeCompleted": "", // 已成交股数, 正数买入, 负数卖出
+						"volumeDeclared": "", // 已申报未成交股数, 正数买入, 负数卖出
+						"volumeTodo": "", // 待成交股数, 正数买入, 负数卖出
 						"declarations": [ // 申报列表
 							{
-								"stockId": "",
+								"stock": {
+									"id": "",
+									"type": "",
+									"name": "", // 标的的显示名称
+									"code": "", // 标的的代号
+								},
+								"type":"", // 挂单类型
 								"serialNumber":"", // 通道流水号/合同号
-								"direction": true,
 								"price": 0.00,
 								"time": "2015-07-08T01:30:00.000Z",
-								"volume": 0,
-								"volumeCompleted": 0,
+								"volume": 0, // 正数买入, 负数卖出
+								"volumeCompleted": 0, // 正数买入, 负数卖出
 								"status": "not declared|declared|completed|partial completed"
 							}
 						],
@@ -153,11 +157,10 @@
 							{
 								"stockId": "",
 								"serialNumber":"", // 通道流水号/合同号
-								"direction": true,
 								"price": 0.00,
 								"time": "2015-07-08T01:30:00.000Z",
-								"volume": 0,
-								"amount": 0.00
+								"volume": 0, // 正数买入, 负数卖出
+								"amount": 0.00 // 正数买入, 负数卖出
 							}
 						]
 					}
@@ -173,34 +176,48 @@
 *交易接口服务和量化服务建立Socket通信，每次传输一个JSON字符串，表示一个账户下的报/撤单请求或成交/撤单结果，格式同task.stocks[].accounts[]*
 
 	{
-		"id": "", // 账户ID
-		"name": "", // 账户名称
-		"volume": "", // 本任务本账户交易股数
-		"volumeCompleted": "", // 已成交股数
-		"volumeDeclared": "", // 已申报未成交股数
-		"volumeTodo": "", // 待成交股数
-		"declarations": [ // 申报列表（量化服务向交易接口服务发送的报单/撤单数据，反之无此属性）
+		"id": "",
+		"name": "",
+		"provider": {
+			"name": "", // 通道提供商名称
+			"code": "" // 通道提供商代号
+		},
+		"credentials": {
+			"login": "", // 登录帐号
+			"pass": "" // 密码
+		},
+		"declarations": [ // 量化服务向交易接口服务发送的报单/撤单后的所有申报，交易接口服务向量化服务发送的报单/撤单/成交后的所有申报
 			{
 				"id":"",
-				"stockId": "",
+				"stock": {
+					"id": "",
+					"type": "",
+					"name": "", // 标的的显示名称
+					"code": "", // 标的的代号
+				},
+				"type":"", // 挂单类型
 				"serialNumber":"", // 通道流水号/合同号
-				"direction": true,
 				"price": 0.00,
 				"time": "2015-07-08T01:30:00.000Z",
-				"volume": 0,
-				"volumeCompleted": 0,
+				"volume": 0, // 正数买入, 负数卖出
+				"volumeCompleted": 0, // 正数买入, 负数卖出
 				"status": "not declared|declared|completed|partial completed"
 			}
 		],
-		"transactions":[ // 成交记录（交易接口服务向量化服务发送的成交/撤单结果数据，反之无此属性）
+		"transactions":[ // 交易接口服务向量化服务发送的一次成交数据
 			{
-				"stockId": "",
+				"id":"",
+				"stock": {
+					"id": "",
+					"type": "",
+					"name": "", // 标的的显示名称
+					"code": "", // 标的的代号
+				},
 				"serialNumber":"", // 通道流水号/合同号
-				"direction": true,
 				"price": 0.00,
 				"time": "2015-07-08T01:30:00.000Z",
-				"volume": 0,
-				"amount": 0.00
+				"volume": 0, // 正数买入, 负数卖出
+				"amount": 0.00 // 正数买入, 负数卖出
 			}
 		]
 	}
