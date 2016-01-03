@@ -36,8 +36,9 @@ app.get('/', function(req, res) {
     res.render('index', {title: 'YxaQuant', subscribes: subscribes, quotes: quotes});
 });
 
-httpsServer.listen(portHttps);
-console.log('[' + new Date() + '] HTTPS server listening port:', portHttps);
+httpsServer.listen(portHttps, function() {
+    console.log('[' + new Date() + '] HTTPS server listening port:', portHttps);
+});
 
 socketServer.listen(portSocket, function() {
     console.log('[' + new Date() + '] Socket server listening port:', portSocket);
