@@ -21,11 +21,38 @@ module.exports = function(router) {
 
         // get all the accounts
         .get(function(req, res) {
-            Account.find(function(err, accounts) {
-                if (err)
-                    res.send(err);
+            if(!Account.totalCount){
+                Account.count().exec().then(value => Account.totalCount = value);
+            }
 
-                res.json(accounts);
+            var limit = +req.query.limit || 20;
+            var skip = +req.query.skip || 0;
+
+            var query = {};
+
+            if(req.query.keyword) {
+                query = {
+                    $or: [
+                        {name: new RegExp(req.query.keyword)},
+                        {code: new RegExp(req.query.keyword)}
+                    ]
+                };
+            }
+
+            Account.find(query)
+            .limit(limit)
+            .skip(skip)
+            .exec()
+            .then(result => {
+
+                if(skip + result.length > Account.totalCount) {
+                    Account.totalCount = skip + result.length;
+                }
+
+                res.set('Items-Total', Account.totalCount)
+                .set('Items-Start', skip + 1)
+                .set('Items-End', Math.min(skip + limit, Account.totalCount))
+                .json(result);
             });
         });
 

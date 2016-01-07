@@ -27,13 +27,10 @@ require('./app/apis')(app, router);
 
 app.use(express.static('public'));
 app.set('views', './app/views');
-app.set('view engine', 'jade');
+// app.set('view engine', 'jade');
 
-app.get('/', function(req, res) {
-    var subscribes = req.query.subscribes.split(',');
-    events.market.subscribe(subscribes);
-
-    res.render('index', {title: 'YxaQuant', subscribes: subscribes, quotes: quotes});
+app.use('/', function(req, res) {
+    res.sendFile(__dirname + '/app/views/index.html');
 });
 
 httpsServer.listen(portHttps, function() {

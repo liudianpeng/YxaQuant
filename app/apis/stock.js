@@ -7,10 +7,7 @@ module.exports = function(router) {
         // create a stock
         .post(function(req, res) {
             
-            var stock = new Stock();      // create a new instance of the Stock model
-            stock.name = req.body.name;  // set the stocks name (comes from the request)
-            stock.code = req.body.code;
-            console.log(req.body);
+            var stock = new Stock(req.body);      // create a new instance of the Stock model
 
             // save the stock and check for errors
             stock.save(function(err) {
@@ -24,11 +21,38 @@ module.exports = function(router) {
 
         // get all the stocks
         .get(function(req, res) {
-            Stock.find(function(err, stocks) {
-                if (err)
-                    res.send(err);
+            if(!Stock.totalCount){
+                Stock.count().exec().then(value => Stock.totalCount = value);
+            }
 
-                res.json(stocks);
+            var limit = +req.query.limit || 20;
+            var skip = +req.query.skip || 0;
+
+            var query = {};
+
+            if(req.query.keyword) {
+                query = {
+                    $or: [
+                        {name: new RegExp(req.query.keyword)},
+                        {code: new RegExp(req.query.keyword)}
+                    ]
+                };
+            }
+
+            Stock.find(query)
+            .limit(limit)
+            .skip(skip)
+            .exec()
+            .then(result => {
+
+                if(skip + result.length > Stock.totalCount) {
+                    Stock.totalCount = skip + result.length;
+                }
+
+                res.set('Items-Total', Stock.totalCount)
+                .set('Items-Start', skip + 1)
+                .set('Items-End', Math.min(skip + limit, Stock.totalCount))
+                .json(result);
             });
         });
 
