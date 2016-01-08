@@ -27,6 +27,10 @@ require('./app/apis')(app, router);
 
 app.use(express.static('public'));
 
+app.use('/', function (req, res) {
+	res.sendfile(__dirname + '/public/index.html');
+});
+
 httpsServer.listen(portHttps, function() {
     console.log('[' + new Date() + '] HTTPS server listening port:', portHttps);
 });

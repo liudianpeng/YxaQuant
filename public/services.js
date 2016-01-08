@@ -31,6 +31,28 @@ angular.module('yxaquant.services', ['ngResource'])
     return stock;
 }])
 
+.service('StockGroup', ['$resource', function ($resource) {
+
+    var stockGroup = $resource('api/stock_group/:id', {id: '@id'}, {
+        query: {method: 'GET', isArray: true, interceptor: {response: responseInterceptor}},
+        create: {method: 'POST'},
+        update: {method: 'PUT'}
+    });
+    
+    // Angular mix PUT and POST methot to $save,
+    // we seperate them to $create and $update here
+    stockGroup.prototype.$save = function (a, b, c, d) {
+        if (this.id && !a.restore) {
+            return this.$update(a, b, c, d);
+        }
+        else {
+            return this.$create(a, b, c, d);
+        }
+    }
+    
+    return stockGroup;
+}])
+
 .service('Account', ['$resource', function ($resource) {
 
     var account = $resource('api/account/:id', {id: '@id'}, {
