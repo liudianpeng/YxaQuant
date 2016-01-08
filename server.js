@@ -26,12 +26,6 @@ app.use(bodyParser.json());
 require('./app/apis')(app, router);
 
 app.use(express.static('public'));
-app.set('views', './app/views');
-// app.set('view engine', 'jade');
-
-app.use('/', function(req, res) {
-    res.sendFile(__dirname + '/app/views/index.html');
-});
 
 httpsServer.listen(portHttps, function() {
     console.log('[' + new Date() + '] HTTPS server listening port:', portHttps);
