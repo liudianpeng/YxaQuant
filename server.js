@@ -28,7 +28,12 @@ require('./app/apis')(app, router);
 app.use(express.static('public'));
 
 app.use('/', function (req, res) {
-	res.sendfile(__dirname + '/public/index.html');
+	if (req.accepts(['html', 'json']) === 'html') {
+		res.sendFile(__dirname + '/public/index.html');
+	}
+	else {
+		res.sendStatus(404);
+	}
 });
 
 httpsServer.listen(portHttps, function() {
