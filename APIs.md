@@ -64,17 +64,17 @@
 		"fallStop": 0.00, // 跌停价
 		"amount": 0.00, // 成交额
 		"volume": 0, // 成交股数
-		"quoteQueue":{
-			"buy":[
+		"quoteQueue": {
+			"buy": [
 				{
-					"price":0.00, // 申报买入价
-					"volume":0 // 申报买入股数
+					"price": 0.00, // 申报买入价
+					"volume": 0 // 申报买入股数
 				}
 			],
-			"sell":[
+			"sell": [
 				{
-					"price":0.00,
-					"volume":0
+					"price": 0.00,
+					"volume": 0
 				}
 			]
 		},
@@ -97,8 +97,8 @@
 ------------------------------------
 
 	{
-		"name":"", // 篮子名称
-		"stocks":[
+		"name": "", // 篮子名称
+		"stocks": [
 			{
 				"id": "",
 				"weight": 0, // 权重
@@ -114,7 +114,7 @@
 		"timeEnd": "2015-07-08T07:00:00.000Z",
 		"status": "not started|in progress|paused|completed|canceled",
 		"progress": 1.00, // 进度, 0-1
-		"stocks":[
+		"stocks": [
 			{
 				"id": "", 
 				"rules": {
@@ -126,16 +126,16 @@
 				"targetRatio": 0.00, // 目标持仓比例
 				"ratio": 0.00, // 本次交易比例
 				"volume": 0, // 本次交易股数, 正数买入, 负数卖出
-				"volume": 0.00, // 本次交易金额, 正数买入, 负数卖出
+				"amount": 0.00, // 本次交易金额, 正数买入, 负数卖出
 				// 账户任务明细
-				"accounts":[
+				"accounts": [
 					{
 						"id": "", // 账户ID
 						"name": "", // 账户名称
-						"volume": "", // 本任务本账户交易股数, 正数买入, 负数卖出
-						"volumeCompleted": "", // 已成交股数, 正数买入, 负数卖出
-						"volumeDeclared": "", // 已申报未成交股数, 正数买入, 负数卖出
-						"volumeTodo": "", // 待成交股数, 正数买入, 负数卖出
+						"volume": 0, // 本任务本账户交易股数, 正数买入, 负数卖出
+						"volumeCompleted": 0, // 已成交股数, 正数买入, 负数卖出
+						"volumeDeclared": 0, // 已申报未成交股数, 正数买入, 负数卖出
+						"volumeTodo": 0, // 待成交股数, 正数买入, 负数卖出
 						"declarations": [ // 申报列表
 							{
 								"stock": {
@@ -144,8 +144,8 @@
 									"name": "", // 标的的显示名称
 									"code": "", // 标的的代号
 								},
-								"type":"", // 挂单类型
-								"serialNumber":"", // 通道流水号/合同号
+								"type": "", // 挂单类型
+								"serialNumber": "", // 通道流水号/合同号
 								"price": 0.00,
 								"time": "2015-07-08T01:30:00.000Z",
 								"volume": 0, // 正数买入, 负数卖出
@@ -153,10 +153,10 @@
 								"status": "not declared|declared|completed|partial completed"
 							}
 						],
-						"transactions":[ // 成交记录
+						"transactions": [ // 成交记录
 							{
 								"stockId": "",
-								"serialNumber":"", // 通道流水号/合同号
+								"serialNumber": "", // 通道流水号/合同号
 								"price": 0.00,
 								"time": "2015-07-08T01:30:00.000Z",
 								"volume": 0, // 正数买入, 负数卖出

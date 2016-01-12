@@ -16,4 +16,4 @@ npm install
 node server.js
 ```
 
-使用SSL证书对应的域名访问
+- 使用SSL证书对应的域名访问
