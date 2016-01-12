@@ -4,7 +4,7 @@ module.exports = function(router) {
     // Account CURD
     router.route('/account')
 
-        // create a account
+        // create an account
         .post(function(req, res) {
             
             var account = new Account(req.body);      // create a new instance of the Account model
