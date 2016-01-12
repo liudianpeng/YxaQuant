@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var ConfigSchema = new Schema({
     key: String,
-    value: Mixed
+    value: Schema.Types.Mixed
 });
 
 module.exports = mongoose.model('Config', ConfigSchema);

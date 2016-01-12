@@ -1,14 +1,14 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var ConfigSchema = new Schema({
+var TaskSchema = new Schema({
     timeStart: Date,
     timeEnd: Date,
     status: String, //"not started|in progress|paused|completed|canceled"
     progress: Number, // 进度, 0-1
     stocks: [
         {
-            id: ObjectId, // 股票ID
+            id: Schema.Types.ObjectId, // 股票ID
             rules: {
                 lowestPrice: Number, // 最低价格
                 highestPrice: Number, // 最高价格
@@ -22,7 +22,7 @@ var ConfigSchema = new Schema({
             // 账户任务明细
             accounts: [
                 {
-                    id: ObjectId, // 账户ID
+                    id: Schema.Types.ObjectId, // 账户ID
                     name: String, // 账户名称
                     volume: String, // 本任务本账户交易股数, 正数买入, 负数卖出
                     volumeCompleted: String, // 已成交股数, 正数买入, 负数卖出
@@ -47,7 +47,7 @@ var ConfigSchema = new Schema({
                     ],
                     transactions: [ // 成交记录
                         {
-                            stockId: ObjectId,
+                            stockId: Schema.Types.ObjectId,
                             serialNumber: String, // 通道流水号/合同号
                             price: Number,
                             time: Date,
@@ -61,4 +61,4 @@ var ConfigSchema = new Schema({
     ]
 });
 
-module.exports = mongoose.model('Config', ConfigSchema);
+module.exports = mongoose.model('Task', TaskSchema);
