@@ -1,0 +1,49 @@
+			
+<h2>Data Tables</h2>
+
+<br />
+
+<script type="text/javascript">
+// TODO Angular下不能直接使用 datatable
+jQuery( document ).ready( function( $ ) {
+	var $table1 = jQuery( '#table-1' );
+	
+	// Initialize DataTable
+	$table1.DataTable( {
+		"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+		"bStateSave": true
+	});
+	
+	// Initalize Select Dropdown after DataTables is created
+	$table1.closest( '.dataTables_wrapper' ).find( 'select' ).select2( {
+		minimumResultsForSearch: -1
+	});
+} );
+</script>
+
+<table class="table table-bordered datatable" id="table-1">
+	<thead>
+		<tr>
+			<th>名称</th>
+			<th>通道</th>
+			<th>市值</th>
+			<th>浮盈</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="odd gradeX" ng-repeat="account in accounts">
+			<td>{{ account.name }}</td>
+			<td>{{ account.provider.name }}</td>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<th>名称</th>
+			<th>通道</th>
+			<th>市值</th>
+			<th>浮盈</th>
+		</tr>
+	</tfoot>
+</table>

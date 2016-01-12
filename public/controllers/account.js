@@ -1,6 +1,8 @@
 angular.module('yxaquant.account', [])
 
-.controller('AccountListController', ['$scope', function ($scope) {
+.controller('AccountListController', ['$scope', 'accounts', function ($scope, accounts) {
+
+	$scope.accounts = accounts;
 
 }])
 
