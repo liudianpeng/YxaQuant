@@ -1,0 +1,42 @@
+<table class="table table-bordered datatable" id="table-1">
+    <thead>
+        <tr>
+            <th data-hide="phone">名称</th>
+            <th>币种</th>
+            <th data-hide="phone">现价</th>
+            <th data-hide="phone,tablet">成交额</th>
+            <th>总手数</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <th data-hide="phone">名称</th>
+            <th>币种</th>
+            <th data-hide="phone">现价</th>
+            <th data-hide="phone,tablet">成交额</th>
+            <th>总手数</th>
+        </tr>
+    </tfoot>
+    <tbody>
+        <tr ng-class-odd="odd" ng-class-even="even" ng-repeat="i in items">
+            <td ><a href="/stock/{{i._id}}" ng-bind='i.name'></a></td>
+            <td ng-bind='i.currency'></td>
+            <td ng-bind='i.current'></td>
+            <td ng-bind='i.amount'></td>
+            <td ng-bind='i.totalShares'></td>
+        </tr>
+    </tbody>
+</table>
+
+<bgf-pagination
+    passive="true"
+    auto-presets="false"
+    page="page"
+    per-page="perPage"
+    num-pages="numPages"
+    num-items="numItems"
+    url="'/api/stock'"
+    url-params="params"
+    link-group-size="2"
+    collection="items">
+</bgf-pagination>

@@ -1,0 +1,44 @@
+<h2>创建任务</h2>
+
+<h3>选股：</h3>
+<div class="row">
+    <div class="col-md-3" ng-repeat="stock in stocks" style="margin-bottom: 1em;">
+        <div class="input-group minimal">
+            <input type="text" class="form-control" placeholder="输入" 
+                ng-disabled="!isBuy"
+                ng-focus="stock.focus=true" 
+                ng-change="search(stock, stock.keyword)" 
+                ng-model="stock.keyword"
+                ng-blur="inputBlur(stock)">
+            <span class="input-group-addon" ng-click="delete($index)"><i class="entypo-cancel"></i></span>
+            <span class="tt-dropdown-menu" ng-show="stock.focus" style="position: absolute; top: 100%; left: 0px; z-index: 100;right: auto;">
+                <div class="tt-dataset-typeahead_remote">
+                    <span class="tt-suggestions" >
+                        <div class="tt-suggestion" 
+                            style="white-space: nowrap; cursor: pointer;" 
+                            ng-click="chooseItem(stock,item)"
+                            ng-repeat="item in stock.searchList">
+                            <p style="white-space: normal;" ng-bind="item.name"></p>
+                        </div>
+                    </span>
+                </div>
+            </span>
+        </div>
+    </div>
+</div>   
+<br/>
+<div class="row">
+
+    <div class="col-md-2">
+        <button ng-if='isBuy' type="button" class="btn btn-success btn-icon icon-left" ng-click="add()">
+            增加
+            <i class="entypo-plus"></i>
+        </button>
+    </div>
+    <div class="col-md-offset-8 col-md-2">
+        <button type="button" class="btn btn-success btn-icon icon-right" ng-click="next()">
+            NEXT
+            <i class="glyphicon glyphicon-arrow-right"></i>
+        </button>
+    </div>
+</div>

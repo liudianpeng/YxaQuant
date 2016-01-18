@@ -3,11 +3,13 @@
 // Declare app level module which depends on views, and components
 angular.module('yxaquant', [
     'ngRoute',
+    'bgf.paginateAnything',
     'yxaquant.services',
     'yxaquant.stock',
     'yxaquant.account',
     'yxaquant.task',
     'yxaquant.user',
+    'yxaquant.plugin',
     'yxaquant.config'
 ])
 .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
@@ -38,7 +40,7 @@ angular.module('yxaquant', [
             controller: 'StockGroupController',
             templateUrl: 'templates/stock-group-list.html',
             resolve: {
-                stocks: ['$route', 'StockGroup', function ($route, StockGroup){
+                groups: ['$route', 'StockGroup', function ($route, StockGroup){
                     return StockGroup.query($route.current.params).$promise;
                 }]
             }
@@ -47,9 +49,15 @@ angular.module('yxaquant', [
             controller: 'StockListController',
             templateUrl: 'templates/stock-list.html',
             resolve: {
-                stocks: ['$route', 'Stock', function ($route, Stock){
-                    return Stock.query($route.current.params).$promise;
-                }]
+                // stocks: ['$route', 'Stock', function ($route, Stock){
+                //     var pageNum = $route.current.params.page+1
+                //     var perPage = 10
+                //     var params = {
+                //         skip: perPage * (pageNum-1),
+                //         limit: perPage
+                //     }
+                //     return Stock.query(params).$promise;
+                // }]
             }
         })
         .when('/stock/:id', {
@@ -70,6 +78,66 @@ angular.module('yxaquant', [
             resolve: {
                 tasks: ['$route', 'Task', function ($route, Task){
                     return Task.query($route.current.params).$promise;
+                }]
+            }
+        })
+        .when('/task/create', {redirectTo: '/task/create/1'})
+        .when('/task/create/1', {
+            controller: 'TaskCreateStep_1Ctrl',
+            templateUrl: 'templates/task-create-1.html',
+            resolve: {
+                tasks: ['$route', 'Task', function ($route, Task){
+                    return Task.query($route.current.params).$promise;
+                }],
+                accounts: ['$route', 'Account', function ($route, Account){
+                    return Account.query($route.current.params).$promise;
+                }]
+            }
+        })
+        .when('/task/create/2', {
+            controller: 'TaskCreateStep_2Ctrl',
+            templateUrl: 'templates/task-create-2.html',
+            resolve: {
+                tasks: ['$route', 'Task', function ($route, Task){
+                    return Task.query($route.current.params).$promise;
+                }],
+                check: checkCreateRoute
+            }
+        })
+        .when('/task/create/3', {
+            controller: 'TaskCreateStep_3Ctrl',
+            templateUrl: 'templates/task-create-3.html',
+            resolve: {
+                tasks: ['$route', 'Task', function ($route, Task){
+                    return Task.query($route.current.params).$promise;
+                }],
+                stocks: ['$route', 'Task', function ($route, Task){
+                    console.log($route.current.params)
+                }],
+                accounts: ['$route', 'Account', function ($route, Account){
+                    return Account.query($route.current.params.accounts).$promise;
+                }],
+                check: checkCreateRoute
+            }
+        })
+        .when('/task/create/setting', {
+            controller: 'TaskCreateSettingCtrl',
+            templateUrl: 'templates/task-create-setting.html',
+            resolve: {
+                tasks: ['$route', 'Task', function ($route, Task){
+                    return Task.query($route.current.params).$promise;
+                }],
+                stocks: ['$route','$q','Stock', function ($route, $q, Stock){
+                    var promises = getParamAsArray($route.current.params.stock_ids).map(function(id){
+                        return Stock.get({id: id}).$promise;
+                    })
+                    return $q.all(promises)
+                }],
+                accounts: ['$route','$q','Account', function ($route, $q, Account){
+                    var promises = getParamAsArray($route.current.params.accounts).map(function(id){
+                        return Account.get({id: id}).$promise;
+                    })
+                    return $q.all(promises)
                 }]
             }
         })
@@ -126,7 +194,19 @@ angular.module('yxaquant', [
     });
 
 }])
-
+.run(['$rootScope', '$location', function ($rootScope, $location) {
+    $rootScope.$on( "$routeChangeStart", function(event, next, current) {
+        // if ( $rootScope.loggedUser == null ) {
+        //     // no logged user, we should be going to #login
+        //     if ( next.templateUrl == "partials/login.html" ) {
+        //          // already going to #login, no redirect needed
+        //     } else {
+        //         // not going to #login, we should redirect now
+        //         $location.path( "/login" );
+        //     }
+        // }         
+    });
+}])
 .controller('NavController', [function() {
 
 }]);

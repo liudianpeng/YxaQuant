@@ -1,0 +1,35 @@
+<table class="table table-bordered datatable" id="table-1">
+    <thead>
+        <tr>
+            <th data-hide="phone">名称</th>
+            <th>timeStart</th>
+            <th data-hide="phone">timeEnd</th>
+            <th data-hide="phone,tablet">status</th>
+            <th width=200>progress</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <th data-hide="phone">名称</th>
+            <th>timeStart</th>
+            <th data-hide="phone">timeEnd</th>
+            <th data-hide="phone,tablet">status</th>
+            <th>progress</th>
+        </tr>
+    </tfoot>
+    <tbody>
+        <tr ng-repeat="i in items">
+            <td ><a href="/task/{{i.id}}" ng-bind='i.id'></a></td>
+            <td ng-bind='i.timeStart'></td>
+            <td ng-bind='i.timeEnd'></td>
+            <td ng-bind='i.status'></td>
+            <td>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100" style="width: {{i.progress*100}}%">
+                        <span class="sr-only">35% Complete (success)</span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

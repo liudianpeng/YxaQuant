@@ -31,9 +31,16 @@ angular.module('yxaquant.services', ['ngResource'])
     return stock;
 }])
 
+.service('SearchStock', ['$resource', function ($resource) {
+    var stock = $resource('api/stock', {keyword: '@key', accounts: []}, {
+        query: {method: 'GET', isArray: true, interceptor: {response: responseInterceptor}}
+    });    
+    return stock;
+}])
+
 .service('StockGroup', ['$resource', function ($resource) {
 
-    var stockGroup = $resource('api/stock_group/:id', {id: '@id'}, {
+    var stockGroup = $resource('api/stockGroup/:id', {id: '@id'}, {
         query: {method: 'GET', isArray: true, interceptor: {response: responseInterceptor}},
         create: {method: 'POST'},
         update: {method: 'PUT'}

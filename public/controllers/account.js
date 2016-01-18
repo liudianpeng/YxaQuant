@@ -1,7 +1,6 @@
 angular.module('yxaquant.account', [])
 
 .controller('AccountListController', ['$scope', 'accounts', function ($scope, accounts) {
-
 	$scope.accounts = accounts;
 
 	// 从后端获得分页参数示例，请求支持使用skip和limit来分页，limit默认20
@@ -15,6 +14,7 @@ angular.module('yxaquant.account', [])
 
 }])
 
-.controller('AccountDetailController', ['$scope', function ($scope) {
+.controller('AccountDetailController', ['$scope','account',function ($scope, account) {
+	$scope.account = $scope.i = account
 	
 }]);
