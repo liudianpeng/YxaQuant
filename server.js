@@ -14,16 +14,17 @@ var portSocket  = process.env.PORT_SOCKET || 8888;
 var httpsServer = https.createServer(credentials, app);
 var socketServer= net.createServer();
 var io          = require('socket.io')(httpsServer);
-var quotes      = {};
 
-var events = require('./app/events')(io, socketServer, quotes);
+var quant       = require('./app/quant');
+var market      = require('./app/market')(quant);
+var trade       = require('./app/trade')(socketServer, quant);
 
-mongoose.connect('mongodb://localhost/yxaquant');
+mongoose.connect(process.env.DATABASE_URL || 'mongodb://localhost/yxaquant');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-require('./app/apis')(app, router);
+require('./app/apis')(app, router, quant);
 
 app.use(express.static('public'));
 

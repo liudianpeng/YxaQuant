@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function(socketServer) {
 
     var socket;
@@ -65,6 +67,11 @@ module.exports = function(socketServer) {
     });
 
     return {
-        
+        declare: function() {
+
+        },
+        cancel: function() {
+
+        }
     }
 }
