@@ -4,6 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "dev": "npm run browserSync & npm run watch",
+    "watch": "PORT_HTTPS=6666 nodemon -w ./app server.js ",
+    "browserSync": "browser-sync start --proxy 'https://localhost:6666' --no-open --reload-delay 300 --files 'public/,app/' ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,5 +27,8 @@
     "lodash": "^3.10.1",
     "mongoose": "^4.0.0",
     "socket.io": "^1.3.7"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.11.0"
   }
 }
