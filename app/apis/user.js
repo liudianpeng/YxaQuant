@@ -32,10 +32,7 @@ module.exports = function(router) {
 
             if(req.query.keyword) {
                 query = {
-                    $or: [
-                        {name: new RegExp(req.query.keyword)},
-                        {code: new RegExp(req.query.keyword)}
-                    ]
+                    name: new RegExp(req.query.keyword)
                 };
             }
 
@@ -56,13 +53,13 @@ module.exports = function(router) {
             });
         });
 
-    // on routes that end in /user/:user_id
+    // on routes that end in /user/:userId
     // ----------------------------------------------------
-    router.route('/user/:user_id')
+    router.route('/user/:userId')
 
         // get the user with that id
         .get(function(req, res) {
-            User.findById(req.params.user_id, function(err, user) {
+            User.findById(req.params.userId, function(err, user) {
                 if (err)
                     res.send(err);
                 res.json(user);
@@ -70,31 +67,25 @@ module.exports = function(router) {
         })
 
         .put(function(req, res) {
-
-            // use our user model to find the user we want
-            User.findById(req.params.user_id, function(err, user) {
-
-                if (err)
+            User.where({_id: req.params.userId}).update(req.body, function(err, raw) {
+                if (err) {
                     res.send(err);
+                    return;
+                }
 
-                user.name = req.body.name;  // update the users info
-                user.code = req.body.code;
-
-                // save the user
-                user.save(function(err) {
+                User.findById(req.params.userId, function(err, user) {
                     if (err)
                         res.send(err);
-
+                    
                     res.json(user);
                 });
-
             });
         })
 
         // delete the user with this id
         .delete(function(req, res) {
             User.remove({
-                _id: req.params.user_id
+                _id: req.params.userId
             }, function(err, user) {
                 if (err)
                     res.send(err);

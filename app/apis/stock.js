@@ -39,7 +39,7 @@ module.exports = function(router) {
                 };
             }
 
-            Stock.find(query)
+            var data = Stock.find(query)
             .limit(limit)
             .skip(skip)
             .exec()
@@ -54,6 +54,8 @@ module.exports = function(router) {
                 .set('Items-End', Math.min(skip + limit, Stock.totalCount))
                 .json(result);
             });
+
+
         });
 
     // on routes that end in /stock/:stock_id
@@ -70,24 +72,18 @@ module.exports = function(router) {
         })
 
         .put(function(req, res) {
-
-            // use our stock model to find the stock we want
-            Stock.findById(req.params.stock_id, function(err, stock) {
-
-                if (err)
+            Stock.where({_id: req.params.stockId}).update(req.body, function(err, raw) {
+                if (err) {
                     res.send(err);
+                    return;
+                }
 
-                stock.name = req.body.name;  // update the stocks info
-                stock.code = req.body.code;
-
-                // save the stock
-                stock.save(function(err) {
+                Stock.findById(req.params.stockId, function(err, stock) {
                     if (err)
                         res.send(err);
-
-                    res.json({ message: 'Stock updated!' });
+                    
+                    res.json(stock);
                 });
-
             });
         })
 

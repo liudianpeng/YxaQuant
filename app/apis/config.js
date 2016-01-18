@@ -58,7 +58,7 @@ module.exports = function(router) {
 
     // on routes that end in /config/:config_id
     // ----------------------------------------------------
-    router.route('/config/:config_id')
+    router.route('/config/:configId')
 
         // get the config with that id
         .get(function(req, res) {
@@ -70,24 +70,18 @@ module.exports = function(router) {
         })
 
         .put(function(req, res) {
-
-            // use our config model to find the config we want
-            Config.findById(req.params.config_id, function(err, config) {
-
-                if (err)
+            Config.where({_id: req.params.configId}).update(req.body, function(err, raw) {
+                if (err) {
                     res.send(err);
+                    return;
+                }
 
-                config.name = req.body.name;  // update the configs info
-                config.code = req.body.code;
-
-                // save the config
-                config.save(function(err) {
+                Config.findById(req.params.configId, function(err, config) {
                     if (err)
                         res.send(err);
-
+                    
                     res.json(config);
                 });
-
             });
         })
 

@@ -7,7 +7,7 @@ module.exports = function(router) {
         // create an account
         .post(function(req, res) {
             
-            var account = new Account(req.body);      // create a new instance of the Account model
+            var account = new Account(req.body); // create a new instance of the Account model
 
             // save the account and check for errors
             account.save(function(err) {
@@ -31,12 +31,11 @@ module.exports = function(router) {
             var query = {};
 
             if(req.query.keyword) {
-                query = {
-                    $or: [
-                        {name: new RegExp(req.query.keyword)},
-                        {code: new RegExp(req.query.keyword)}
-                    ]
-                };
+                query.name = new RegExp(req.query.keyword);
+            }
+
+            if(req.query.type) {
+                query.type = req.query.type;
             }
 
             Account.find(query)
@@ -56,13 +55,13 @@ module.exports = function(router) {
             });
         });
 
-    // on routes that end in /account/:account_id
+    // on routes that end in /account/:accountId
     // ----------------------------------------------------
-    router.route('/account/:account_id')
+    router.route('/account/:accountId')
 
         // get the account with that id
         .get(function(req, res) {
-            Account.findById(req.params.account_id, function(err, account) {
+            Account.findById(req.params.accountId, function(err, account) {
                 if (err)
                     res.send(err);
                 res.json(account);
@@ -70,31 +69,25 @@ module.exports = function(router) {
         })
 
         .put(function(req, res) {
-
-            // use our account model to find the account we want
-            Account.findById(req.params.account_id, function(err, account) {
-
-                if (err)
+            Account.where({_id: req.params.accountId}).update(req.body, function(err, raw) {
+                if (err) {
                     res.send(err);
+                    return;
+                }
 
-                account.name = req.body.name;  // update the accounts info
-                account.code = req.body.code;
-
-                // save the account
-                account.save(function(err) {
+                Account.findById(req.params.accountId, function(err, account) {
                     if (err)
                         res.send(err);
 
                     res.json(account);
                 });
-
             });
         })
 
         // delete the account with this id
         .delete(function(req, res) {
             Account.remove({
-                _id: req.params.account_id
+                _id: req.params.accountId
             }, function(err, account) {
                 if (err)
                     res.send(err);
