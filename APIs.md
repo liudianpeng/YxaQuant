@@ -19,6 +19,7 @@
 	{
 		"id": "",
 		"name": "",
+		"type": "", // 账户类型 public:产品/private:个人账户
 		"provider": {
 			"name": "", // 通道提供商名称
 			"code": "" // 通道提供商代号
@@ -30,6 +31,8 @@
 		"stocks": [ // 持有证券
 			{
 				"id": "", // stock.id
+				"name":"",
+				"code":"",
 				"volume": "", // 持有股数, 融券时为负数
 				"marketCapital": "", // 市值, 融券时为负数
 				"cost": 0.00, // 成本价格
@@ -55,7 +58,9 @@
 		"code": "", // 标的的代号
 		"currency": "CNY", // 币种，仅针对有价证券
 		"current": 0.00, // 现价
+		"time": "2015-07-08T01:30:00.000Z", // 现价更新时间
 		"percentage": 0.00, // 现价/昨收偏离率
+		"offset": 0.00, // 现价/昨收偏离
 		"open": 0.00, // 今日开盘价格
 		"lastClose": 0.00, // 昨日收盘价格
 		"todayMax": 0.00, // 盘中最高价
@@ -101,7 +106,7 @@
 		"stocks": [
 			{
 				"id": "",
-				"weight": 0, // 权重
+				"weight": 0 // 权重
 			}
 		]
 	}
@@ -109,53 +114,77 @@
 任务(task)
 ------------------------------------
 
+// 带\*的为创建时必填, 带\*\*的为创建时选填, 注意有些选填至少多选一, 或在有些情况下为必填
+
 	{
-		"timeStart": "2015-07-08T01:30:00.000Z",
-		"timeEnd": "2015-07-08T07:00:00.000Z",
+		"id": "",
+		"type": "", // * normal: 普通交易任务, diff: 差价交易任务
+		"timeStart": "2015-07-08T01:30:00.000Z", // **
+		"timeEnd": "2015-07-08T07:00:00.000Z", // **
 		"status": "not started|in progress|paused|completed|canceled",
-		"progress": 1.00, // 进度, 0-1
+		"progress": 1.00, // 进度, 0-1,
+		"account": ["", ""], // * 参与任务的账户ID, 仅创建时使用, 创建后会经过计算列入stocks每项中
+		"direction": true, // * 任务的买卖方向，仅创建时使用，创建后会卖出以负数的金额和股数表示
 		"stocks": [
 			{
-				"id": "", 
+				"id": "",  // *
+				"name": "",
+				"code": "",
 				"rules": {
-					"lowestPrice": 0.00, // 最低价格
-					"highestPrice": 0.00, // 最高价格
-					"timeStep": 0, // 最小交易时间间隔
+
+					"lowestPrice": 0.00, // ** 最低价格
+					"highestPrice": 0.00, // ** 最高价格
+					"timeStep": 0, // ** 最小交易时间间隔
+
+					"priceDiffPercentage": 0.00, // ** 最大委差 0%-100%
+					"opponentLevels": 0, // ** 对收盘档数 1-10
+					"opponentRatio": 1.0, // ** 对收盘比例 0-1
+
+					"backtrackFromDate": "2016-01-15", // ** 差价交易的回溯起始日期
+					"backtrackToDate": "2016-01-18", // ** 差价交易的回溯终止日期
+					"priceDiffPercentage": 0.00 // ** 差价交易的差价百分比
 				},
-				// 以下四项总量计算方式任选其一
-				"targetRatio": 0.00, // 目标持仓比例
-				"ratio": 0.00, // 本次交易比例
-				"volume": 0, // 本次交易股数, 正数买入, 负数卖出
-				"amount": 0.00, // 本次交易金额, 正数买入, 负数卖出
+				// 以下四项总量计算方式任选其一, 至少填一项
+				"targetRatio": 0.00, // ** 目标持仓比例
+				"ratio": 0.00, // ** 本次交易比例
+				"volume": 0, // ** 本次交易股数, 正数买入, 负数卖出
+				"amount": 0.00, // ** 本次交易金额, 正数买入, 负数卖出
+
+				"volumeCompleted": 0, // 已成交股数, 正数买入, 负数卖出
+				"volumeDeclared": 0, // 已申报未成交股数, 正数买入, 负数卖出
+				"volumeTodo": 0, // 待成交股数, 正数买入, 负数卖出
+
 				// 账户任务明细
 				"accounts": [
 					{
 						"id": "", // 账户ID
 						"name": "", // 账户名称
+						"rules": {
+							"lowestPrice": 0.00, // 最低价格 >0
+							"highestPrice": 0.00, // 最高价格 >0
+							"timeStep": 0, // 最小交易时间间隔
+							"priceDiffPercentage": 0.00, // 最大委差 0%-100%
+							"opponentLevels": 0, // 对收盘档数 1-10
+							"opponentRatio": 1.0 // 对收盘比例 0-1
+						},
 						"volume": 0, // 本任务本账户交易股数, 正数买入, 负数卖出
 						"volumeCompleted": 0, // 已成交股数, 正数买入, 负数卖出
 						"volumeDeclared": 0, // 已申报未成交股数, 正数买入, 负数卖出
 						"volumeTodo": 0, // 待成交股数, 正数买入, 负数卖出
 						"declarations": [ // 申报列表
 							{
-								"stock": {
-									"id": "",
-									"type": "",
-									"name": "", // 标的的显示名称
-									"code": "", // 标的的代号
-								},
 								"type": "", // 挂单类型
 								"serialNumber": "", // 通道流水号/合同号
 								"price": 0.00,
 								"time": "2015-07-08T01:30:00.000Z",
 								"volume": 0, // 正数买入, 负数卖出
+								"amount": 0.00, // 正数买入, 负数卖出
 								"volumeCompleted": 0, // 正数买入, 负数卖出
 								"status": "not declared|declared|completed|partial completed"
 							}
 						],
 						"transactions": [ // 成交记录
 							{
-								"stockId": "",
 								"serialNumber": "", // 通道流水号/合同号
 								"price": 0.00,
 								"time": "2015-07-08T01:30:00.000Z",
@@ -169,6 +198,24 @@
 		]
 	}
 
+用户(user)
+------------------------------------
+	
+	{
+		"name":"",
+		"password":"",
+		"email":"",
+		"mobile":"",
+		"roles":[]
+	}
+
+配置(config)
+------------------------------------
+	
+	{
+		"key":"",
+		"value":""
+	}
 
 交易接口
 ====================================
