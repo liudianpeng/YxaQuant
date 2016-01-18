@@ -1,31 +1,42 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var AccountSchema = new Schema({
+var accountSchema = new Schema({
     name: String,
+    type: String,
     provider: {
         name: String, code: String
     },
-    credentials: new Schema({
+    credentials: {
         login: String,
         pass: String
-    }),
-    stocks: [
-        new Schema({
-            id: String,
-            volume: Number,
-            marketCapital: Number,
-            cost: Number,
-            profit: Number,
-            profitRatio: Number
-        })
-    ],
-    cash: [
-        new Schema({
-            currency: String,
-            amount: Number
-        })
-    ]
+    },
+    stocks: [{
+        id: Schema.Types.ObjectId,
+        name: String,
+        code: String,
+        volume: Number,
+        marketCapital: Number,
+        cost: Number,
+        profit: Number,
+        profitRatio: Number
+    }],
+    cash: [{
+        currency: String,
+        amount: Number
+    }]
 });
 
-module.exports = mongoose.model('Account', AccountSchema);
+accountSchema.index({name:1}, {unique:true});
+
+// duplicate _id to id key without changing storage
+accountSchema.virtual('id').get(function(){
+    return this._id.toHexString();
+});
+
+// Ensure virtual fields are serialised.
+accountSchema.set('toJSON', {
+    virtuals: true
+});
+
+module.exports = mongoose.model('Account', accountSchema);

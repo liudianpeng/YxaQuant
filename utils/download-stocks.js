@@ -1,7 +1,7 @@
 var http = require('http');
 var _ = require('lodash');
 var mongoose = require('mongoose');
-var Stock = require('./app/models/stock');
+var Stock = require('../app/models/stock');
 var currentPage = 1, connections = 0, maxConnections = 20, totalCodes = [];
 
 mongoose.connect('mongodb://localhost/yxaquant');

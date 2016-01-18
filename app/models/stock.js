@@ -1,13 +1,15 @@
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-var stockSchema = new mongoose.Schema({
-    id: String,
+var stockSchema = new Schema({
     type: String,
     name: String, // 标的的显示名称
     code: String, // 标的的代号
     currency: String, // 币种，仅针对有价证券
     current: Number, // 现价
+    time: Date, // 现价更新时间
     percentage: Number, // 现价/昨收偏离率
+    offset: Number, // 现价/昨收偏离
     open: Number, // 今日开盘价格
     lastClose: Number, // 昨日收盘价格
     todayMax: Number, // 盘中最高价
@@ -46,5 +48,15 @@ var stockSchema = new mongoose.Schema({
 });
 
 stockSchema.index({code:1}, {unique:true});
+
+// duplicate _id to id key without changing storage
+stockSchema.virtual('id').get(function(){
+    return this._id.toHexString();
+});
+
+// Ensure virtual fields are serialised.
+stockSchema.set('toJSON', {
+    virtuals: true
+});
 
 module.exports = mongoose.model('Stock', stockSchema);
