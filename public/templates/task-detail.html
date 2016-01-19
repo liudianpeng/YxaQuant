@@ -1,7 +1,7 @@
 <h2>任务详情</h2>
 <div class="row">
     <div class="col-md-2">
-        <button type="submit" class="btn btn-success">交易中</button>
+        <div class="label label-success">交易中</div>
     </div>      
     <div class="col-md-10">
         <div class="progress">
@@ -22,13 +22,16 @@
     <div class="col-sm-12">
             
 
-        <div class="panel panel-default" ng-repeat='stock in task.stocks'>
-            <div class="panel-heading"  ng-click="stock.showAccount=!stock.showAccount">
-                <div class="panel-title">
-                    <h4> {{stock.name||"默认名称"}} <small ng-bind='stock.code||"默认代号FDFFD342342"'></small> </h4>
+        <div class="panel panel-info" style="margin-bottom: 5em;" ng-repeat='stock in task.stocks'>
+            <div class="panel-heading">
+                <div class="panel-title"  ng-click="stock.showAccount=!stock.showAccount">
+                    <h3 style="display: inline-block;" ng-bind="stock.name"> </h3>
+                    <div class="label label-info" ng-bind="stock.code"></div>
                 </div>
-                <div class="panel-options">
-                    ￥{{stock.rules.lowestPrice}}~{{stock.rules.highestPrice}}, {{stock.rules.timeStep}}S
+                <div class="pull-right" style="margin: 10px 10px 0 0;">
+                    ￥<input type="number" style="width: 60px" ng-model="stock.rules.lowestPrice" />~
+                    <input type="number" style="width: 60px" ng-model="stock.rules.highestPrice" />, 
+                    <input type="number" style="width: 60px" ng-model="stock.rules.timeStep" />S
                 </div>
             </div>
             <div class="panel-body no-padding">
@@ -59,13 +62,19 @@
                 <table class="table table-bordered datatable" ng-show="!stock.showAccount" ng-repeat="account in stock.accounts">
                     <tbody>
                         <tr>
-                            <td><h4 style="display: inline-block;">{{account.name}}</h4><span style="padding: 5px;background: #eee;">{{account.code}}</span></td>
-                            <td>￥{{account.rules.lowestPrice}}~{{account.rules.highestPrice}}</td>
-                            <td>{{account.rules.timeStep}}s</td>
+                            <td>
+                                <h4 style="display: inline-block;">{{account.name}}</h4>
+                                <div class="label label-default" ng-bind="account.code"></div>
+                            </td>
+                            <td> ￥<input type="number" style="width: 60px" ng-model="account.rules.lowestPrice" />~
+                            <input type="number" style="width: 60px" ng-model="account.rules.highestPrice" /></td>
+                            <td><input type="number" style="width: 60px" ng-model="account.rules.timeStep" />S</td>
                         </tr>
                         <tr>
                             <td>总：{{account.volume}}</td>
-                            <td ng-click="account.showDeclarations=true;account.showTransactions=false">申：{{account.volumeDeclared}}</td>
+                            <td ng-click="account.showDeclarations=true;account.showTransactions=false"
+                                style="{{account.showDeclarations ? 'background: #ccc;':''}}"
+                            ><span class="badge">申</span>：{{account.volumeDeclared}}</td>
                             <td rowspan="2" style="vertical-align: middle;width: 500px;">
 
                                 <div class="progress">
@@ -83,7 +92,9 @@
                             </td>
                         </tr>
                         <tr>
-                            <td ng-click="account.showTransactions=true;account.showDeclarations=false">成：{{account.volumeCompleted}}</td>
+                            <td ng-click="account.showTransactions=true;account.showDeclarations=false"
+                                style="{{account.showTransactions ? 'background: #ccc;':''}}"
+                                ><span class="badge">成</span>：{{account.volumeCompleted}}</td>
                             <td>待：{{account.volumeTodo}}</td>
                         </tr>
                         <tr>
@@ -143,5 +154,8 @@
             </div>
         </div>
 
+    </div>
+    <div class="col-sm-12">
+        <button type="submit" ng-click='save()' class="btn btn-success btn-lg">保存</button>
     </div>
 </div>
