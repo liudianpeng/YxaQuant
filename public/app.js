@@ -76,9 +76,9 @@ angular.module('yxaquant', [
             controller: 'TaskListController',
             templateUrl: 'templates/task-list.html',
             resolve: {
-                tasks: ['$route', 'Task', function ($route, Task){
-                    return Task.query($route.current.params).$promise;
-                }]
+                // tasks: ['$route', 'Task', function ($route, Task){
+                //     return Task.query($route.current.params).$promise;
+                // }]
             }
         })
         .when('/task/create', {redirectTo: '/task/create/1'})
