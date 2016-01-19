@@ -3,7 +3,7 @@ angular.module('yxaquant.task', [])
 
 .controller('TaskListController', ['$scope','$routeParams','$location', 
                             function($scope,  $routeParams,  $location) {
-                                
+
     $scope.perPage = parseInt($location.search().perPage, 10) || 10;
     $scope.page = parseInt($location.search().page, 10) || 0;
     $scope.clientLimit = 250;
@@ -29,7 +29,7 @@ angular.module('yxaquant.task', [])
     });
 
 }])
-.controller('TaskDetailController', ['$scope', 'task', function ($scope, task) {
+.controller('TaskDetailController', ['$scope', 'task', 'Task','$location', function ($scope, task, Task, $location) {
     var Random = Mock.Random
     
     // $scope.taskY = Mock.mock({
@@ -109,6 +109,10 @@ angular.module('yxaquant.task', [])
         },0)
     }
     $scope.save = function () {
+        Task.update(task, function (data) {
+            console.log(data)
+            location.reload()
+        })
     }
 }])
 .controller('TaskCreateStep_1Ctrl', 
