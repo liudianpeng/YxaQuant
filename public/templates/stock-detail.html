@@ -5,12 +5,6 @@
             <th ng-bind='i.name'></th>
         </tr>
     </thead>
-    <tfoot>
-        <tr>
-            <th data-hide="phone">名称</th>
-            <th>值</th>
-        </tr>
-    </tfoot>
     <tbody>
         <tr> <td>币种</td> <td ng-bind='i.currency'></td> </tr>
         <tr> <td>现价</td> <td ng-bind='i.current'></td> </tr>
@@ -21,20 +15,11 @@
         <tr> <td>盘中最低价</td> <td ng-bind='i.todayMin'></td> </tr>
         <tr> <td>涨停价</td> <td ng-bind='i.riseStop'></td> </tr>
         <tr> <td>跌停价</td> <td ng-bind='i.fallStop'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
+        <tr> <td>成交额</td> <td ng-bind='i.amount'></td> </tr>
+        <tr> <td>成交股数</td> <td ng-bind='i.volume'></td> </tr>
+        <tr> <td>申报买入价</td> <td ng-bind='i.quoteQueue.buy.price'></td> </tr>
+        <tr> <td>申报买入股数</td> <td ng-bind='i.quoteQueue.buy.volume'></td> </tr>
+        <tr> <td>申报卖入价</td> <td ng-bind='i.quoteQueue.sell.price'></td> </tr>
     </tbody>
 </table>
 
@@ -45,35 +30,20 @@
             <th ng-bind='i.code'></th>
         </tr>
     </thead>
-    <tfoot>
-        <tr>
-            <th data-hide="phone">名称</th>
-            <th>值</th>
-        </tr>
-    </tfoot>
     <tbody>
-        <tr> <td>币种</td> <td ng-bind='i.currency'></td> </tr>
-        <tr> <td>现价</td> <td ng-bind='i.current'></td> </tr>
-        <tr> <td>现价/昨收偏离率</td> <td ng-bind='i.percentage'></td> </tr>
-        <tr> <td>今日开盘价格</td> <td ng-bind='i.open'></td> </tr>
-        <tr> <td>昨日收盘价格</td> <td ng-bind='i.lastClose'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最低价</td> <td ng-bind='i.todayMin'></td> </tr>
-        <tr> <td>涨停价</td> <td ng-bind='i.riseStop'></td> </tr>
-        <tr> <td>跌停价</td> <td ng-bind='i.fallStop'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
-        <tr> <td>盘中最高价</td> <td ng-bind='i.todayMax'></td> </tr>
+        <tr> <td>市净率</td> <td ng-bind='i.pb'></td> </tr>
+        <tr> <td>上年度市盈率</td> <td ng-bind='i.peLyr'></td> </tr>
+        <tr> <td>本季度市盈率</td> <td ng-bind='i.peTtm'></td> </tr>
+        <tr> <td>市销率</td> <td ng-bind='i.psr'></td> </tr>
+        <tr> <td>总手数</td> <td ng-bind='i.totalShares'></td> </tr>
+        <tr> <td>流通手数</td> <td ng-bind='i.floatShares'></td> </tr>
+        <tr> <td>总市值</td> <td ng-bind='i.marketCapital'></td> </tr>
+        <tr> <td>流通市值</td> <td ng-bind='i.floatMarketCapital'></td> </tr>
+        <tr> <td>每股净资产</td> <td ng-bind='i.netAssets'></td> </tr>
+        <tr> <td>最小价格单位</td> <td ng-bind='i.tickSize'></td> </tr>
+        <tr> <td>每手股数</td> <td ng-bind='i.lotSize'></td> </tr>
+        <tr> <td>行业</td> <td ng-bind='i.industry.join("，")'></td> </tr>
+        <tr> <td>概念</td> <td ng-bind='i.concept.join("，")'></td> </tr>
+        <tr> <td>申报卖入股数</td> <td ng-bind='i.quoteQueue.sell.volume'></td> </tr>
     </tbody>
 </table>
