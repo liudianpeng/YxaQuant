@@ -5,7 +5,10 @@ var client = net.connect(8888, function() {
 });
 
 client.on('data', function(data) {
-    console.log('[' + new Date() + '] Data received: ', data.toString());
+
+    data = data.toString().replace(/\0$/, '');
+
+    console.log('[' + new Date() + '] Data received: ', data);
     
     var data = JSON.parse(data);
 
@@ -19,7 +22,7 @@ client.on('data', function(data) {
             return declaration;
         });
         console.log('[' + new Date() + '] Sending declaration results...');
-        client.write(JSON.stringify(data));
+        client.write(JSON.stringify(data) + "\0");
     }, 1000);
     
     // 发送成交结果
@@ -43,7 +46,7 @@ client.on('data', function(data) {
         });
 
         console.log('[' + new Date() + '] Sending transaction results...');
-        client.write(JSON.stringify(data));
+        client.write(JSON.stringify(data) + "\0");
 
     }, 5000);
 });

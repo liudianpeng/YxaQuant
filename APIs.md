@@ -227,7 +227,7 @@
 		"name": "阳光1号",
 		"provider": {
 			"name": "中信信托", // 通道提供商名称
-			"code": "zxxt_test" // 通道提供商代号
+			"code": "ZXXT_TEST" // 通道提供商代号
 		},
 		"credentials": {
 			"login": "12345678", // 登录帐号

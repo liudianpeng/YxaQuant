@@ -17,7 +17,30 @@ module.exports = function(socketServer) {
         socketServer.getConnections((err, count) => console.log('[' + new Date() + '] Server has now ' + count + ' connections.'));
 
         socket.on('data', function(data){
-            console.log('[' + new Date() + '] Data received from client ' + socket.remoteAddress + ': ' + data.toString());
+            data = data.toString().replace(/\0$/, '');
+            console.log('[' + new Date() + '] Data received from client ' + socket.remoteAddress + ': ' + data);
+
+            try {
+                data = JSON.parse(data);
+            }
+            catch(e) {
+                console.error('JSON decode error for data: ', data);
+            }
+            
+            if(data.declarations) {
+                data.declarations.forEach(declaration => {
+                    console.log('Declaration', declaration.serialNumber);
+                });
+            }
+
+            // 挂单成功后2秒, 撤单
+            if(data.declarations[0] && data.declarations[0].status === 'declared') {
+                setTimeout(function() {
+                    console.log('Recall declaration', data.declarations[0].serialNumber);
+                    data.declarations[0].recall = true;
+                    socket.write(JSON.stringify(data) + "\0");
+                }, 2000);
+            }
         });
 
         socket.on('end', function(){
@@ -34,7 +57,7 @@ module.exports = function(socketServer) {
                 name: '易鑫安1期',
                 provider: {
                     name: '中信信托', // 通道提供商名称
-                    code: 'ZXXT' // 通道提供商代号
+                    code: 'ZXXT_TEST' // 通道提供商代号
                 },
                 credentials: {
                     login: '12345678', // 登录帐号
@@ -59,7 +82,7 @@ module.exports = function(socketServer) {
                     }
                 ],
             };
-            socket.write(JSON.stringify(data));
+            socket.write(JSON.stringify(data) + "\0");
         }, 3000);
     })
     .on('error', function (e) {
