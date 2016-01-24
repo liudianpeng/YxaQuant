@@ -5,7 +5,20 @@ var taskSchema = new Schema({
     timeStart: Date,
     timeEnd: Date,
     status: String, //"not started|in progress|paused|completed|canceled"
+    direction: Boolean,
     progress: Number, // 进度, 0-1
+    accountIds: [String],
+    rules: {
+        lowestPercentage: Number, // 最低价格
+        highestPercentage: Number, // 最高价格
+        timeStep: Number, // 最小交易时间间隔
+        priceDiffPercentage: Number, // 最大委差
+        opponentLevels: Number, // 对收盘档数
+        opponentRatio: Number // 对收盘比例
+    },
+    // 以下两项总量计算方式任选其一
+    targetRatio: Number, // 目标持仓比例
+    ratio: Number, // 本次交易比例
     stocks: [
         {
             id: Schema.Types.ObjectId, // 股票ID

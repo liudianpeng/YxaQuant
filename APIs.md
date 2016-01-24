@@ -125,7 +125,7 @@
 		"timeEnd": "2015-07-08T07:00:00.000Z", // **
 		"status": "not started|in progress|paused|completed|canceled",
 		"progress": 1.00, // 进度, 0-1,
-		"account": ["", ""], // * 参与任务的账户ID, 仅创建时使用, 创建后会经过计算列入stocks每项中
+		"accountIds": ["", ""], // * 参与任务的账户ID, 仅创建时使用, 创建后会经过计算列入stocks每项中
 		"direction": true, // * 任务的买卖方向，仅创建时使用，创建后会卖出以负数的金额和股数表示
 		"rules": {
 
