@@ -95,6 +95,10 @@ angular.module('yxaquant.stock', [])
         $scope.total = +total
         $scope.numPages = Math.ceil($scope.total/$scope.perPage);
     });
+    $scope.goto = function (id) {
+        $location.path('/stock/'+id)
+    }
+
 
 }])
 
