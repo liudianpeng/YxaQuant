@@ -1,0 +1,52 @@
+<ol class="breadcrumb bc-3">
+    <li> <a href="index.html"><i class="fa fa-home"></i>Home</a> </li>
+    <li>股票组合列表</li>
+    <li class="active"> <strong ng-bind='group.name'></strong> </li>
+</ol>
+
+<div class="input-group minimal" style="width: 200px;">
+    <input type="text" class="form-control" id="search" placeholder="输入" 
+        ng-focus="stock.focus=true" 
+        ng-change="search(stock.keyword)" 
+        ng-model="stock.keyword"
+        ng-blur="inputBlur()">
+    <span class="input-group-addon" ng-click="add()"><i class="entypo-plus"></i></span>
+    <span class="tt-dropdown-menu" ng-show="stock.focus" style="position: absolute; top: 100%; left: 0px; z-index: 100;right: auto;">
+        <div class="tt-dataset-typeahead_remote">
+            <span class="tt-suggestions" >
+                <div class="tt-suggestion" 
+                    style="white-space: nowrap; cursor: pointer;" 
+                    ng-click="chooseItem(item)"
+                    ng-repeat="item in stock.searchList">
+                    <p style="white-space: normal;" ng-bind="item.name"></p>
+                </div>
+            </span>
+        </div>
+    </span>
+</div>
+<br/>
+<table class="table table-bordered datatable" style="width: 400px;">
+    <thead>
+        <tr>
+            <th>名称</th>
+            <th>比重</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat='i in group.stocks'>
+            <td ng-bind='i.name'></td>
+            <td width=100>
+                <input type="number" class="form-control" ng-model='i.weight' style="width: 60px;" /> </td>
+            <td width=60>
+                <button type="button" class="btn btn-danger btn-xs" ng-click='delete($index)'>
+                    <i class="entypo-cancel"></i>
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<button type="button" class="btn btn-success btn-icon" ng-click="save()">
+    保存
+    <i class="entypo-check"></i>
+</button>

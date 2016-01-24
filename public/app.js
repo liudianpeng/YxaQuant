@@ -63,6 +63,15 @@ angular.module('yxaquant', [
                 }]
             }
         })
+        .when('/stock-group/:id', {
+            controller: 'StockGroupDetailCtrl',
+            templateUrl: 'templates/stock-group-detail.html',
+            resolve: {
+                group: ['$route', 'StockGroup', function ($route, StockGroup){
+                    return StockGroup.get($route.current.params).$promise;
+                }]
+            }
+        })
         .when('/stock', {
             controller: 'StockListController',
             templateUrl: 'templates/stock-list.html',

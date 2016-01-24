@@ -1,7 +1,11 @@
 angular.module('yxaquant.stock', [])
 
-.controller('StockGroupController', ['$scope','groups','$routeParams',function ($scope, groups, $routeParams) {
+.controller('StockGroupController', ['$scope','groups','$location','$routeParams',function ($scope, groups, $location, $routeParams) {
     $scope.items = groups
+
+    $scope.goto = function (id) {
+        $location.path('/stock-group/'+id)
+    }
     
     $scope.pagination = {
         start: +groups.$response.headers('items-start'),
@@ -10,6 +14,58 @@ angular.module('yxaquant.stock', [])
         page: $routeParams.page
 
     }
+}])
+.controller('StockGroupDetailCtrl', ['$scope','group','SearchStock','$routeParams','$timeout','StockGroup',
+                            function ($scope,  group,  SearchStock,  $routeParams,  $timeout,  StockGroup) {
+    $scope.group = group
+    $scope.stock = {}
+
+    $scope.search = function (keyword) {
+        SearchStock.query({keyword: keyword}, function(data){
+            $scope.stock.searchList = data
+        })
+
+    }
+    $scope.chooseItem = function (item) {
+        $scope.stock.data = item
+        $scope.stock.keyword = $scope.stock.data.name
+    }
+    $scope.inputBlur = function () {
+        $timeout(function (argument) {
+            $scope.stock.focus=false 
+            if($scope.stock.data)
+                $scope.stock.keyword = $scope.stock.data.name
+            else
+                $scope.stock.keyword = ''
+        }, 100)
+
+    }
+    $scope.add = function () {
+        if ($scope.stock.data) {
+            var newStock = {
+                id: $scope.stock.data,
+                name: $scope.stock.data.name,
+                weight: 0
+            }
+            $scope.group.stocks.push(newStock)
+            $scope.stock = {}
+        } else {
+            search.focus();
+        }
+    }
+    $scope.delete = function (i) {
+        $scope.group.stocks.splice(i,1)
+    }
+    $scope.save = function () {
+        StockGroup.update($scope.group, function (data) {
+            console.log(data)
+            location.reload()
+        })
+    }
+
+
+
+    
 }])
 
 .controller('StockListController', ['$scope','$routeParams','$location', 
