@@ -6,6 +6,8 @@ var stockGroupSchema = new Schema({
     stocks: [
         {
             id: Schema.Types.ObjectId,
+            code: String, // 股票代码
+            name: String, // 股票名称
             weight: Number, // 权重
         }
     ]
