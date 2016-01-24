@@ -236,6 +236,30 @@
 		"value":""
 	}
 
+界面接口
+====================================
+
+股票查询
+------------------------------------
+
+	GET /stock
+	query:{
+		"orderBy": "", // 排序字段 code,name,current,percentage,offset,pb,peLtr,peTtm,psr,marketCapital
+		"order": true, // 升序/降序
+		"skip": 0, // 分页跳过
+		"limit": 0, // 分页限制
+		"percentage": 0.00-0.00, // 现价/昨收偏离率范围
+		"pb": 1.00-1.00, // 市净率
+		"peLyr": 1.00-1.00, // 上年度市盈率
+		"peTtm": 1.00-1.00, // 本季度市盈率
+		"psr": 1.00-1.00, // 市销率
+		"marketCapital": 0E0-0E0, // 总市值
+		"floatMarketCapital": 0E0-0E0, // 流通市值
+		"industry": "行业1,行业2", // 行业
+		"concept": "概念1,概念2", // 概念
+		"groupId": "" // 所在投资组合ID
+	}
+
 交易接口
 ====================================
 
