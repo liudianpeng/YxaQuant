@@ -24,9 +24,27 @@ angular.module('yxaquant', [
                 }]
             }
         })
+        .when('/account/create', {
+            controller: 'AccountCreateController',
+            templateUrl: 'templates/account-edit.html',
+            resolve: {
+            }
+        })
         .when('/account/:id', {
             controller: 'AccountDetailController',
             templateUrl: 'templates/account-detail.html',
+            resolve: {
+                account: ['$route', 'Account', function ($route, Account){
+                    if($route.current.params.id === 'new'){
+                        return new Account();
+                    }
+                    return Account.get($route.current.params).$promise;
+                }]
+            }
+        })
+        .when('/account/:id/edit', {
+            controller: 'AccountEditController',
+            templateUrl: 'templates/account-edit.html',
             resolve: {
                 account: ['$route', 'Account', function ($route, Account){
                     if($route.current.params.id === 'new'){

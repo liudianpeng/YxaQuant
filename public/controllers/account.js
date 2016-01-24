@@ -19,4 +19,27 @@ angular.module('yxaquant.account', [])
 .controller('AccountDetailController', ['$scope','account',function ($scope, account) {
 	$scope.account = $scope.i = account
 	
-}]);
+}])
+.controller('AccountEditController', ['$scope','account','Account',function ($scope, account, Account) {
+	$scope.account = $scope.i = account
+	$scope.typeName = '修改'
+
+	$scope.save = function () {
+        Account.update(account, function (data) {
+            console.log(data)
+            location.reload()
+        })
+    }
+
+}])
+.controller('AccountCreateController', ['$scope', 'Account','$location',function ($scope, Account, $location) {
+	$scope.typeName = '创建'
+	$scope.account = $scope.i = {}
+	$scope.save = function () {
+        Account.create($scope.account, function (data) {
+            console.log(data)
+            $location.path('/account/'+data.id+'/edit')
+        })
+    }
+
+}])
