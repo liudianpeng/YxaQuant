@@ -244,10 +244,13 @@
 
 	GET /stock
 	query:{
-		"orderBy": "", // 排序字段 code,name,current,percentage,offset,pb,peLtr,peTtm,psr,marketCapital
+		"orderBy": "", // 排序字段 code,name,current,percentage,pb,peLtr,peTtm,psr,marketCapital,floatMarketCapital
 		"order": true, // 升序/降序
 		"skip": 0, // 分页跳过
 		"limit": 0, // 分页限制
+		"keyword": "", // 搜索name和code
+		"name": "", // 股票名称
+		"code": "", // 股票编号
 		"percentage": 0.00-0.00, // 现价/昨收偏离率范围
 		"pb": 1.00-1.00, // 市净率
 		"peLyr": 1.00-1.00, // 上年度市盈率
