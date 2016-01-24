@@ -1,6 +1,6 @@
 angular.module('yxaquant.account', [])
 
-.controller('AccountListController', ['$scope', 'accounts', function ($scope, accounts) {
+.controller('AccountListController', ['$scope','accounts','$location', function ($scope, accounts, $location) {
 	$scope.accounts = accounts;
 
 	// 从后端获得分页参数示例，请求支持使用skip和limit来分页，limit默认20
@@ -10,7 +10,9 @@ angular.module('yxaquant.account', [])
 		end: +accounts.$response.headers('items-end'),
 		total: +accounts.$response.headers('items-total')
 	}
-	console.log($scope.list);
+	$scope.goto = function (id) {
+		$location.path('/account/'+id)
+	}
 
 }])
 

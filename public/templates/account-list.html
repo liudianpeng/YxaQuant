@@ -14,7 +14,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr class="odd gradeX" ng-repeat="account in accounts track by $index">
+		<tr class="odd gradeX" ng-repeat="account in accounts track by $index" ng-click='goto(account.id)'>
 			<td><a href="/account/{{account.id}}">{{ account.name }}</a></td>
 			<td>{{ account.provider.name }}</td>
 			<td></td>
