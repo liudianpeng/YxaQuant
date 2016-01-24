@@ -127,6 +127,23 @@
 		"progress": 1.00, // 进度, 0-1,
 		"account": ["", ""], // * 参与任务的账户ID, 仅创建时使用, 创建后会经过计算列入stocks每项中
 		"direction": true, // * 任务的买卖方向，仅创建时使用，创建后会卖出以负数的金额和股数表示
+		"rules": {
+
+			"lowestPercentage": 0.00, // ** 相对当前价最低百分比
+			"highestPercentage": 0.00, // ** 相对当前价最高百分比
+			"timeStep": 0, // ** 最小交易时间间隔
+
+			"priceDiffPercentage": 0.00, // ** 最大委差 0%-100%
+			"opponentLevels": 0, // ** 对收盘档数 1-10
+			"opponentRatio": 1.0, // ** 对收盘比例 0-1
+
+			"backtrackFromDate": "2016-01-15", // ** 差价交易的回溯起始日期
+			"backtrackToDate": "2016-01-18", // ** 差价交易的回溯终止日期
+			"priceDiffPercentage": 0.00 // ** 差价交易的差价百分比
+		},
+		// 以下二项总量计算方式任选其一，将作为下面各股票的缺省交易规则
+		"targetRatio": 0.00, // ** 目标持仓比例
+		"ratio": 0.00, // ** 本次交易比例
 		"stocks": [
 			{
 				"id": "",  // *
