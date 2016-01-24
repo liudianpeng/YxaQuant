@@ -27,6 +27,16 @@ angular.module('yxaquant.task', [])
         $scope.total = +total
         $scope.numPages = Math.ceil($scope.total/$scope.perPage);
     });
+    $scope.getAccountsName = function (i) {
+        return i.stocks.length && i.stocks[0].accounts.map(function(a){return a.name}).join(",")
+    }
+    $scope.getStocksName = function (i) {
+        return i.stocks.slice(0,5).map(function(s){return s.name}).join(",") + " 等"
+    }
+    $scope.getTime = function (str) {
+        var i = new Date(str)
+        return [i.getFullYear(), i.getMonth()+1, i.getDate()].join('-')
+    }
 
 }])
 .controller('TaskDetailController', ['$scope', 'task', 'Task','$location', function ($scope, task, Task, $location) {

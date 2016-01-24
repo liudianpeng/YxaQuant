@@ -1,29 +1,34 @@
 <table class="table table-bordered datatable table-hover" id="table-1">
     <thead>
         <tr>
-            <th data-hide="phone">名称</th>
-            <th>timeStart</th>
-            <th data-hide="phone">timeEnd</th>
-            <th data-hide="phone,tablet">status</th>
-            <th width=200>progress</th>
+            <th data-hide="phone">帐户</th>
+            <th>股票</th>
+            <th data-hide="phone">开始时间</th>
+            <th data-hide="phone,tablet">状态</th>
+            <th width=200>进度</th>
         </tr>
     </thead>
     <tfoot>
         <tr>
-            <th data-hide="phone">名称</th>
-            <th>timeStart</th>
-            <th data-hide="phone">timeEnd</th>
-            <th data-hide="phone,tablet">status</th>
-            <th>progress</th>
+            <th data-hide="phone">帐户</th>
+            <th>股票</th>
+            <th data-hide="phone">开始时间</th>
+            <th data-hide="phone,tablet">状态</th>
+            <th width=200>进度</th>
         </tr>
     </tfoot>
     <tbody>
         <tr ng-repeat="i in items">
-            <td ><a href="/task/{{i.id}}" ng-bind='i.id'></a></td>
-            <td ng-bind='i.timeStart'></td>
-            <td ng-bind='i.timeEnd'></td>
-            <td ng-bind='i.status'></td>
+            <td ><a href="/task/{{i.id}}" ng-bind='getAccountsName(i)'></a></td>
+            <td ng-bind='getStocksName(i)'></td>
+            <td ng-bind='getTime(i.timeStart)'></td>
             <td>
+                <span ng-bind='i.status' class="label label-default"
+                >
+                    
+                </span>
+                </td>
+            <td style="min-width: 400px;">
                 <div class="progress">
                     <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100" style="width: {{i.progress*100}}%">
                         <span class="sr-only">35% Complete (success)</span>
