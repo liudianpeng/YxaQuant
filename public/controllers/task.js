@@ -157,7 +157,15 @@ angular.module('yxaquant.task', [])
             $location.path( '/task/create/3' ).search($routeParams)
         }
 }])
-.controller('TaskCreateStep_3Ctrl', ['$scope', '$location', 'tasks','accounts','Task','SearchStock','$timeout','$routeParams',
+.controller('TaskCreateStep_3Ctrl', 
+            ['$scope', '$location','$routeParams', 'tasks', 
+    function ($scope,   $location,  $routeParams,   tasks) {
+        $scope.goto = function(type){
+            Object.assign($routeParams, {type: type})
+            $location.path( '/task/create/4' ).search($routeParams)
+        }
+}])
+.controller('TaskCreateStep_4Ctrl', ['$scope', '$location', 'tasks','accounts','Task','SearchStock','$timeout','$routeParams',
                             function( $scope,   $location,   tasks,  accounts,  Task,  SearchStock,  $timeout,  $routeParams) {
     $scope.isBuy = $routeParams.type!=='sell'
     if ($scope.isBuy)
@@ -208,10 +216,10 @@ angular.module('yxaquant.task', [])
                 arr.push(stock.data.id)
             return arr
         }, [])
-        $location.path( "/task/create/setting" ).search({stock_ids: stock_ids, accounts: $routeParams.accounts});
+        $location.path( "/task/create/5" ).search({stock_ids: stock_ids, accounts: $routeParams.accounts});
     }
 }])
-.controller('TaskCreateSettingCtrl', ['$scope', '$location', 'tasks','stocks','accounts', 'Task','$timeout', '$routeParams',
+.controller('TaskCreateStep_5Ctrl', ['$scope', '$location', 'tasks','stocks','accounts', 'Task','$timeout', '$routeParams',
                             function ( $scope,   $location,   tasks,  stocks,  accounts,   Task,  $timeout,   $routeParams) {
     $scope.accounts = accounts
     $scope.stocks = stocks

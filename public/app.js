@@ -138,6 +138,16 @@ angular.module('yxaquant', [
                 tasks: ['$route', 'Task', function ($route, Task){
                     return Task.query($route.current.params).$promise;
                 }],
+                check: checkCreateRoute
+            }
+        })
+        .when('/task/create/4', {
+            controller: 'TaskCreateStep_4Ctrl',
+            templateUrl: 'templates/task-create-4.html',
+            resolve: {
+                tasks: ['$route', 'Task', function ($route, Task){
+                    return Task.query($route.current.params).$promise;
+                }],
                 stocks: ['$route', 'Task', function ($route, Task){
                     console.log($route.current.params)
                 }],
@@ -147,9 +157,9 @@ angular.module('yxaquant', [
                 check: checkCreateRoute
             }
         })
-        .when('/task/create/setting', {
-            controller: 'TaskCreateSettingCtrl',
-            templateUrl: 'templates/task-create-setting.html',
+        .when('/task/create/5', {
+            controller: 'TaskCreateStep_5Ctrl',
+            templateUrl: 'templates/task-create-5.html',
             resolve: {
                 tasks: ['$route', 'Task', function ($route, Task){
                     return Task.query($route.current.params).$promise;
