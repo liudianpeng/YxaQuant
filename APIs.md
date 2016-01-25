@@ -134,8 +134,8 @@
 			"timeStep": 0, // ** 最小交易时间间隔
 
 			"priceDiffPercentage": 0.00, // ** 最大委差 0%-100%
-			"opponentLevels": 0, // ** 对收盘档数 1-10
-			"opponentRatio": 1.0, // ** 对收盘比例 0-1
+			"opponentLevels": 0, // ** 对手盘档数 1-10
+			"opponentRatio": 1.0, // ** 对手盘比例 0-1
 
 			"backtrackFromDate": "2016-01-15", // ** 差价交易的回溯起始日期
 			"backtrackToDate": "2016-01-18", // ** 差价交易的回溯终止日期
@@ -150,24 +150,22 @@
 				"name": "",
 				"code": "",
 				"rules": {
-
 					"lowestPrice": 0.00, // ** 最低价格
 					"highestPrice": 0.00, // ** 最高价格
 					"timeStep": 0, // ** 最小交易时间间隔
 
 					"priceDiffPercentage": 0.00, // ** 最大委差 0%-100%
-					"opponentLevels": 0, // ** 对收盘档数 1-10
-					"opponentRatio": 1.0, // ** 对收盘比例 0-1
-
-					"backtrackFromDate": "2016-01-15", // ** 差价交易的回溯起始日期
-					"backtrackToDate": "2016-01-18", // ** 差价交易的回溯终止日期
-					"priceDiffPercentage": 0.00 // ** 差价交易的差价百分比
+					"opponentLevels": 0, // ** 对手盘档数 1-10
+					"opponentRatio": 1.0 // ** 对手盘比例 0-1
 				},
 				// 以下四项总量计算方式任选其一, 至少填一项
 				"targetRatio": 0.00, // ** 目标持仓比例
 				"ratio": 0.00, // ** 本次交易比例
 				"volume": 0, // ** 本次交易股数, 正数买入, 负数卖出
 				"amount": 0.00, // ** 本次交易金额, 正数买入, 负数卖出
+
+				"volumeBefore": 0, // 本次交易前下属账户持有的总股数
+				"cashBefore": 0.00, // 本次交易之前下属账户总现金
 
 				"volumeCompleted": 0, // 已成交股数, 正数买入, 负数卖出
 				"volumeDeclared": 0, // 已申报未成交股数, 正数买入, 负数卖出
@@ -182,10 +180,14 @@
 							"lowestPrice": 0.00, // 最低价格 >0
 							"highestPrice": 0.00, // 最高价格 >0
 							"timeStep": 0, // 最小交易时间间隔
-							"priceDiffPercentage": 0.00, // 最大委差 0%-100%
-							"opponentLevels": 0, // 对收盘档数 1-10
-							"opponentRatio": 1.0 // 对收盘比例 0-1
+							"priceDiffPercentage": 0.00, // 最大委差 0%-5%
+							"opponentLevels": 0, // 对手盘档数 1-10
+							"opponentRatio": 1.0 // 对手盘比例 0-1
 						},
+
+						"volumeBefore": 0, // 本次交易前持有的股数
+						"cashBefore": 0.00, // 本次交易前现金
+
 						"volume": 0, // 本任务本账户交易股数, 正数买入, 负数卖出
 						"volumeCompleted": 0, // 已成交股数, 正数买入, 负数卖出
 						"volumeDeclared": 0, // 已申报未成交股数, 正数买入, 负数卖出
