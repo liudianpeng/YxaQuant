@@ -9,109 +9,126 @@ module.exports = function(router, quant) {
         // create a task
         .post(function(req, res, next) {
             
-            // 识别req.body中的accounts, direction, 这些在创建任务的时候有用, 但却不在Task模型中
-            if(req.body.accounts === undefined || !Array.isArray(req.body.accounts)) {
-                res.status(400).send('Accounts not defined.');
-                return;
-            }
+            var task = new Task(req.body);
 
-            if(req.body.direction === undefined) {
-                res.status(400).send('Trade direction not defined.');
-                return;
-            }
+            var stocks = Stock.find({_id: {$in: task.stocks.map(stock => stock.id)}}).exec()
+            var accounts = Account.find({_id: {$in: task.accountIds}}).exec();
 
-            var accountIds = req.body.accounts;
-            var direction = req.body.direction;
+            Promise.all([stocks, accounts])
 
-            if(req.body.stocks === undefined || !Array.isArray(req.body.stocks)) {
-                res.status(400).send('Stocks not defined.');
-                return;
-            }
-
-            var stocks = req.body.stocks;
-
-            if(stocks.some(stock => stock.id === undefined)) {
-                res.status(400).send('Missing Stock ID.');
-                return;
-            }
-
-            stocksFound = stocks.map(stock => {
-                return Stock.findOne({_id: stock.id}).exec();
-            });
-
-            var task = new Task(req.body); // create a new instance of the Task model
-
-            // 查找要交易的股票
-            Promise.all(stocksFound)
-
-            // 将要交易的股票加入任务中
-            .then(stocks => {
+            .then((value) => {
+                var stocks = value[0];
+                var accounts = value[1];
                 
-                return new Promise((resolve, reject) => {
-                    
-                    task.stocks = stocks.map(stock => {
+                // 将股票加上交易规则和交易量参数
+                task.stocks = task.stocks.map(stockInTask => {
+
+                    // 从数据库中获得任务中正在处理的同一支股票
+                    var stockInMarket = stocks.filter(stock => {
+                        return stock.id == stockInTask.id;
+                    })[0];
+
+                    // 复制基本信息
+                    stockInTask.name = stockInMarket.name;
+                    stockInTask.code = stockInMarket.code;
+
+                    // 若股票中没有最低/最高价, 从任务总设置中获取
+                    if (!stockInTask.rules.lowestPrice && task.rules.lowestPercentage) {
+                        stockInTask.rules.lowestPrice = (stockInMarket.current * (1 + task.rules.lowestPercentage/100)).toFixed(-Math.log10(stockInMarket.tickSize));
+                    }
+                    if (!stockInTask.rules.highestPrice && task.rules.highestPercentage) {
+                        stockInTask.rules.highestPrice = (stockInMarket.current * (1 + task.rules.highestPercentage/100)).toFixed(-Math.log10(stockInMarket.tickSize));
+                    }
+
+                    // 若股票没有设置交易量, 从任务总设置中获取
+                    if(!stockInTask.targetRatio && !stockInTask.ratio && !stockInTask.volume && !stockInTask.amount) {
+                        if(task.targetRatio) {
+                            stockInTask.targetRatio = task.targetRatio;
+                        }
+                        else if(task.ratio) {
+                            stockInTask.ratio = task.ratio;
+                        }
+                        else {
+                            throw new Error('Volume not specified for ' + stockInMarket.code);
+                        }
+                    }
+
+                    stockInTask.accounts = accounts.map(account => {
                         
-                        if(stock === null) {
-                            res.status(400).send('Wrong stock ID.');
-                            reject('Wrong stock ID.');
+                        var accountInStock = {
+                            id: account.id,
+                            name: account.name
+                        };
+
+                        // 将股票的交易规则复制到下面的账户
+                        accountInStock.rules = stockInTask.rules;
+                        
+                        // 查找并复制改账户对该股原本的持仓
+                        var holdThisStock = account.stocks.filter(holdStock => holdStock.id.toString() === stockInTask.id.toString());
+
+                        if(holdThisStock.length) {
+                            accountInStock.volumeBefore = holdThisStock[0].volume;
+                        }
+                        else {
+                            accountInStock.volumeBefore = 0;
                         }
 
-                        return {id: stock.id, name: stock.name, code: stock.code}
+                        accountInStock.cashBefore = account.cash.reduce((previous, currency) => {
+                            return previous + currency.amount * (currency.rate || 1);
+                        }, 0);
+
+                        return accountInStock;
                     });
 
-                    resolve();
+                    // 计算所有待交易账户对该股的总持有
+                    stockInTask.volumeBefore = stockInTask.accounts.reduce((previous, account) => {
+                        return previous + account.volumeBefore;
+                    }, 0);
+
+                    stockInTask.cashBefore = stockInTask.accounts.reduce((previous, account) => {
+                        return previous + account.cashBefore;
+                    }, 0);
+
+                    // 计算此股票的所有待交易账户交易量
+                    if(stockInTask.targetRatio) {
+                        stockInTask.accounts = stockInTask.accounts.map(account => {
+                            var marketCapital = stockInMarket.current * account.volumeBefore;
+                            var ratio = marketCapital / (marketCapital + account.cashBefore);
+                            var amount = (stockInTask.targetRatio - ratio) * (marketCapital + account.cashBefore) / stockInMarket.current;
+                            account.volume = amount > 0 === task.direction ? Math.round(amount / stockInMarket.lotSize) * stockInMarket.lotSize : 0;
+                            return account;
+                        });
+                    }
+                    else if (stockInTask.ratio) {
+                        stockInTask.accounts = stockInTask.accounts.map(account => {
+                            account.volume = Math.round(account.volumeBefore * stockInTask.ratio / stockInMarket.lotSize) * stockInMarket.lotSize;
+
+                            if(!task.direction) {
+                                account.volume = -account.volume;
+                            }
+
+                            return account;
+                        });
+                    }
+
+                    return stockInTask;
                 });
-
-            }).catch(reason => console.error('[', new Date(), '] Wrong stock ID.', "\n", reason))
-
-            // 查找账户
-            .then(() => {
-
-                var accountsFound = accountIds.map(accountId => {
-                    return Account.findOne({_id: accountId}).exec();
-                });
-
-                return Promise.all(accountsFound);
 
             })
 
-            // 将账户复制到股票下
-            .then((accounts) => {
-                
-                return new Promise((resolve, reject) => {
-
-                    var accountsInStock = accounts.map(account => {
-
-                        if(account === null) {
-                            res.status(400).send('Wrong account ID.');
-                            reject('Wrong account ID');
-                        }
-
-                        return {id: account.id, name: account.name, code: account.code, provider: account.provider, credentials: account.credentials};
-                    });
-
-                    task.stocks = task.stocks.map(stock => {
-                        stock.accounts = accountsInStock;
-                        return stock;
-                    });
-
-                    resolve();
-                });
-
-            }).catch(reason => console.error('[', new Date(), '] Wrong account ID.', "\n", reason))
-
             .then(() => {
+                // 检测任务可执行性
+                // 买入时，检测资金余额是否
                 return task.save();
             })
 
             .then((task) => {
                 res.json(task);
+            })
+
+            .catch((reason) => {
+                console.error(reason);
             });
-
-
-            // 计算交易股数
-            // 检测任务可执行性
-            // 买入时，检测资金余额是否
 
             // save the task and check for errors
             // task.save(function(err) {

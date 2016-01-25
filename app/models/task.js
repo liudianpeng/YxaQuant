@@ -40,7 +40,6 @@ var taskSchema = new Schema({
             targetRatio: Number, // 目标持仓比例
             ratio: Number, // 本次交易比例
             volume: Number, // 本次交易股数, 正数买入, 负数卖出
-            amount: Number, // 本次交易金额, 正数买入, 负数卖出
             
             volumeBefore: Number, // 本次交易前下属账户持有的总股数
             cashBefore: Number, // 本次交易前下属账户总现金
