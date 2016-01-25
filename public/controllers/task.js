@@ -230,9 +230,10 @@ angular.module('yxaquant.task', [])
             timeStart: $scope.startDate,
             timeEnd: $scope.endDate,
             direction: !!$scope.direction,
-            account: $scope.accounts.map(function(i){ return i.id }),
+            accounts: $scope.accounts.map(function(i){ return i.id }),
             stocks: $scope.stocks.map(function(stock){
                 var stockData = {
+                    id: stock.id,
                     rules: {
                         priceDiffPercentage: $scope.priceDiffPercentage,
                         opponentRatio: $scope.opponentRatio,
