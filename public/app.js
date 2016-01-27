@@ -110,7 +110,7 @@ angular.module('yxaquant', [
         })
         .when('/task/create', {redirectTo: '/task/create/1'})
         .when('/task/create/1', {
-            controller: 'TaskCreateStep_1Ctrl',
+            controller: 'TaskCreateStep_1_Ctrl',
             templateUrl: 'templates/task-create-1.html',
             resolve: {
                 tasks: ['$route', 'Task', function ($route, Task){
@@ -122,7 +122,7 @@ angular.module('yxaquant', [
             }
         })
         .when('/task/create/2', {
-            controller: 'TaskCreateStep_2Ctrl',
+            controller: 'TaskCreateStep_2_Ctrl',
             templateUrl: 'templates/task-create-2.html',
             resolve: {
                 tasks: ['$route', 'Task', function ($route, Task){
@@ -132,18 +132,8 @@ angular.module('yxaquant', [
             }
         })
         .when('/task/create/3', {
-            controller: 'TaskCreateStep_3Ctrl',
+            controller: 'TaskCreateStep_3_Ctrl',
             templateUrl: 'templates/task-create-3.html',
-            resolve: {
-                tasks: ['$route', 'Task', function ($route, Task){
-                    return Task.query($route.current.params).$promise;
-                }],
-                check: checkCreateRoute
-            }
-        })
-        .when('/task/create/4', {
-            controller: 'TaskCreateStep_4Ctrl',
-            templateUrl: 'templates/task-create-4.html',
             resolve: {
                 tasks: ['$route', 'Task', function ($route, Task){
                     return Task.query($route.current.params).$promise;
@@ -157,9 +147,9 @@ angular.module('yxaquant', [
                 check: checkCreateRoute
             }
         })
-        .when('/task/create/5', {
-            controller: 'TaskCreateStep_5Ctrl',
-            templateUrl: 'templates/task-create-5.html',
+        .when('/task/create/4', {
+            controller: 'TaskCreateStep_4_Ctrl',
+            templateUrl: 'templates/task-create-4.html',
             resolve: {
                 tasks: ['$route', 'Task', function ($route, Task){
                     return Task.query($route.current.params).$promise;
