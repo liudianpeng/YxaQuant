@@ -216,6 +216,7 @@ angular.module('yxaquant.task', [])
     $scope.accounts = accounts
     $scope.stocks = stocks
     $scope.calType = 'targetRatio'
+    $scope.haha = 'xiao'
     $scope.submit = function () {
         var data = {
             type: 'normal',

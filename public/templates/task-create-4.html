@@ -50,8 +50,10 @@
         <div class="form-group">
             <label class="col-sm-3 control-label">最大委差</label>
             <div class="col-sm-3">
-                <div range class="slider slider-green" data-prefix="&pound; " data-min="0" data-max="1800" data-value="465"></div>
-                <input type="text" class="form-control" id="field-1" placeholder="" ng-model="priceDiffPercentage">
+                <div range class="slider slider-green" rv="rules.priceDiffPercentage" data-min="0" data-max="1800" data-value="465"></div>
+            </div>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" id="slider-1" placeholder="" disabled="" value="{{rules.priceDiffPercentage}}%">
             </div>
         </div>
         <div class="form-group">

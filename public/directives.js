@@ -15,10 +15,12 @@ angular.module('yxaquant.plugin', [])
 .directive('range', function() {
     return {
         restrict: 'A',
+        scope: {
+            rv: '='
+        },
         link: function(scope, element, attrs) {
-
             var elData = $(element)[0].dataset
-            var $input =  $(element).next('input')
+            var forId = elData.for
             $(element).slider({
                 range: 'min',
                 min: 0,
@@ -26,11 +28,12 @@ angular.module('yxaquant.plugin', [])
                 value: 0,
                 step: 1,
                 slide: function(e, ui) {
-                    $input.val(ui.value+'%')
+                    scope.rv = ui.value
+                    scope.$apply()
                 },
                 change: function(ev, ui) {
-
-                    $input.val(ui.value+'%')
+                    scope.rv = ui.value
+                    scope.$apply()
                 }
             });
 
