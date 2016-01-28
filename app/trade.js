@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(socketServer) {
+function Trade (socketServer, quant) {
 
     var socket;
 
@@ -98,3 +98,5 @@ module.exports = function(socketServer) {
         }
     }
 }
+
+module.exports = Trade;

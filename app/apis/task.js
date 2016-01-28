@@ -11,15 +11,18 @@ module.exports = function(router, quant) {
             
             var task = new Task(req.body);
 
-            var stocks = Stock.find({_id: {$in: task.stocks.map(stock => stock.id)}}).exec()
-            var accounts = Account.find({_id: {$in: task.accountIds}}).exec();
-
-            Promise.all([stocks, accounts])
+            quant.market.subscribe(task.stocks.map(stock => stock.id))
+            
+            .then(stocks => {
+                var getStocks = quant.market.getQuotes(task.stocks.map(stock => stock.id));
+                var getAccounts = Account.find({_id: {$in: task.accountIds}}).exec();
+                return Promise.all([getStocks, getAccounts]);
+            })
 
             .then((value) => {
+                
                 var stocks = value[0];
                 var accounts = value[1];
-                
                 // 将股票加上交易规则和交易量参数
                 task.stocks = task.stocks.map(stockInTask => {
 
@@ -119,25 +122,17 @@ module.exports = function(router, quant) {
             .then(() => {
                 // 检测任务可执行性
                 // 买入时，检测资金余额是否
-                return task.save();
+                // return task.save();
             })
 
-            .then((task) => {
+            .then(() => {
                 res.json(task);
             })
 
-            .catch((reason) => {
+            .then(null, (reason) => {
                 console.error(reason);
             });
 
-            // save the task and check for errors
-            // task.save(function(err) {
-            //     if (err)
-            //         res.send(err);
-
-            //     res.json(task);
-            // });
-            
         })
 
         // get all the tasks

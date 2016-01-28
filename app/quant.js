@@ -9,7 +9,7 @@ function Quant () {
     EventEmitter.call(this);
     
     this.on('stockPriceChange', function(stock) {
-        // console.log('stockPriceChange', stock.name, stock.current, stock.time);
+        console.log('stockPriceChange', stock.name, stock.current, stock.time);
     });
 
     this.on('stockOpponentChange', function(stock) {
