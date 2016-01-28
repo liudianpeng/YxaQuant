@@ -110,13 +110,13 @@ module.exports = function(router) {
 
         });
 
-    // on routes that end in /stock/:stock_id
+    // on routes that end in /stock/:stockId
     // ----------------------------------------------------
-    router.route('/stock/:stock_id')
+    router.route('/stock/:stockId')
 
         // get the stock with that id
         .get(function(req, res) {
-            Stock.findById(req.params.stock_id, function(err, stock) {
+            Stock.findById(req.params.stockId, function(err, stock) {
                 if (err)
                     res.send(err);
                 res.json(stock);
@@ -127,6 +127,7 @@ module.exports = function(router) {
             Stock.where({_id: req.params.stockId}).update(req.body, function(err, raw) {
                 if (err) {
                     res.send(err);
+                    
                     return;
                 }
 
@@ -142,7 +143,7 @@ module.exports = function(router) {
         // delete the stock with this id
         .delete(function(req, res) {
             Stock.remove({
-                _id: req.params.stock_id
+                _id: req.params.stockId
             }, function(err, stock) {
                 if (err)
                     res.send(err);

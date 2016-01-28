@@ -56,13 +56,13 @@ module.exports = function(router) {
             });
         });
 
-    // on routes that end in /config/:config_id
+    // on routes that end in /config/:configId
     // ----------------------------------------------------
     router.route('/config/:configId')
 
         // get the config with that id
         .get(function(req, res) {
-            Config.findById(req.params.config_id, function(err, config) {
+            Config.findById(req.params.configId, function(err, config) {
                 if (err)
                     res.send(err);
                 res.json(config);
@@ -88,7 +88,7 @@ module.exports = function(router) {
         // delete the config with this id
         .delete(function(req, res) {
             Config.remove({
-                _id: req.params.config_id
+                _id: req.params.configId
             }, function(err, config) {
                 if (err)
                     res.send(err);
