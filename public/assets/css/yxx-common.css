@@ -1,1 +1,9 @@
 form .slider {margin: 11px 0;}
+input, button, select, textarea {
+    border-radius: 3px;
+    border: 1px solid #eee;
+}
+input[type=text],input[type=number] {
+    height: 31px;
+    padding: 6px 12px;
+}

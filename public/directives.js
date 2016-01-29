@@ -1,14 +1,15 @@
 angular.module('yxaquant.plugin', [])
-
-.directive('datapicker', function() {
+.directive('datepicker', function() {
     return {
         restrict: 'A',
         link: function(scope, element, attrs) {
-            $(element).datepicker()
-                .on('changeDate', function(ev){
-                    console.log(ev.date)
+            $(element)
+                .datepicker({
+                    format: "yyyy-mm-dd"
                 })
-
+                .on('changeDate', function(ev){
+                    $(this).datepicker( "hide" )
+                })
         }
     };
 })
@@ -20,13 +21,12 @@ angular.module('yxaquant.plugin', [])
         },
         link: function(scope, element, attrs) {
             var elData = $(element)[0].dataset
-            var forId = elData.for
             $(element).slider({
                 range: 'min',
-                min: 0,
-                max: 100,
-                value: 0,
-                step: 1,
+                min: +elData.min,
+                max: +elData.max,
+                value: +attrs.ngValue,
+                step: +elData.step,
                 slide: function(e, ui) {
                     scope.rv = ui.value
                     scope.$apply()

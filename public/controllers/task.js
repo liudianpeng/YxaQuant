@@ -141,19 +141,15 @@ angular.module('yxaquant.task', [])
     }
     $scope.comfirm = function (type) {
         var ids = $scope.selection.map(function(i){return i.id})
-        if (type=='normal') {
-            $location.path( "/task/create/2" ).search({accounts: ids});
-        } else {
-            // $location.path( "/task/create-2" );
-        }
+        $location.path( "/task/create/2" ).search({accounts: ids, type: type});
     }
 
 }])
 .controller('TaskCreateStep_2_Ctrl', 
             ['$scope', '$location','$routeParams', 'tasks', 
     function ($scope,   $location,  $routeParams,   tasks) {
-        $scope.goto = function(type){
-            Object.assign($routeParams, {type: type})
+        $scope.goto = function(direction){
+            Object.assign($routeParams, {direction: direction})
             $location.path( '/task/create/3' ).search($routeParams)
         }
 }])
@@ -207,41 +203,42 @@ angular.module('yxaquant.task', [])
             if(stock.data)
                 arr.push(stock.data.id)
             return arr
-        }, [])
-        $location.path( "/task/create/4" ).search({stock_ids: stock_ids, accounts: $routeParams.accounts});
+        }, []);
+        Object.assign($routeParams, {stock_ids: stock_ids})
+        $location.path("/task/create/4").search($routeParams)
     }
 }])
 .controller('TaskCreateStep_4_Ctrl', ['$scope', '$location', 'tasks','stocks','accounts', 'Task','$timeout', '$routeParams',
                             function ( $scope,   $location,   tasks,  stocks,  accounts,   Task,  $timeout,   $routeParams) {
     $scope.accounts = accounts
     $scope.stocks = stocks
-    $scope.calType = 'targetRatio'
-    $scope.haha = 'xiao'
     $scope.submit = function () {
         var data = {
-            type: 'normal',
+            type: $routeParams.type,
+            direction: $routeParams.direction=='buy',
             timeStart: $scope.startDate,
             timeEnd: $scope.endDate,
-            direction: !!$scope.direction,
-            accounts: $scope.accounts.map(function(i){ return i.id }),
+            targetRatio: $scope.targetRatio,
+            ratio: $scope.ratio,
+            accountIds: $scope.accounts.map(function(i){ return i.id }),
             stocks: $scope.stocks.map(function(stock){
                 var stockData = {
                     id: stock.id,
                     rules: {
-                        priceDiffPercentage: $scope.priceDiffPercentage,
-                        opponentRatio: $scope.opponentRatio,
-                        opponentLevels: $scope.opponentLevels,
-                        timeStep: $scope.timeStep,
-                        lowestPrice: $scope.lowestPrice,
-                        highestPrice: $scope.highestPrice
+                        priceDiffPercentage: stock.rules.priceDiffPercentage,
+                        opponentRatio: stock.rules.opponentRatio,
+                        opponentLevels: stock.rules.opponentLevels,
+                        timeStep: stock.rules.timeStep,
+                        lowestPrice: stock.rules.lowestPrice,
+                        highestPrice: stock.rules.highestPrice
                     }
                 }
-                stockData[$scope.calType] = $scope.calNum 
+                stockData[stock.calType] = stock.calNum 
                 return stockData
             })
         }
         Task.create(data, function(data){
-            $location.path( "/task/"+data.id )
+            $location.path( "/task/"+data.id ).search({})
         })
     }
 }])
