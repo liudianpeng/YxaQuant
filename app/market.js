@@ -195,7 +195,7 @@ function Market(quant) {
     // 返回一个stockIds对应的stocks的Promise
     function getQuotes (stockIds) {
         
-        console.log('Getting quotes of ', stockIds);
+        // console.log('Getting quotes of ', stockIds);
 
         return subscribe(stockIds)
 

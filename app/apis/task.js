@@ -119,10 +119,53 @@ module.exports = function(router, quant) {
 
             })
 
+            // 检测任务可执行性, 保存任务
             .then(() => {
-                // 检测任务可执行性
-                // 买入时，检测资金余额是否
-                // return task.save();
+                // 买入时, 检测总资金余额是否足够
+                // 价格区间上限和涨停价中低者价格计算, 买入所有待交易股票所需资金大于交易前现金
+
+                var accounts = {}; // [accountId]:account
+
+                if(task.direction) {
+                    task.stocks.forEach(stock => {
+                        stock.accounts.forEach(account => {
+
+                            var safePrice = account.rules.highestPrice;
+                            var safeCash = 0;
+
+                            if(!safePrice) {
+                                safePrice = quant.market.subscribedStocks[stock.id].riseStop;
+                            }
+
+                            safeCash = safePrice * account.volume;
+
+                            if(!accounts[account.id]) {
+                                accounts[account.id] = account.toObject();
+                                accounts[account.id].cashRequired = 0;
+                            }
+
+                            accounts[account.id].cashRequired += safePrice * account.volume;
+                        });
+                    });
+                    
+                    for(var accountId in accounts) {
+                        var account = accounts[accountId];
+                        if(account.cashBefore < account.cashRequired) {
+                            throw new Error(account.name + '没有足够的现金以买入。');
+                        }
+                    }
+                }
+                // 卖出时, 检测每种股票持股余额是否足够
+                else {
+                    task.stocks.forEach(stock => {
+                        stock.accounts.forEach(account => {
+                            if(account.volumeBefore < account.volume) {
+                                throw new Error(account.name + ' ' + stock.name + '没有足够的持仓供卖出。');
+                            }
+                        });
+                    });
+                }
+                return task.save();
             })
 
             // 将任务发送到Quant, 返回发送给前台
@@ -133,6 +176,7 @@ module.exports = function(router, quant) {
 
             .then(null, (reason) => {
                 console.error(reason);
+                res.status(400).send(reason.message);
             });
 
         })
