@@ -125,7 +125,9 @@ module.exports = function(router, quant) {
                 // return task.save();
             })
 
+            // 将任务发送到Quant, 返回发送给前台
             .then(() => {
+                quant.start(task);
                 res.json(task);
             })
 

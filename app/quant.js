@@ -19,6 +19,26 @@ function Quant () {
     this.on('declarationSucceed', function(data) {
         console.log('declarationSucceed', data);
     });
+
+    this.on('transactionSucceed', function(data) {
+        console.log('transactionSucceed', data);
+    });
+
+    this.start = function(task) {
+        return task;
+    }
+
+    this.modify = function(task) {
+        return task;
+    }
+
+    this.pause = function(task) {
+        return task;
+    }
+
+    this.cancel = function(task) {
+        return task;
+    }
 };
 
 util.inherits(Quant, EventEmitter);
