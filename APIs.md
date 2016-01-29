@@ -134,7 +134,7 @@
 			"highestPercentage": 0.00, // ** 相对当前价最高百分比
 			"timeStep": 0, // ** 最小交易时间间隔
 
-			"priceDiffPercentage": 0.00, // ** 最大委差 0%-100%
+			"quoteDiffPercentage": 0.00, // ** 最大委差 0%-5%
 			"opponentLevels": 0, // ** 对手盘档数 1-10
 			"opponentRatio": 1.0, // ** 对手盘比例 0-1
 
@@ -155,7 +155,7 @@
 					"highestPrice": 0.00, // ** 最高价格
 					"timeStep": 0, // ** 最小交易时间间隔
 
-					"priceDiffPercentage": 0.00, // ** 最大委差 0%-100%
+					"quoteDiffPercentage": 0.00, // ** 最大委差 0%-5%
 					"opponentLevels": 0, // ** 对手盘档数 1-10
 					"opponentRatio": 1.0 // ** 对手盘比例 0-1
 				},
@@ -180,7 +180,8 @@
 							"lowestPrice": 0.00, // 最低价格 >0
 							"highestPrice": 0.00, // 最高价格 >0
 							"timeStep": 0, // 最小交易时间间隔
-							"priceDiffPercentage": 0.00, // 最大委差 0%-5%
+							
+							"quoteDiffPercentage": 0.00, // 最大委差 0%-5%
 							"opponentLevels": 0, // 对手盘档数 1-10
 							"opponentRatio": 1.0 // 对手盘比例 0-1
 						},

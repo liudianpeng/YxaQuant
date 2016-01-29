@@ -13,7 +13,7 @@ var taskSchema = new Schema({
         lowestPercentage: Number, // 最低价格
         highestPercentage: Number, // 最高价格
         timeStep: Number, // 最小交易时间间隔
-        priceDiffPercentage: Number, // 最大委差
+        quoteDiffPercentage: Number, // 最大委差
         opponentLevels: Number, // 对手盘档数
         opponentRatio: Number, // 对手盘比例
         backtrackFromDate: Date, // 差价交易的回溯起始日期
@@ -32,7 +32,7 @@ var taskSchema = new Schema({
                 lowestPrice: Number, // 最低价格
                 highestPrice: Number, // 最高价格
                 timeStep: Number, // 最小交易时间间隔
-                priceDiffPercentage: Number, // 最大委差
+                quoteDiffPercentage: Number, // 最大委差
                 opponentLevels: Number, // 对手盘档数
                 opponentRatio: Number // 对手盘比例
             },
@@ -56,7 +56,7 @@ var taskSchema = new Schema({
                         lowestPrice: Number, // 最低价格
                         highestPrice: Number, // 最高价格
                         timeStep: Number, // 最小交易时间间隔
-                        priceDiffPercentage: Number, // 最大委差
+                        quoteDiffPercentage: Number, // 最大委差
                         opponentLevels: Number, // 对手盘档数
                         opponentRatio: Number // 对手盘比例
                     },
