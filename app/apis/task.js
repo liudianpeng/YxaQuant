@@ -113,6 +113,20 @@ module.exports = function(router, quant) {
                             return account;
                         });
                     }
+                    else if (stockInTask.volume) {
+                        var totalCapital = stockInTask.accounts.reduce((previous, account) => {
+                            var marketCapital = stockInMarket.current * account.volumeBefore;
+                            var accountCapical = marketCapital + account.cashBefore;
+                            return previous + accountCapical;
+                        }, 0);
+
+                        stockInTask.accounts.map(account => {
+                            var marketCapital = stockInMarket.current * account.volumeBefore;
+                            var accountCapical = marketCapital + account.cashBefore;
+                            account.volume = Math.round(stockInTask.volume * accountCapical / totalCapital / stockInMarket.lotSize) * stockInMarket.lotSize;
+                            return account;
+                        });
+                    }
 
                     return stockInTask;
                 });
