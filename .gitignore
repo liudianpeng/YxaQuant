@@ -1,3 +1,4 @@
 /node_modules
 /public/build
 sftp-config.json
+*.log
