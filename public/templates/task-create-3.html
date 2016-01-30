@@ -2,7 +2,7 @@
 <br/>
 <br/>
 
-<form id="rootwizard" method="post" action="" class="form-horizontal form-wizard">
+<div class="form-horizontal form-wizard">
     <div class="steps-progress" style="margin-left: 11.14286%; margin-right: 11.14286%;">
         <div class="progress-indicator" style="width: 50%;"></div>
     </div>
@@ -21,8 +21,163 @@
         </li>
 
     </ul>
-</form>
+</div>
 <h3>选股：</h3>
+<form class="form-horizontal">
+    <div class="row">
+        <div class="stock" 
+            ng-init="stock.rules.priceDiffPercentage = stock.rules.opponentLevels = 0;
+                stock.calType = 'targetRatio'">
+            <div class="form-group">
+                <label  class="col-sm-3 control-label">现价/昨收偏离率</label>
+                <div class="col-sm-3">
+                    <div range 
+                        class="slider slider-green" 
+                        rv="percentage" 
+                        data-prefix="&pound; " data-min="0" data-max="10" data-step="1" 
+                        ng-value="{{percentage}}"></div>     
+                </div>
+                <div class="col-sm-1">
+                    <input type="number" disabled="" class="form-control" ng-model="percentage">         
+                </div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-3 control-label">市净率</label>
+                <div class="col-sm-9">
+                    <div class="label label-default"
+                        ng-repeat='i in [0,1,2,4,8,16,32]'
+                        ng-class='{"label-primary": params.pb==i}'
+                        ng-bind='i'
+                        ng-click='doFilter("pb", i)'
+                        ></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-3 control-label">上年度市盈率</label>
+                <div class="col-sm-9">
+                    <div class="label label-default"
+                        ng-repeat='i in [0,10,20,40,80,160,320]'
+                        ng-class='{"label-primary": params.peLyr==i}'
+                        ng-bind='i'
+                        ng-click='doFilter("peLyr", i)'
+                        ></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-3 control-label">本季度市盈率</label>
+                <div class="col-sm-9">
+                    <div class="label label-default"
+                        ng-repeat='i in [0,10,20,40,80,160,320]'
+                        ng-class='{"label-primary": params.peTtm==i}'
+                        ng-bind='i'
+                        ng-click='doFilter("peTtm", i)'
+                        ></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-3 control-label">市销率</label>
+                <div class="col-sm-9">
+                    <div class="label label-default"
+                        ng-repeat='i in [0,1,2,4,8,16,32]'
+                        ng-class='{"label-primary": params.psr==i}'
+                        ng-bind='i'
+                        ng-click='doFilter("psr", i)'
+                        ></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-3 control-label">总市值</label>
+                <div class="col-sm-9">
+                    <div class="label label-default"
+                        ng-repeat='i in [10,100,1000]'
+                        ng-class='{"label-primary": params.marketCapital==i}'
+                        ng-click='doFilter("marketCapital", i)'
+                        >{{i}}亿</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-3 control-label">流通市值</label>
+                <div class="col-sm-9">
+                    <div class="label label-default"
+                        ng-repeat='i in [10,100,1000]'
+                        ng-class='{"label-primary": params.floatMarketCapital==i}'
+                        ng-click='doFilter("floatMarketCapital", i)'
+                        >{{i}}亿</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-3 control-label">关键词</label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control">
+                        <span class="input-group-btn">
+                            <button class="btn btn-success" ng-model="params.keyword" type="button">Go!</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>   
+</form>
+
+<table class="table table-bordered datatable table-hover">
+    <thead>
+        <tr>
+            <th data-hide="phone">名称</th>
+            <th>币种</th>
+            <th data-hide="phone">现价</th>
+            <th data-hide="phone,tablet">成交额</th>
+            <th>涨跌</th>
+            <th>涨跌幅</th>
+            <th>上年度市盈率</th>
+            <th>本季度市盈率</th>
+            <th>市净率</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <th data-hide="phone">名称</th>
+            <th>币种</th>
+            <th data-hide="phone">现价</th>
+            <th data-hide="phone,tablet">成交额</th>
+            <th>涨跌</th>
+            <th>涨跌幅</th>
+            <th>上年度市盈率</th>
+            <th>本季度市盈率</th>
+            <th>市净率</th>
+        </tr>
+    </tfoot>
+    <tbody>
+        <tr ng-class-odd="odd" ng-class-even="even" ng-repeat="i in items" ng-click="goto(i.id)">
+            <td ><a href="/stock/{{i.id}}" ng-bind='i.name'></a></td>
+            <td ng-bind='i.currency'></td>
+            <td ng-bind='i.current'></td>
+            <td ng-bind='i.amount'></td>
+            <td>
+                <span ng-if='i.lastClose-i.current < 0' class="label label-danger"><i class="fa fa-arrow-up"></i></span>
+                <span ng-if='i.lastClose-i.current > 0' class="label label-success"><i class="fa fa-arrow-down"></i></span>
+            </td>
+            <td ng-bind='((i.current-i.lastClose)*100/i.lastClose).toFixed(4)+"%"'></td>
+            <td ng-bind='i.peLyr'></td>
+            <td ng-bind='i.peTtm'></td>
+            <td ng-bind='i.pb'></td>
+        </tr>
+    </tbody>
+</table>
+
+<bgf-pagination
+    passive="false"
+    auto-presets="false"
+    page="page"
+    per-page="perPage"
+    num-pages="numPages"
+    num-items="numItems"
+    url="url"
+    url-params="params"
+    link-group-size="2"
+    collection="items">
+</bgf-pagination>
+
 <div class="row">
     <div class="col-md-3" ng-repeat="stock in stocks" style="margin-bottom: 1em;">
         <div class="input-group minimal">

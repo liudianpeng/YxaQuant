@@ -168,6 +168,41 @@ angular.module('yxaquant.task', [])
             })
             return arr.concat(account.stocks)
         }, [])
+    $scope.filter = {}
+
+
+    /**** pagination **/
+    $scope.perPage = parseInt($location.search().perPage, 10) || 10;
+    $scope.page = parseInt($location.search().page, 10) || 0;
+    $scope.clientLimit = 250;
+    $scope.serverLimit = 25000;
+    $scope.url = '/api/stock'
+    $scope.params = {limit: $scope.perPage,skip: $scope.page * $scope.perPage}
+    $scope.$watch('page', function(page) { 
+        // $location.search('page', page);
+        $scope.params.skip = page*$scope.params.limit
+        $scope.curPage = page
+    });
+    $scope.$watch('perPage', function(page) { 
+        $location.search('perPage', page); 
+    });
+    $scope.$on('$locationChangeSuccess', function() {
+        var page = +$location.search().page;
+          perPage = +$location.search().perPage;
+        if(page >= 0) { $scope.page = page; };
+        if(perPage >= 0) { $scope.perPage = perPage; };
+    });
+
+    $scope.$on('pagination:loadPage', function (event, status, config, total) {
+        $scope.total = +total
+        $scope.numPages = Math.ceil($scope.total/$scope.perPage);
+        $scope.page = $scope.curPage
+    });
+    /**** pagination end **/
+
+    $scope.search = function () {
+        $location.path('/task')
+    }
 
     $scope.add = function () {
         $scope.stocks.push({})
@@ -182,14 +217,12 @@ angular.module('yxaquant.task', [])
         }, 100)
 
     }
-    $scope.search = function (stock, keyword) {
-        // var params = {keyword: keyword}
-        // if ($routeParams.type=='sell')
-        //     Object.assign(params, {accounts: $routeParams.accounts})
-        SearchStock.query({keyword: keyword}, function(data){
-            stock.searchList = data
-        })
-
+    $scope.doFilter = function (key, val) {
+        if ($scope.params[key] == val) {
+            delete $scope.params[key]
+        } else {
+            $scope.params[key] = val
+        }
     }
     $scope.chooseItem = function (stock, item) {
         stock.data = item

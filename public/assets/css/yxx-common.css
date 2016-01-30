@@ -7,3 +7,4 @@ input[type=text],input[type=number] {
     height: 31px;
     padding: 6px 12px;
 }
+.form-group .label.ng-binding {margin-top: 7px;cursor: pointer;}
