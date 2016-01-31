@@ -21,21 +21,35 @@ angular.module('yxaquant.plugin', [])
         },
         link: function(scope, element, attrs) {
             var elData = $(element)[0].dataset
-            $(element).slider({
-                range: 'min',
+            var isRange = elData.type == 'true'
+            var params = {
+                range: isRange || elData.type || 'min',
                 min: +elData.min,
                 max: +elData.max,
-                value: +attrs.ngValue,
+                // value: +attrs.ngValue,
+                value: scope.rv,
                 step: +elData.step,
                 slide: function(e, ui) {
-                    scope.rv = ui.value
+                    if (isRange) 
+                        scope.rv = ui.values
+                    else
+                        scope.rv = ui.value
                     scope.$apply()
                 },
-                change: function(ev, ui) {
-                    scope.rv = ui.value
+                change: function(e, ui) {
+                    if (isRange) 
+                        scope.rv = ui.values
+                    else
+                        scope.rv = ui.value
                     scope.$apply()
                 }
-            });
+            }
+            if (isRange) {
+                params.values = JSON.parse(attrs.value)
+            } else {
+                params.value = attrs.value
+            }
+            $(element).slider(params);
 
         }
     };

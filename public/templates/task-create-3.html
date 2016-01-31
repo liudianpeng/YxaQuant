@@ -1,4 +1,8 @@
-<h2>创建任务</h2>
+<ol class="breadcrumb bc-3" >
+    <li> <a href="index.html"><i class="fa fa-home"></i>Home</a> </li>
+    <li> <a href="tables-main.html">创建任务</a> </li>
+    <li class="active"> <strong>选股</strong> </li>
+</ol>
 <br/>
 <br/>
 
@@ -22,8 +26,7 @@
 
     </ul>
 </div>
-<h3>选股：</h3>
-<form class="form-horizontal">
+<form class="form-horizontal" ng-init='getStocks()'>
     <div class="row">
         <div class="stock" 
             ng-init="stock.rules.priceDiffPercentage = stock.rules.opponentLevels = 0;
@@ -33,12 +36,15 @@
                 <div class="col-sm-3">
                     <div range 
                         class="slider slider-green" 
+                        ng-init='percentage=[-5,5]'
                         rv="percentage" 
-                        data-prefix="&pound; " data-min="0" data-max="10" data-step="1" 
-                        ng-value="{{percentage}}"></div>     
+                        data-prefix="&pound; " data-min="-10" data-max="10" data-step="1" data-type="true"
+                        data-value="{{percentage}}"
+                        onChange='onChange("percentage")'
+                        ></div>     
                 </div>
                 <div class="col-sm-1">
-                    <input type="number" disabled="" class="form-control" ng-model="percentage">         
+                    <input type="text" disabled="" class="form-control" value="{{percentage[0]+'% ~ '+percentage[1]+'%'}}">         
                 </div>
             </div>
             <div class="form-group">
@@ -46,7 +52,7 @@
                 <div class="col-sm-9">
                     <div class="label label-default"
                         ng-repeat='i in [0,1,2,4,8,16,32]'
-                        ng-class='{"label-primary": params.pb==i}'
+                        ng-class='{"label-primary": filter.pb==i}'
                         ng-bind='i'
                         ng-click='doFilter("pb", i)'
                         ></div>
@@ -57,7 +63,7 @@
                 <div class="col-sm-9">
                     <div class="label label-default"
                         ng-repeat='i in [0,10,20,40,80,160,320]'
-                        ng-class='{"label-primary": params.peLyr==i}'
+                        ng-class='{"label-primary": filter.peLyr==i}'
                         ng-bind='i'
                         ng-click='doFilter("peLyr", i)'
                         ></div>
@@ -68,7 +74,7 @@
                 <div class="col-sm-9">
                     <div class="label label-default"
                         ng-repeat='i in [0,10,20,40,80,160,320]'
-                        ng-class='{"label-primary": params.peTtm==i}'
+                        ng-class='{"label-primary": filter.peTtm==i}'
                         ng-bind='i'
                         ng-click='doFilter("peTtm", i)'
                         ></div>
@@ -79,7 +85,7 @@
                 <div class="col-sm-9">
                     <div class="label label-default"
                         ng-repeat='i in [0,1,2,4,8,16,32]'
-                        ng-class='{"label-primary": params.psr==i}'
+                        ng-class='{"label-primary": filter.psr==i}'
                         ng-bind='i'
                         ng-click='doFilter("psr", i)'
                         ></div>
@@ -90,7 +96,7 @@
                 <div class="col-sm-9">
                     <div class="label label-default"
                         ng-repeat='i in [10,100,1000]'
-                        ng-class='{"label-primary": params.marketCapital==i}'
+                        ng-class='{"label-primary": filter.marketCapital==i}'
                         ng-click='doFilter("marketCapital", i)'
                         >{{i}}亿</div>
                 </div>
@@ -100,7 +106,7 @@
                 <div class="col-sm-9">
                     <div class="label label-default"
                         ng-repeat='i in [10,100,1000]'
-                        ng-class='{"label-primary": params.floatMarketCapital==i}'
+                        ng-class='{"label-primary": filter.floatMarketCapital==i}'
                         ng-click='doFilter("floatMarketCapital", i)'
                         >{{i}}亿</div>
                 </div>
@@ -111,7 +117,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control">
                         <span class="input-group-btn">
-                            <button class="btn btn-success" ng-model="params.keyword" type="button">Go!</button>
+                            <button class="btn btn-success" ng-model="filter.keyword" type="button">Go!</button>
                         </span>
                     </div>
                 </div>
@@ -148,7 +154,7 @@
         </tr>
     </tfoot>
     <tbody>
-        <tr ng-class-odd="odd" ng-class-even="even" ng-repeat="i in items" ng-click="goto(i.id)">
+        <tr ng-class-odd="odd" ng-class-even="even" ng-repeat="i in stocks" ng-click="goto(i.id)">
             <td ><a href="/stock/{{i.id}}" ng-bind='i.name'></a></td>
             <td ng-bind='i.currency'></td>
             <td ng-bind='i.current'></td>
@@ -164,19 +170,6 @@
         </tr>
     </tbody>
 </table>
-
-<bgf-pagination
-    passive="false"
-    auto-presets="false"
-    page="page"
-    per-page="perPage"
-    num-pages="numPages"
-    num-items="numItems"
-    url="url"
-    url-params="params"
-    link-group-size="2"
-    collection="items">
-</bgf-pagination>
 
 <div class="row">
     <div class="col-md-3" ng-repeat="stock in stocks" style="margin-bottom: 1em;">

@@ -138,7 +138,7 @@ angular.module('yxaquant', [
                 tasks: ['$route', 'Task', function ($route, Task){
                     return Task.query($route.current.params).$promise;
                 }],
-                stocks: ['$route', 'Task', function ($route, Task){
+                stocks: ['$route', 'Stock', function ($route, Stock){
                     console.log($route.current.params)
                 }],
                 accounts: ['$route', 'Account', function ($route, Account){
