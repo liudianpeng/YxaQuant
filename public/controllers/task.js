@@ -175,9 +175,10 @@ angular.module('yxaquant.task', [])
     }
 
 
-    $scope.getStocks = function () {
-        $scope.stocks = Stock.query($scope.filter)
+    $scope.getStocks = function (params) {
+        $scope.stocks = Stock.query(params)
     }
+    $scope.getStocks($scope.filter)
     $scope.search = function () {
         $location.path('/task')
     }
@@ -195,13 +196,21 @@ angular.module('yxaquant.task', [])
         }, 100)
 
     }
-    $scope.doFilter = function (key, val) {
-        if ($scope.filter[key] == val) {
-            delete $scope.filter[key]
-        } else {
-            $scope.filter[key] = val
-        }
-        $scope.getStocks()
+    $scope.doSearch = function (key, val) {
+        var keys = ['percentage', 'pb', 'peLyr', 'peTtm', 'psr', 'marketCapital', 'floatMarketCapital']
+        var params = {}
+        keys.forEach(function (key) {
+            params[key] = $scope.filter[key]
+            if (['marketCapital', 'floatMarketCapital'].indexOf(key) > -1) {
+                params[key] = params[key].map(function (i) {
+                    return i*Math.pow(10, 8)
+                })
+            } 
+            if ($scope.filter[key])
+                params[key] = params[key].join('-')
+        })
+        params.keyword = $scope.filter.keyword
+        $scope.getStocks(params)
     }
     $scope.chooseItem = function (stock, item) {
         stock.data = item

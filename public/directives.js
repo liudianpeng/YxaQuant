@@ -27,6 +27,25 @@ angular.module('yxaquant.plugin', [])
             var postfix = elData.postfix
             var $label_1 = $('<span class="ui-label"></span>')
             var $label_2 = $label_1.clone()
+            var marginForInfinity = 0.05
+
+
+
+            function easeInVal(y) {
+                var x = Math.ceil( (1 - Math.sin(Math.PI*0.5*(1+(y/+elData.max)))) * elData.maxShow*(1+marginForInfinity) )
+                if (x > elData.maxShow) x = 'Infinity'
+                return x
+            }
+
+            function anti_easeInVal(x) {
+                if (x == 'Infinity') 
+                    y = elData.maxShow*(1+marginForInfinity)
+                else
+                    y = ( 1 - x/(elData.maxShow*(1+marginForInfinity)) ) 
+                    y = Math.ceil( (1 - Math.sin(Math.PI*0.5*(1+(x/+elData.max)))) * elData.maxShow*(1+marginForInfinity) )
+                return y
+
+            }
 
             var params = {
                 range: isRange || elData.type || 'min',
@@ -38,10 +57,19 @@ angular.module('yxaquant.plugin', [])
                     // 刻度
                     if (elData.nums) {
                         var nums = JSON.parse(elData.nums)
-                        ui.values && ui.values
                         if (ui.values) {
                             ui.values[0] = nums[ui.values[0]]
                             ui.values[1] = nums[ui.values[1]]
+                        } else {
+                            ui.value = nums[ui.value]
+                        }
+                    }
+
+                    // 
+                    if (elData.maxShow) {
+                        if (ui.values) {
+                            ui.values[0] = easeInVal(ui.values[0])
+                            ui.values[1] = easeInVal(ui.values[1])
                         } else {
                             ui.value = nums[ui.value]
                         }
@@ -59,9 +87,13 @@ angular.module('yxaquant.plugin', [])
             // set init values to slider 
             if (isRange) {
                 params.values = JSON.parse(attrs.value)
+                if (elData.maxShow) {
+                    // params.values[0] = easeInVal(params.values[0])
+                    // params.values[1] = easeInVal(params.values[1])
+
+                }
                 var min_val = params.values[0]
                 var max_val = params.values[1]
-
             } else {
                 params.value = attrs.value
                 var value = params.value

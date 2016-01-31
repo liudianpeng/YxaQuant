@@ -26,7 +26,7 @@
 
     </ul>
 </div>
-<form class="form-horizontal" ng-init='getStocks()'>
+<form class="form-horizontal">
     <div class="row">
         <div class="stock" 
             ng-init="stock.rules.priceDiffPercentage = stock.rules.opponentLevels = 0;
@@ -40,7 +40,6 @@
                         rv="filter.percentage" 
                         data-postfix="%" data-min="-10" data-max="10" data-step="1" data-type="range"
                         data-value="{{filter.percentage}}"
-                        onChange='onChange("filter.percentage")'
                         ></div>     
                 </div>
                 <div class="col-sm-1">
@@ -52,11 +51,11 @@
                 <div class="col-sm-3">
                     <div range 
                         class="slider slider-green" 
-                        ng-init='filter.pb=[0,1]'
+                        ng-init='filter.pb=[0,5]'
                         rv="filter.pb" 
+                        data-max-show="32"
                         data-min="0" data-max="100" data-step="1" data-type="range"
                         data-value="{{filter.pb}}"
-                        onChange='onChange("pb")'
                         ></div>     
                 </div>
                 <div class="col-sm-1">
@@ -68,12 +67,11 @@
                 <div class="col-sm-3">
                     <div range 
                         class="slider slider-green" 
-                        ng-init='filter.peLyr=[0,10]'
+                        ng-init='filter.peLyr=[0,5]'
                         rv="filter.peLyr" 
-                        data-nums='[0,10,20,40,80,160,320,"Infinity"]'
-                        data-min="0" data-max="7" data-step="1" data-type="range"
+                        data-max-show="320"
+                        data-min="0" data-max="100" data-step="1" data-type="range"
                         data-value="{{filter.peLyr}}"
-                        onChange='onChange("peLyr")'
                         ></div>     
                 </div>
                 <div class="col-sm-1">
@@ -85,12 +83,11 @@
                 <div class="col-sm-3">
                     <div range 
                         class="slider slider-green" 
-                        ng-init='filter.peTtm=[0,10]'
+                        ng-init='filter.peTtm=[0,5]'
                         rv="filter.peTtm" 
-                        data-nums='[0,10,20,40,80,160,320,"Infinity"]'
-                        data-min="0" data-max="7" data-step="1" data-type="range"
+                        data-max-show="320"
+                        data-min="0" data-max="100" data-step="1" data-type="range"
                         data-value="{{filter.peTtm}}"
-                        onChange='onChange("peTtm")'
                         ></div>     
                 </div>
                 <div class="col-sm-1">
@@ -102,12 +99,11 @@
                 <div class="col-sm-3">
                     <div range 
                         class="slider slider-green" 
-                        ng-init='filter.psr=[0,1]'
+                        ng-init='filter.psr=[0,5]'
                         rv="filter.psr" 
-                        data-nums='[0,1,2,4,8,16,32,"Infinity"]'
-                        data-min="0" data-max="7" data-step="1" data-type="range"
+                        data-max-show="32"
+                        data-min="0" data-max="100" data-step="1" data-type="range"
                         data-value="{{filter.psr}}"
-                        onChange='onChange("psr")'
                         ></div>     
                 </div>
                 <div class="col-sm-1">
@@ -116,31 +112,43 @@
             </div>
             <div class="form-group">
                 <label  class="col-sm-3 control-label">总市值</label>
-                <div class="col-sm-9">
-                    <div class="label label-default"
-                        ng-repeat='i in [10,100,1000]'
-                        ng-class='{"label-primary": filter.marketCapital==i}'
-                        ng-click='doFilter("marketCapital", i)'
-                        >{{i}}亿</div>
+                <div class="col-sm-3">
+                    <div range 
+                        class="slider slider-green" 
+                        ng-init='filter.marketCapital=[0,5]'
+                        rv="filter.marketCapital" 
+                        data-max-show="1000"
+                        data-min="0" data-max="100" data-step="1" data-type="range" data-postfix="亿"
+                        data-value="{{filter.marketCapital}}"
+                        ></div>     
+                </div>
+                <div class="col-sm-1">
+                    <input type="text" disabled="" class="form-control" value="{{filter.marketCapital[0]+'% ~ '+filter.marketCapital[1]+'%'}}">         
                 </div>
             </div>
             <div class="form-group">
                 <label  class="col-sm-3 control-label">流通市值</label>
-                <div class="col-sm-9">
-                    <div class="label label-default"
-                        ng-repeat='i in [10,100,1000]'
-                        ng-class='{"label-primary": filter.floatMarketCapital==i}'
-                        ng-click='doFilter("floatMarketCapital", i)'
-                        >{{i}}亿</div>
+                <div class="col-sm-3">
+                    <div range 
+                        class="slider slider-green" 
+                        ng-init='filter.floatMarketCapital=[0,5]'
+                        rv="filter.floatMarketCapital" 
+                        data-max-show="1000"
+                        data-min="0" data-max="100" data-step="1" data-type="range" data-postfix="亿"
+                        data-value="{{filter.floatMarketCapital}}"
+                        ></div>     
+                </div>
+                <div class="col-sm-1">
+                    <input type="text" disabled="" class="form-control" value="{{filter.floatMarketCapital[0]+'% ~ '+filter.floatMarketCapital[1]+'%'}}">         
                 </div>
             </div>
             <div class="form-group">
                 <label  class="col-sm-3 control-label">关键词</label>
                 <div class="col-sm-3">
                     <div class="input-group">
-                        <input type="text" class="form-control">
+                        <input type="text" ng-model='filter.keyword' class="form-control">
                         <span class="input-group-btn">
-                            <button class="btn btn-success" ng-model="filter.keyword" type="button">Go!</button>
+                            <button class="btn btn-success" ng-model="filter.keyword" type="button" ng-click='doSearch()'>搜索</button>
                         </span>
                     </div>
                 </div>
