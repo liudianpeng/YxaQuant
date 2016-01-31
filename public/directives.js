@@ -21,35 +21,115 @@ angular.module('yxaquant.plugin', [])
         },
         link: function(scope, element, attrs) {
             var elData = $(element)[0].dataset
-            var isRange = elData.type == 'true'
+            var isRange = elData.type == 'range'
+            var reps = 0;
+            var prefix = elData.prefix
+            var postfix = elData.postfix
+            var $label_1 = $('<span class="ui-label"></span>')
+            var $label_2 = $label_1.clone()
+
             var params = {
                 range: isRange || elData.type || 'min',
                 min: +elData.min,
                 max: +elData.max,
-                // value: +attrs.ngValue,
-                value: scope.rv,
                 step: +elData.step,
-                slide: function(e, ui) {
-                    if (isRange) 
+                updateValToOutter: function(ui) {
+
+                    // 刻度
+                    if (elData.nums) {
+                        var nums = JSON.parse(elData.nums)
+                        ui.values && ui.values
+                        if (ui.values) {
+                            ui.values[0] = nums[ui.values[0]]
+                            ui.values[1] = nums[ui.values[1]]
+                        } else {
+                            ui.value = nums[ui.value]
+                        }
+                    }
+
+                    if (isRange) {
                         scope.rv = ui.values
-                    else
+                    } else {
                         scope.rv = ui.value
-                    scope.$apply()
-                },
-                change: function(e, ui) {
-                    if (isRange) 
-                        scope.rv = ui.values
-                    else
-                        scope.rv = ui.value
+                    }
                     scope.$apply()
                 }
             }
+
+            // set init values to slider 
             if (isRange) {
                 params.values = JSON.parse(attrs.value)
+                var min_val = params.values[0]
+                var max_val = params.values[1]
+
             } else {
                 params.value = attrs.value
+                var value = params.value
             }
-            $(element).slider(params);
+
+            
+            if (isRange) {
+                params.slide = function (e, ui) {
+                    params.updateValToOutter(ui)
+                    var min_val = (prefix ? prefix : '') + ui.values[0] + (postfix ? postfix : ''),
+                        max_val = (prefix ? prefix : '') + ui.values[1] + (postfix ? postfix : '');
+
+                    $label_1.html( min_val );
+                    $label_2.html( max_val );
+
+                    reps++;
+                }
+                params.change = function (e, ui) {
+                    params.updateValToOutter(ui)
+                    if(reps == 1) {
+                        var min_val = (prefix ? prefix : '') + ui.values[0] + (postfix ? postfix : ''),
+                            max_val = (prefix ? prefix : '') + ui.values[1] + (postfix ? postfix : '');
+
+                        $label_1.html( min_val );
+                        $label_2.html( max_val );
+                    }
+
+                    reps = 0;
+                }
+                // init
+                $(element).slider(params)
+                var $handles = $(element).find('.ui-slider-handle');
+
+                $label_1.html((prefix ? prefix : '') + min_val + (postfix ? postfix : ''));
+                $handles.first().append( $label_1 );
+
+                $label_2.html((prefix ? prefix : '') + max_val+ (postfix ? postfix : ''));
+                $handles.last().append( $label_2 );
+            } else {
+                params.slide = function (e, ui) {
+                    params.updateValToOutter(ui)
+                    var val = (prefix ? prefix : '') + ui.value + (postfix ? postfix : '');
+
+                    $label_1.html( val );
+
+                    reps++;
+                }
+                params.change = function (e, ui) {
+                    params.updateValToOutter(ui)
+                    if(reps == 1) {
+                        var val = (prefix ? prefix : '') + ui.value + (postfix ? postfix : '');
+
+                        $label_1.html( val );
+                    }
+
+                    reps = 0;
+
+                }
+                // init
+                $(element).slider(params)
+                var $handles = $(element).find('.ui-slider-handle');
+
+                $label_1.html((prefix ? prefix : '') + value + (postfix ? postfix : ''));
+                $handles.html( $label_1 );
+            }
+
+
+
 
         }
     };

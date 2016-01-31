@@ -36,59 +36,82 @@
                 <div class="col-sm-3">
                     <div range 
                         class="slider slider-green" 
-                        ng-init='percentage=[-5,5]'
-                        rv="percentage" 
-                        data-prefix="&pound; " data-min="-10" data-max="10" data-step="1" data-type="true"
-                        data-value="{{percentage}}"
-                        onChange='onChange("percentage")'
+                        ng-init='filter.percentage=[-5,5]'
+                        rv="filter.percentage" 
+                        data-postfix="%" data-min="-10" data-max="10" data-step="1" data-type="range"
+                        data-value="{{filter.percentage}}"
+                        onChange='onChange("filter.percentage")'
                         ></div>     
                 </div>
                 <div class="col-sm-1">
-                    <input type="text" disabled="" class="form-control" value="{{percentage[0]+'% ~ '+percentage[1]+'%'}}">         
+                    <input type="text" disabled="" class="form-control" value="{{filter.percentage[0]+'% ~ '+filter.percentage[1]+'%'}}">         
                 </div>
             </div>
             <div class="form-group">
                 <label  class="col-sm-3 control-label">市净率</label>
-                <div class="col-sm-9">
-                    <div class="label label-default"
-                        ng-repeat='i in [0,1,2,4,8,16,32]'
-                        ng-class='{"label-primary": filter.pb==i}'
-                        ng-bind='i'
-                        ng-click='doFilter("pb", i)'
-                        ></div>
+                <div class="col-sm-3">
+                    <div range 
+                        class="slider slider-green" 
+                        ng-init='filter.pb=[0,1]'
+                        rv="filter.pb" 
+                        data-min="0" data-max="100" data-step="1" data-type="range"
+                        data-value="{{filter.pb}}"
+                        onChange='onChange("pb")'
+                        ></div>     
+                </div>
+                <div class="col-sm-1">
+                    <input type="text" disabled="" class="form-control" value="{{filter.pb[0]+'% ~ '+filter.pb[1]+'%'}}">         
                 </div>
             </div>
             <div class="form-group">
                 <label  class="col-sm-3 control-label">上年度市盈率</label>
-                <div class="col-sm-9">
-                    <div class="label label-default"
-                        ng-repeat='i in [0,10,20,40,80,160,320]'
-                        ng-class='{"label-primary": filter.peLyr==i}'
-                        ng-bind='i'
-                        ng-click='doFilter("peLyr", i)'
-                        ></div>
+                <div class="col-sm-3">
+                    <div range 
+                        class="slider slider-green" 
+                        ng-init='filter.peLyr=[0,10]'
+                        rv="filter.peLyr" 
+                        data-nums='[0,10,20,40,80,160,320,"Infinity"]'
+                        data-min="0" data-max="7" data-step="1" data-type="range"
+                        data-value="{{filter.peLyr}}"
+                        onChange='onChange("peLyr")'
+                        ></div>     
+                </div>
+                <div class="col-sm-1">
+                    <input type="text" disabled="" class="form-control" value="{{filter.peLyr[0]+'% ~ '+filter.peLyr[1]+'%'}}">         
                 </div>
             </div>
             <div class="form-group">
                 <label  class="col-sm-3 control-label">本季度市盈率</label>
-                <div class="col-sm-9">
-                    <div class="label label-default"
-                        ng-repeat='i in [0,10,20,40,80,160,320]'
-                        ng-class='{"label-primary": filter.peTtm==i}'
-                        ng-bind='i'
-                        ng-click='doFilter("peTtm", i)'
-                        ></div>
+                <div class="col-sm-3">
+                    <div range 
+                        class="slider slider-green" 
+                        ng-init='filter.peTtm=[0,10]'
+                        rv="filter.peTtm" 
+                        data-nums='[0,10,20,40,80,160,320,"Infinity"]'
+                        data-min="0" data-max="7" data-step="1" data-type="range"
+                        data-value="{{filter.peTtm}}"
+                        onChange='onChange("peTtm")'
+                        ></div>     
+                </div>
+                <div class="col-sm-1">
+                    <input type="text" disabled="" class="form-control" value="{{filter.peTtm[0]+'% ~ '+filter.peTtm[1]+'%'}}">         
                 </div>
             </div>
             <div class="form-group">
                 <label  class="col-sm-3 control-label">市销率</label>
-                <div class="col-sm-9">
-                    <div class="label label-default"
-                        ng-repeat='i in [0,1,2,4,8,16,32]'
-                        ng-class='{"label-primary": filter.psr==i}'
-                        ng-bind='i'
-                        ng-click='doFilter("psr", i)'
-                        ></div>
+                <div class="col-sm-3">
+                    <div range 
+                        class="slider slider-green" 
+                        ng-init='filter.psr=[0,1]'
+                        rv="filter.psr" 
+                        data-nums='[0,1,2,4,8,16,32,"Infinity"]'
+                        data-min="0" data-max="7" data-step="1" data-type="range"
+                        data-value="{{filter.psr}}"
+                        onChange='onChange("psr")'
+                        ></div>     
+                </div>
+                <div class="col-sm-1">
+                    <input type="text" disabled="" class="form-control" value="{{filter.psr[0]+'% ~ '+filter.psr[1]+'%'}}">         
                 </div>
             </div>
             <div class="form-group">
