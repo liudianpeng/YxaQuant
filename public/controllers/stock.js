@@ -57,9 +57,10 @@ angular.module('yxaquant.stock', [])
         $scope.group.stocks.splice(i,1)
     }
     $scope.save = function () {
+        if ($scope.chosenStocks.length) $scope.group.stocks = $scope.group.stocks.concat($scope.chosenStocks)
+        
         StockGroup.update($scope.group, function (data) {
             console.log(data)
-            location.reload()
         })
     }
 
