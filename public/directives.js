@@ -13,6 +13,104 @@ angular.module('yxaquant.plugin', [])
         }
     };
 })
+.directive('selectStocks', function(Stock) {
+    return {
+        restrict: 'E',
+        templateUrl: '/templates/components/select-stocks.html',
+        scope: {
+            chosenStocks: '=data'
+        },
+        link: function(scope, element, attrs) {
+            var firstParams = {
+                skip: 10,
+                limit: 10
+            }
+
+            scope.chosenStocks = scope.chosenStocks || []
+
+            scope.getStocks = function (params) {
+                scope.stocks = Stock.query(params)
+            }
+            scope.getStocks(firstParams)
+
+            // set filter according to template
+            scope.filter = {
+                percentage: [-5,5],
+                pb: [0,5],
+                peLyr: [0,5],
+                peTtm: [0,5],
+                psr: [0,5],
+                marketCapital: [0,5],
+                floatMarketCapital: [0,5]
+            }
+            Object.assign(scope.filter, firstParams)
+
+            scope.search = function () {
+                $location.path('/task')
+            }
+
+            scope.add = function () {
+                scope.stocks.push({})
+            }
+            scope.inputBlur = function (stock) {
+                $timeout(function (argument) {
+                    stock.focus=false 
+                    if(stock.data)
+                        stock.keyword = stock.data.name
+                    else
+                        stock.keyword = ''
+                }, 100)
+
+            }
+            scope.doSearch = function (key, val) {
+                var keys = ['percentage', 'pb', 'peLyr', 'peTtm', 'psr', 'marketCapital', 'floatMarketCapital']
+                var params = {}
+                keys.forEach(function (key) {
+                    params[key] = scope.filter[key]
+                    params[key] = params[key].map(function (i) {
+                        return i=='Infinity' ? '' : i
+                    })
+                    if (['marketCapital', 'floatMarketCapital'].indexOf(key) > -1) {
+                        params[key] = params[key].map(function (i) {
+                            if (typeof i == 'string' && i == 'Infinity')
+                                return i
+                            else 
+                                return i*Math.pow(10, 8)
+
+                        })
+                    }
+                    if (scope.filter[key])
+                        params[key] = params[key].join('-')
+                })
+                params.keyword = scope.filter.keyword
+                scope.getStocks(params)
+            }
+            scope.checkAll = function () {
+                scope.stocks.forEach(function (s) {
+                    s.checked = scope.isAllChecked
+                    scope.checkIt(s)
+                })
+            }
+            scope.checkIt = function (stock) {
+                if(stock.checked)
+                    scope.addToChosen(stock)
+                else
+                    scope.removeFromChosen(stock)
+            }
+            scope.addToChosen = function (stock) {
+                scope.chosenStocks.push(stock)
+            }
+            scope.removeFromChosen = function (stock) {
+                scope.chosenStocks.some(function (s,i) {
+                    if (s.id == stock.id)
+                        scope.chosenStocks.splice(i,1)
+                    return s.id == stock.id
+                })
+            }
+        }
+    }
+})
+
 .directive('range', function() {
     return {
         restrict: 'A',
