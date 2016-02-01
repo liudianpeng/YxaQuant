@@ -160,6 +160,7 @@
 <table class="table table-bordered datatable table-hover">
     <thead>
         <tr>
+            <th><input type="checkbox" ng-model="isAllChecked" ng-change='checkAll()' />全选</th>
             <th data-hide="phone">名称</th>
             <th>币种</th>
             <th data-hide="phone">现价</th>
@@ -173,6 +174,7 @@
     </thead>
     <tfoot>
         <tr>
+            <th><input type="checkbox">全选</th>
             <th data-hide="phone">名称</th>
             <th>币种</th>
             <th data-hide="phone">现价</th>
@@ -186,6 +188,9 @@
     </tfoot>
     <tbody>
         <tr ng-class-odd="odd" ng-class-even="even" ng-repeat="i in stocks" ng-click="goto(i.id)">
+            <td>
+                <input type="checkbox" ng-model="i.checked" ng-change='checkIt(i)' />
+            </td>
             <td ><a href="/stock/{{i.id}}" ng-bind='i.name'></a></td>
             <td ng-bind='i.currency'></td>
             <td ng-bind='i.current'></td>
@@ -202,41 +207,19 @@
     </tbody>
 </table>
 
+<h2>已选股票：</h2>
+
 <div class="row">
-    <div class="col-md-3" ng-repeat="stock in stocks" style="margin-bottom: 1em;">
+    <div class="col-md-2" ng-repeat="stock in chosenStocks" style="margin-bottom: 1em;">
         <div class="input-group minimal">
-            <input type="text" class="form-control" placeholder="输入" 
-                ng-disabled="!isBuy"
-                ng-focus="stock.focus=true" 
-                ng-change="search(stock, stock.keyword)" 
-                ng-model="stock.keyword"
-                ng-blur="inputBlur(stock)">
-            <span class="input-group-addon" ng-click="delete($index)"><i class="entypo-cancel"></i></span>
-            <span class="tt-dropdown-menu" ng-show="stock.focus" style="position: absolute; top: 100%; left: 0px; z-index: 100;right: auto;">
-                <div class="tt-dataset-typeahead_remote">
-                    <span class="tt-suggestions" >
-                        <div class="tt-suggestion" 
-                            style="white-space: nowrap; cursor: pointer;" 
-                            ng-click="chooseItem(stock,item)"
-                            ng-repeat="item in stock.searchList">
-                            <p style="white-space: normal;" ng-bind="item.name"></p>
-                        </div>
-                    </span>
-                </div>
-            </span>
+            <div class="label label-default" ng-bind='stock.name'></div>
         </div>
     </div>
 </div>   
 <br/>
 <div class="row">
 
-    <div class="col-md-2">
-        <button ng-if='isBuy' type="button" class="btn btn-success btn-icon icon-left" ng-click="add()">
-            增加
-            <i class="entypo-plus"></i>
-        </button>
-    </div>
-    <div class="col-md-offset-8 col-md-2">
+    <div class="col-md-offset-10 col-md-2">
         <button type="button" class="btn btn-success btn-icon icon-right" ng-click="next()">
             NEXT
             <i class="glyphicon glyphicon-arrow-right"></i>

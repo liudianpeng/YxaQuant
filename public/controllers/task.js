@@ -174,6 +174,7 @@ angular.module('yxaquant.task', [])
         limit: 10
     }
 
+    $scope.chosenStocks = []
 
     $scope.getStocks = function (params) {
         $scope.stocks = Stock.query(params)
@@ -201,30 +202,50 @@ angular.module('yxaquant.task', [])
         var params = {}
         keys.forEach(function (key) {
             params[key] = $scope.filter[key]
+            params[key] = params[key].map(function (i) {
+                return i=='Infinity' ? '' : i
+            })
             if (['marketCapital', 'floatMarketCapital'].indexOf(key) > -1) {
                 params[key] = params[key].map(function (i) {
-                    return i*Math.pow(10, 8)
+                    if (typeof i == 'string' && i == 'Infinity')
+                        return i
+                    else 
+                        return i*Math.pow(10, 8)
+
                 })
-            } 
+            }
             if ($scope.filter[key])
                 params[key] = params[key].join('-')
         })
         params.keyword = $scope.filter.keyword
         $scope.getStocks(params)
     }
-    $scope.chooseItem = function (stock, item) {
-        stock.data = item
-        stock.keyword = stock.data.name
+    $scope.checkAll = function () {
+        $scope.stocks.forEach(function (s) {
+            s.checked = $scope.isAllChecked
+            $scope.checkIt(s)
+        })
     }
-    $scope.delete = function (i) {
-        $scope.stocks.splice(i,1)
+    $scope.checkIt = function (stock) {
+        if(stock.checked)
+            $scope.addToChosen(stock)
+        else
+            $scope.removeFromChosen(stock)
+    }
+    $scope.addToChosen = function (stock) {
+        $scope.chosenStocks.push(stock)
+    }
+    $scope.removeFromChosen = function (stock) {
+        $scope.chosenStocks.some(function (s,i) {
+            if (s.id == stock.id)
+                $scope.chosenStocks.splice(i,1)
+            return s.id == stock.id
+        })
     }
     $scope.next = function (i) {
-        var stock_ids = $scope.stocks.reduce(function(arr, stock){
-            if(stock.data)
-                arr.push(stock.data.id)
-            return arr
-        }, []);
+        var stock_ids = $scope.chosenStocks.map(function(stock){
+            return stock.id
+        })
         Object.assign($routeParams, {stock_ids: stock_ids})
         $location.path("/task/create/4").search($routeParams)
     }
