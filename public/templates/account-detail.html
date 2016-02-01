@@ -1,6 +1,6 @@
 <ol class="breadcrumb bc-2 hidden-print">
     <li>
-        <a href="index.html"><i class="fa-home"></i>Home</a>
+        <a href="/dashboard"><i class="fa fa-home"></i></a>
     </li>
     <li class="active">
         <strong>帐户详细</strong>
@@ -11,31 +11,30 @@
 <div class="invoice">
     <div class="row">
         <div class="col-sm-6 invoice-left">
+            <h3 ng-bind='i.name'></h3>
+            <strong>类型: </strong>{{i.type=='public' ? '产品' : '专户'}}
         </div>
         <div class="col-sm-6 invoice-right">
-            <h3 ng-bind='i.name'></h3>
-            <span>提供商: {{i.provider.name}}</span><br>
-            <span>代号: {{i.provider.code}}</span><br>
-            <span>账户类型: {{i.type=='public' ? '公共' : '私人'}}</span>
+            <strong>通道: </strong>{{i.provider.name}} {{i.provider.code}}<br>
+            <strong>帐号: </strong>{{i.credentials.login}}
         </div>
     </div>
     <hr class="margin" />
     <div class="row">
-        <div class="col-sm-3 invoice-left">
+        <div class="col-sm-1 invoice-left">
             <h4>现金</h4> 
             <span ng-repeat-start='c in i.cash' ng-bind='c.currency'></span>
             <br ng-repeat-end />
         </div>
         <div class="col-sm-3 invoice-left">
             <h4>&nbsp;</h4>
-            <span ng-repeat-start='c in i.cash' ng-bind='c.amount'></span>
+            <span ng-repeat-start='c in i.cash' ng-bind="c.amount | currency:''"></span>
             <br ng-repeat-end />
-
         </div>
-        <div class="col-md-6 invoice-right">
-        </div>
+        <div class="col-md-6 invoice-right"></div>
     </div>
     <div class="margin"></div>
+    <h4>股票</h4> 
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
@@ -54,7 +53,7 @@
                 <td ng-bind='s.name'></td>
                 <td ng-bind='s.cost'></td>
                 <td ng-bind='s.profit'></td>
-                <td ng-bind='s.marketCapital'></td>
+                <td ng-bind="s.marketCapital | currency:''"></td>
                 <td ng-bind='s.profitRatio'></td>
                 <td ng-bind='s.volume'></td>
             </tr>
