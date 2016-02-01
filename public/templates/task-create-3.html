@@ -42,9 +42,6 @@
                         data-value="{{filter.percentage}}"
                         ></div>     
                 </div>
-                <div class="col-sm-1">
-                    <input type="text" disabled="" class="form-control" value="{{filter.percentage[0]+'% ~ '+filter.percentage[1]+'%'}}">         
-                </div>
             </div>
             <div class="form-group">
                 <label  class="col-sm-3 control-label">市净率</label>
@@ -57,9 +54,6 @@
                         data-min="0" data-max="100" data-step="1" data-type="range"
                         data-value="{{filter.pb}}"
                         ></div>     
-                </div>
-                <div class="col-sm-1">
-                    <input type="text" disabled="" class="form-control" value="{{filter.pb[0]+'% ~ '+filter.pb[1]+'%'}}">         
                 </div>
             </div>
             <div class="form-group">
@@ -74,9 +68,6 @@
                         data-value="{{filter.peLyr}}"
                         ></div>     
                 </div>
-                <div class="col-sm-1">
-                    <input type="text" disabled="" class="form-control" value="{{filter.peLyr[0]+'% ~ '+filter.peLyr[1]+'%'}}">         
-                </div>
             </div>
             <div class="form-group">
                 <label  class="col-sm-3 control-label">本季度市盈率</label>
@@ -89,9 +80,6 @@
                         data-min="0" data-max="100" data-step="1" data-type="range"
                         data-value="{{filter.peTtm}}"
                         ></div>     
-                </div>
-                <div class="col-sm-1">
-                    <input type="text" disabled="" class="form-control" value="{{filter.peTtm[0]+'% ~ '+filter.peTtm[1]+'%'}}">         
                 </div>
             </div>
             <div class="form-group">
@@ -106,9 +94,6 @@
                         data-value="{{filter.psr}}"
                         ></div>     
                 </div>
-                <div class="col-sm-1">
-                    <input type="text" disabled="" class="form-control" value="{{filter.psr[0]+'% ~ '+filter.psr[1]+'%'}}">         
-                </div>
             </div>
             <div class="form-group">
                 <label  class="col-sm-3 control-label">总市值</label>
@@ -121,11 +106,7 @@
                         data-min="0" data-max="100" data-step="1" data-type="range" data-postfix="亿"
                         data-value="{{filter.marketCapital}}"
                         ></div>     
-                </div>
-                <div class="col-sm-1">
-                    <input type="text" disabled="" class="form-control" value="{{filter.marketCapital[0]+'% ~ '+filter.marketCapital[1]+'%'}}">         
-                </div>
-            </div>
+                </div>            </div>
             <div class="form-group">
                 <label  class="col-sm-3 control-label">流通市值</label>
                 <div class="col-sm-3">
@@ -137,11 +118,7 @@
                         data-min="0" data-max="100" data-step="1" data-type="range" data-postfix="亿"
                         data-value="{{filter.floatMarketCapital}}"
                         ></div>     
-                </div>
-                <div class="col-sm-1">
-                    <input type="text" disabled="" class="form-control" value="{{filter.floatMarketCapital[0]+'% ~ '+filter.floatMarketCapital[1]+'%'}}">         
-                </div>
-            </div>
+                </div>            </div>
             <div class="form-group">
                 <label  class="col-sm-3 control-label">关键词</label>
                 <div class="col-sm-3">
@@ -174,7 +151,7 @@
     </thead>
     <tfoot>
         <tr>
-            <th><input type="checkbox">全选</th>
+            <th><input type="checkbox" ng-model="isAllChecked" ng-change='checkAll()' />全选</th>
             <th data-hide="phone">名称</th>
             <th>币种</th>
             <th data-hide="phone">现价</th>
@@ -210,7 +187,7 @@
 <h2>已选股票：</h2>
 
 <div class="row">
-    <div class="col-md-2" ng-repeat="stock in chosenStocks" style="margin-bottom: 1em;">
+    <div class="col-md-2" ng-repeat="stock in chosenStocks track by stock.id" style="margin-bottom: 1em;">
         <div class="input-group minimal">
             <div class="label label-default" ng-bind='stock.name'></div>
         </div>
