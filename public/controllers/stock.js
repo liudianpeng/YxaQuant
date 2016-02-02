@@ -61,7 +61,12 @@ angular.module('yxaquant.stock', [])
         
         StockGroup.update($scope.group, function (data) {
             console.log(data)
+            alert('已保存')
         })
+    }
+
+    $scope.uniqStocks = function (stocks) {
+        return _.uniqBy(stocks, 'id')
     }
 
 

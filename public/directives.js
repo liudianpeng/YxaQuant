@@ -22,14 +22,26 @@ angular.module('yxaquant.plugin', [])
         },
         link: function(scope, element, attrs) {
             var firstParams = {
-                skip: 10,
-                limit: 10
+                skip: 0,
+                limit: 20
             }
 
             scope.chosenStocks = scope.chosenStocks || []
 
             scope.getStocks = function (params) {
-                scope.stocks = Stock.query(params)
+                Stock.query(params).$promise.then(function (data) {
+                    scope.stocks = data
+                    // scope.checkChosenStocks()
+                })
+            }
+            scope.checkChosenStocks = function (stock) {
+                scope.stocks.forEach(function (s, i, stocks) {
+                    if (scope.chosenStocks.some(function (cs) {
+                        return cs.id == s.id 
+                    })) {
+                        stocks[i].checked = true
+                    }
+                })
             }
             scope.getStocks(firstParams)
 
@@ -107,6 +119,7 @@ angular.module('yxaquant.plugin', [])
                     return s.id == stock.id
                 })
             }
+
         }
     }
 })
