@@ -16,8 +16,8 @@ var socketServer= net.createServer();
 var io          = require('socket.io')(httpsServer);
 
 var quant       = require('./app/quant');
-var market      = new require('./app/market')(quant);
-var trade       = new require('./app/trade')(socketServer, quant);
+var market      = require('./app/market')(quant);
+var trade       = require('./app/trade')(socketServer, quant);
 quant.market    = market;
 quant.trade     = trade;
 

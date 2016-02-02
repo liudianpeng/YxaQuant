@@ -13,12 +13,13 @@ var pollingInterval = 1000;
 function Market(quant) {
 
     var xueqiuCookie;
+    var _self = this;
 
     /**
      * 从数据库Config载入subscribedStockIds, 并填充subscribedStocks
      * @return Promise 订阅的股票信息, subscribedStocks填充后resolve
      */
-    function loadSubscribes () {
+    this.loadSubscribes = function () {
 
         return new Promise((resolve, reject) => {
 
@@ -49,7 +50,7 @@ function Market(quant) {
      * 添加订阅到subscribedStockIds, 获得完整的新订阅的股票信息, 然后保存到数据库Config
      * @return Promise 新订阅股票信息, 获得新订阅股票信息后resolve
      */
-    function subscribe (stockIds) {
+    this.subscribe = function (stockIds) {
         
         // 防止重复订阅
         stockIds = _.difference(stockIds.map(id => id.toString()), subscribedStockIds);
@@ -83,7 +84,7 @@ function Market(quant) {
      * 取消订阅股票
      * @return Promise 写入数据库后resolve
      */
-    function unsubscribe (stockIds) {
+    this.unsubscribe = function (stockIds) {
         subscribedStockIds = _.difference(subscribedStockIds, stockIds);
         return Config.findOneAndUpdate({key: 'subscribedStockIds'}, {value: subscribedStockIds}).exec();
     };
@@ -92,7 +93,7 @@ function Market(quant) {
      * 从雪球获得完整的股票信息, 存入数据库, 如果在订阅中, 也会更新订阅
      * @return Promise 新的股票信息
      */
-    function getStock (stockId) {
+    this.getStock = function (stockId) {
 
         return new Promise((resolve, reject) => {
 
@@ -150,7 +151,7 @@ function Market(quant) {
      * 获得对手盘的信息, 若已订阅, 则更新订阅并更新数据库
      * @return Promise 盘口信息
      */
-    function getOpponents (stockId) {
+    this.getOpponents = function (stockId) {
 
         var xueqiuPankou = 'http://xueqiu.com/stock/pankou.json?symbol=';
 
@@ -182,7 +183,7 @@ function Market(quant) {
                     if(subscribedStocks[stockId] && !_.isEqual(subscribedStocks[stockId].quoteQueue, quoteQueue)) {
                         subscribedStocks[stockId].quoteQueue = quoteQueue;
                         subscribedStocks[stockId].save();
-                        quant.emit('stockOpponentChange', subscribedStocks[stockId]);
+                        quant && quant.emit('stockOpponentChange', subscribedStocks[stockId]);
                     }
 
                     resolve(quoteQueue);
@@ -193,11 +194,11 @@ function Market(quant) {
 
     // 批量获得股价, 未订阅的加入订阅, 更新订阅, 更新数据库
     // 返回一个stockIds对应的stocks的Promise
-    function getQuotes (stockIds) {
+    this.getQuotes = function (stockIds) {
         
         // console.log('Getting quotes of ', stockIds);
 
-        return subscribe(stockIds)
+        return _self.subscribe(stockIds)
 
         .then((newSubscribedStocks) => {
 
@@ -231,7 +232,7 @@ function Market(quant) {
 
                                 stock.save();
 
-                                quant.emit('stockPriceChange', stock);
+                                quant && quant.emit('stockPriceChange', stock);
                             }
                             
                             return stock;
@@ -244,7 +245,7 @@ function Market(quant) {
         });
     };
 
-    function updateXueqiuCookie () {
+    this.updateXueqiuCookie = function () {
         return new Promise((resolve, reject) => {
             http.get('http://xueqiu.com', function(res){
                 if(res.headers['set-cookie'] === undefined) {
@@ -256,7 +257,7 @@ function Market(quant) {
         });
     };
 
-    loadSubscribes().then(() => {
+    this.loadSubscribes().then(() => {
 
         setInterval(function polling() {
 
@@ -270,18 +271,17 @@ function Market(quant) {
                 return;
             }
             
-            getQuotes(subscribedStockIds);
+            _self.getQuotes(subscribedStockIds);
 
             subscribedStockIds.forEach(code => {
-                getOpponents(code);
+                _self.getOpponents(code);
             });
 
         }, pollingInterval);
 
     });
-    
-
-    return { subscribe, unsubscribe, getStock, getOpponents, getQuotes };
 }
 
-module.exports = Market;
+module.exports = function (quant) {
+    return new Market(quant);
+};
