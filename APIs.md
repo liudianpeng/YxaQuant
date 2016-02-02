@@ -33,8 +33,9 @@
 				"id": "", // stock.id
 				"name":"",
 				"code":"",
-				"volume": "", // 持有股数, 融券时为负数
-				"marketCapital": "", // 市值, 融券时为负数
+				"volume": 0, // 持有股数, 融券时为负数
+				"volumeAvailable": 0, // 可卖股数
+				"marketCapital": 0, // 市值, 融券时为负数
 				"cost": 0.00, // 成本价格
 				"profit": 0.00, // 浮动盈亏
 				"profitRatio": 0.00 // 浮动盈亏比例
@@ -288,8 +289,9 @@
 				"id": "", // stock.id
 				"name":"",
 				"code":"",
-				"volume": "", // 持有股数, 融券时为负数
-				"marketCapital": "", // 市值, 融券时为负数
+				"volume": 0, // 持有股数, 融券时为负数
+				"volumeAvailable": 0, // 可卖股数
+				"marketCapital": 0, // 市值, 融券时为负数
 				"cost": 0.00, // 成本价格
 				"profit": 0.00, // 浮动盈亏
 				"profitRatio": 0.00 // 浮动盈亏比例
@@ -317,7 +319,7 @@
 				"time": "2015-07-08T01:30:00.000Z",
 				"volume": 10000, // 正数买入, 负数卖出
 				"volumeCompleted": 5000, // 正数买入, 负数卖出
-				"status": "not declared|declared|completed|partial completed"
+				"status": "not declared|declared|completed|partial completed|canceled"
 				"recall": false // 是否为撤单
 			}
 		],
