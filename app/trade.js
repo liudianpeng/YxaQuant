@@ -1,8 +1,21 @@
 'use strict';
+var Account = require('./models/account');
 
 function Trade (socketServer, quant) {
 
-    var socket;
+    var socket, _self = this;
+
+    this.declare = function () {
+
+    }
+
+    this.cancel = function () {
+
+    }
+
+    this.updateAccount = function(data) {
+        Account.findOneAndUpdate({id: data.id}, data).exec();
+    }
 
     socketServer.on('connection', function(s){
 
@@ -16,6 +29,21 @@ function Trade (socketServer, quant) {
         console.log('[' + new Date() + '] Client ' + socket.remoteAddress + ' connected to socket server.');
         socketServer.getConnections((err, count) => console.log('[' + new Date() + '] Server has now ' + count + ' connections.'));
 
+        // 查询账户信息
+        Account.find().exec().then(accounts => {
+            accounts.forEach(account => {
+                var data = {
+                    event: 'account',
+                    id: account.id,
+                    provider: account.provider,
+                    credentials: account.credentials
+                };
+                console.log('[' + new Date() + '] Getting account info of ' + account.name);
+                console.log('[' + new Date() + '] Sending data:', JSON.stringify(data) + "\0");
+                socket.write(JSON.stringify(data) + "\0");
+            });
+        });
+
         socket.on('data', function(data){
             data = data.toString().replace(/\0$/, '');
             console.log('[' + new Date() + '] Data received from client ' + socket.remoteAddress + ': ' + data);
@@ -26,13 +54,17 @@ function Trade (socketServer, quant) {
             catch(e) {
                 console.error('JSON decode error for data: ', data);
             }
-            
-            if(data.declarations) {
+
+            if(data.event === 'account') {
+                _self.updateAccount(data);
+            }
+            else if(data.declarations) {
                 data.declarations.forEach(declaration => {
                     console.log('Declaration', declaration.serialNumber);
                 });
             }
 
+            /**
             // 挂单成功后2秒, 撤单
             if(data.declarations[0] && data.declarations[0].status === 'declared') {
                 setTimeout(function() {
@@ -41,6 +73,7 @@ function Trade (socketServer, quant) {
                     socket.write(JSON.stringify(data) + "\0");
                 }, 2000);
             }
+            */
         });
 
         socket.on('end', function(){
@@ -49,6 +82,7 @@ function Trade (socketServer, quant) {
             socket = null;
         });
 
+        /**
         // 发送挂单信息
         setTimeout(function(){
             console.log('[' + new Date() + '] Sending declaration...');
@@ -84,19 +118,13 @@ function Trade (socketServer, quant) {
             };
             socket.write(JSON.stringify(data) + "\0");
         }, 3000);
+        */
     })
     .on('error', function (e) {
         console.log('[' + new Date() + '] Socket server error:', e);
     });
-
-    return {
-        declare: function() {
-
-        },
-        cancel: function() {
-
-        }
-    }
 }
 
-module.exports = Trade;
+module.exports = function (socketServer, quant) {
+    return new Trade(socketServer, quant);
+};

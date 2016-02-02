@@ -6,12 +6,17 @@ var client = net.connect(8888, function() {
 
 client.on('data', function(data) {
 
-    data = data.toString().replace(/\0$/, '');
+    data = data.toString().replace(/\0+/g, '');
 
-    console.log('[' + new Date() + '] Data received: ', data);
+    console.log('[' + new Date() + '] Data received:', data);
     
-    var data = JSON.parse(data);
+    try {
+        var data = JSON.parse(data);
+    } catch(e) {
+        console.log(e.message);
+    }
 
+    /**
     // 发送报单结果
     setTimeout(function(){
         data.declarations = data.declarations.map(function(declaration){
@@ -49,6 +54,7 @@ client.on('data', function(data) {
         client.write(JSON.stringify(data) + "\0");
 
     }, 5000);
+    */
 });
 
 client.on('end', function() {

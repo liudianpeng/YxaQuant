@@ -319,11 +319,11 @@
 				"time": "2015-07-08T01:30:00.000Z",
 				"volume": 10000, // 正数买入, 负数卖出
 				"volumeCompleted": 5000, // 正数买入, 负数卖出
-				"status": "not declared|declared|completed|partial completed|canceled"
+				"status": "not declared|declared|completed|partial completed|canceled",
 				"recall": false // 是否为撤单
 			}
 		],
-		"transactions":[ // 交易接口服务向量化服务发送的一次成交数据
+		"transactions": [ // 交易接口服务向量化服务发送的一次成交数据
 			{
 				"id":"1234567890abcde123456789",
 				"stock": {
