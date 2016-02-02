@@ -128,6 +128,23 @@ module.exports = function(router, quant) {
                         });
                     }
 
+                    if(!stockInTask.volume) {
+                        stockInTask.volume = stockInTask.accounts.reduce((previous, account) => {
+                            return previous + account.volume;
+                        }, 0);
+                    }
+
+                    stockInTask.accounts.map(account => {
+                        account.volumeCompleted = 0;
+                        account.volumeDeclared = 0;
+                        account.volumeTodo = account.volume;
+                        return account;
+                    });
+
+                    stockInTask.volumeCompleted = 0;
+                    stockInTask.volumeDeclared = 0;
+                    stockInTask.volumeTodo = stockInTask.volume;
+
                     return stockInTask;
                 });
 
@@ -236,6 +253,7 @@ module.exports = function(router, quant) {
             });
         })
 
+        // TODO 并不是所有信息都可以修改
         .put(function(req, res) {
             Task.where({_id: req.params.taskId}).update(req.body, function(err, raw) {
                 if (err) {
