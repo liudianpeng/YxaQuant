@@ -22,9 +22,10 @@
     <div class="col-sm-12">
             
 
-        <div class="panel panel-info" style="margin-bottom: 5em;" ng-repeat='stock in task.stocks'>
+        <div class="panel panel-info" style="margin-bottom: 5em;" ng-repeat='stock in task.stocks' ng-init='stock.showAccount=false'>
             <div class="panel-heading">
                 <div class="panel-title"  ng-click="stock.showAccount=!stock.showAccount">
+                    <i class="fa fa-arrow-right" ng-class='{"fa-arrow-down": stock.showAccount}'></i>
                     <h3 style="display: inline-block;" ng-bind="stock.name"> </h3>
                     <div class="label label-info" ng-bind="stock.code"></div>
                 </div>
@@ -34,8 +35,8 @@
                     <input type="number" style="width: 60px" ng-model="stock.rules.timeStep" />S
                 </div>
             </div>
-            <div class="panel-body no-padding">
-                <table class="table table-bordered datatable table-hover" ng-click="stock.showAccount=!stock.showAccount">
+            <div class="panel-body no-padding" ng-show="stock.showAccount">
+                <table class="table table-bordered datatable table-hover">
                     <tbody>
                         <tr>
                             <td rowspan="2" width="400">
@@ -59,7 +60,7 @@
                     </tbody>
                 </table>
 
-                <table class="table table-bordered datatable" ng-show="!stock.showAccount" ng-repeat="account in stock.accounts">
+                <table class="table table-bordered datatable" ng-repeat="account in stock.accounts">
                     <tbody>
                         <tr>
                             <td>
@@ -156,6 +157,8 @@
 
     </div>
     <div class="col-sm-12">
-        <button type="submit" ng-click='save()' class="btn btn-success btn-lg">保存</button>
+        <button type="submit" ng-click='save()' class="btn btn-success btn-lg">修改</button>
+        <button type="submit" ng-click='pause()' class="btn btn-warning btn-lg">暂停</button>
+        <button type="submit" ng-click='cancel()' class="btn btn-danger btn-lg">取消</button>
     </div>
 </div>

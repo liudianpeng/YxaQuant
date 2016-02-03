@@ -41,78 +41,7 @@ angular.module('yxaquant.task', [])
 }])
 .controller('TaskDetailController', ['$scope', 'task', 'Task','$location', function ($scope, task, Task, $location) {
     var Random = Mock.Random
-    
-    // $scope.taskY = Mock.mock({
-    //     "_id" : "56970b4e88b6343729853d57",
-    //     "id" : "2343524234235324",
-    //     "timeStart" : "2015-07-08T01:30:00.000Z",
-    //     "timeEnd" : "2015-07-08T07:00:00.000Z",
-    //     "status" : "in progress",
-    //     "progress|0.2" : 1,
-    //     "stocks|1" : [
-    //         {
-    //             "id" : Mock.mock('@string("number", 10)'),
-    //             "name" : Random.csentence(5),
-    //             "code" : Mock.mock('@string("upper", 2)') + Mock.mock('@string("number", 5)'),
-    //             "rules" : {
-    //                 "lowestPrice|0-10000" : 1,
-    //                 "highestPrice|10000-10000000" : 1,
-    //                 "timeStep|0-100" : 1
-    //             },
-    //             "targetRatio" : 1,
-    //             "ratio|0.2" : 1,
-    //             "volume|10000-1000000" : 1,
-    //             "amount|10000-1000000" : 1,
-    //             "accounts|2" : [
-    //                 {
-    //                     "id" : "",
-    //                     "name" : Mock.mock('@csentence(5)'),
-    //                     "code" : Mock.mock('@string("upper", 2)') + Mock.mock('@string("number", 5)'),
-    //                     "volume" : function() {
-    //                         return this.volumeCompleted + this.volumeDeclared + this.volumeTodo
-    //                     },
-    //                     "volumeCompleted|100-10000" : 1,
-    //                     "volumeDeclared|1000-10000" : 1,
-    //                     "volumeTodo|1000-10000" : 1,
-    //                     "rules" : {
-    //                         "lowestPrice|0-10000" : 1,
-    //                         "highestPrice|10000-10000000" : 1,
-    //                         "timeStep|0-100" : 1
-    //                     },
-    //                     "declarations|2" : [
-    //                         {
-    //                             "type" : "",
-    //                             "serialNumber" : Mock.mock('@string("upper", 5)') + Mock.mock('@string("number", 5)'),
-    //                             "price" : function () {
-    //                                 return this.amount*10.6
-    //                             },
-    //                             "time" : "2015-07-08T01:30:00.000Z",
-    //                             "volume|1000-10000" : 1,
-    //                             "volumeCompleted" : 0,
-    //                             "amount|1000-10000" : 1,
-    //                             "status" : function (){
-    //                                 return _.sample( "not declared|declared|completed|partial completed".split('|') )
-    //                             }
-    //                         }
-    //                     ],
-    //                     "transactions|2" : [
-    //                         {
-    //                             "serialNumber" : Mock.mock('@string("upper", 5)') + Mock.mock('@string("number", 5)'),
-    //                             "price" : function () {
-    //                                 return this.amount*10.6
-    //                             },
-    //                             "time" : "2015-07-08T01:30:00.000Z",
-    //                             "volume|1000-10000" : 1,
-    //                             "amount|1000-10000" : 1
-    //                         }
-    //                     ]
-    //                 }
-    //             ]
-    //         }
-    //     ]
-    // })
     $scope.task = task
-
     $scope.sumup = function (arr, key) {
         return arr.reduce(function(sumup,account){
             return sumup + +account[key]
@@ -121,7 +50,18 @@ angular.module('yxaquant.task', [])
     $scope.save = function () {
         Task.update(task, function (data) {
             console.log(data)
-            location.reload()
+        })
+    }
+    $scope.pause = function () {
+        task.status = 'paused'
+        Task.update(task, function (data) {
+            console.log(data)
+        })
+    }
+    $scope.cancel = function () {
+        task.status = 'canceled'
+        Task.update(task, function (data) {
+            console.log(data)
         })
     }
 }])
