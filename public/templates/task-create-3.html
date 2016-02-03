@@ -31,7 +31,7 @@
 <h2>已选股票：</h2>
 
 <div class="row">
-    <div class="col-md-2" ng-repeat="stock in chosenStocks track by stock.id" style="margin-bottom: 1em;">
+    <div class="col-md-2" ng-repeat="stock in uniqStocks(chosenStocks) track by $index" style="margin-bottom: 1em;">
         <div class="input-group minimal">
             <div class="label label-default" ng-bind='stock.name'></div>
         </div>

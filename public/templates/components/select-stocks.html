@@ -134,7 +134,7 @@
         </tr>
     </tfoot>
     <tbody>
-        <tr ng-class-odd="odd" ng-class-even="even" ng-repeat="i in stocks" ng-click="goto(i.id)">
+        <tr ng-repeat="i in stocks track by i.id" ng-click="goto(i.id)">
             <td>
                 <input type="checkbox" ng-model="i.checked" ng-change='checkIt(i)' />
             </td>

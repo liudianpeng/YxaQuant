@@ -102,6 +102,7 @@ angular.module('yxaquant.plugin', [])
                     s.checked = scope.isAllChecked
                     scope.checkIt(s)
                 })
+                _.uniqBy(scope.chosenStocks,'id')
             }
             scope.checkIt = function (stock) {
                 if(stock.checked)

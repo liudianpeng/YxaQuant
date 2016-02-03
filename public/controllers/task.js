@@ -157,6 +157,9 @@ angular.module('yxaquant.task', [])
                             function( $scope,   $location,   tasks,  accounts,   Stock,  SearchStock,  $timeout,  $routeParams) {
 
     $scope.chosenStocks = []
+    $scope.uniqStocks = function (stocks) {
+        return _.uniqBy(stocks, 'id')
+    }
     $scope.next = function (i) {
         var stock_ids = $scope.chosenStocks.map(function(stock){
             return stock.id
