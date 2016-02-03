@@ -201,7 +201,9 @@ module.exports = function(router, quant) {
 
             // 将任务发送到Quant, 返回发送给前台
             .then(() => {
+                quant.loadTasks();
                 quant.start(task);
+
                 res.json(task);
             })
 
@@ -265,6 +267,8 @@ module.exports = function(router, quant) {
                     if (err)
                         res.send(err);
                     
+                    quant.loadTasks();
+
                     res.json(task);
                 });
             });
@@ -278,6 +282,7 @@ module.exports = function(router, quant) {
                 if (err)
                     res.send(err);
 
+                quant.loadTasks();
                 res.end();
             });
         });

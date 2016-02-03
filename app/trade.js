@@ -1,12 +1,48 @@
 'use strict';
+
+var _ = require('lodash');
 var Account = require('./models/account');
 
 function Trade (socketServer, quant) {
 
     var socket, _self = this;
 
-    this.declare = function () {
+    this.declare = function (accountId, stockId, price, volume) {
 
+        // if(!socket) {
+        //     console.error('交易服务器未连接, 下单失败');
+        //     return false;
+        // }
+
+        if(!volume) {
+            return;
+        }
+
+        var data = _.find(this.accounts, {_id: accountId}).toObject();
+        var stock = quant.market.subscribedStocks[stockId];
+
+        data.event = 'declaration';
+        data.declarations = [];
+        data.declarations.push({
+            stock: {
+                id: stockId,
+                type: stock.type,
+                name: stock.name,
+                code: stock.code,
+            },
+            type: '',
+            serialNumber: '',
+            price: price,
+            time: new Date(),
+            volume: volume,
+            volumeCompleted: 0,
+            status: "not declared",
+            recall: false
+        });
+
+        // console.log('发送挂单信息', JSON.stringify(data));
+        // socket.write(JSON.stringify(data) + "\0");
+        return true;
     }
 
     this.cancel = function () {
@@ -16,6 +52,16 @@ function Trade (socketServer, quant) {
     this.updateAccount = function(data) {
         Account.findOneAndUpdate({id: data.id}, data).exec();
     }
+
+    this.accounts = [];
+
+    this.loadAccounts = function () {
+        Account.find().exec().then(accounts => {
+            this.accounts = accounts;
+        });
+    };
+
+    this.loadAccounts();
 
     socketServer.on('connection', function(s){
 

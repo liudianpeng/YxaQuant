@@ -5,16 +5,18 @@ var http    = require('http');
 var moment  = require('moment');
 var Stock   = require('./models/stock');
 var Config  = require('./models/config');
-
-var subscribedStocks = {}; // 用于检测价格变化, 存储形式为{[id]: stock}
-var subscribedStockIds = []; // 正在关注价格变化的股票的id
-var pollingInterval = 1000;
+var pollingInterval = process.env.DEBUG ? 3000 : 300;
 
 function Market(quant) {
 
     var xueqiuCookie;
     var _self = this;
 
+    this.subscribedStocks = {}; // 用于检测价格变化, 存储形式为{[id]: stock}
+    this.subscribedStockIds = []; // 正在关注价格变化的股票的id
+
+    var subscribedStocks = this.subscribedStocks;
+    var subscribedStockIds = this.subscribedStockIds;
     /**
      * 从数据库Config载入subscribedStockIds, 并填充subscribedStocks
      * @return Promise 订阅的股票信息, subscribedStocks填充后resolve
@@ -156,8 +158,10 @@ function Market(quant) {
         var xueqiuPankou = 'http://xueqiu.com/stock/pankou.json?symbol=';
 
         return new Promise((resolve, reject) => {
+            
+            var stock = subscribedStocks[stockId];
 
-            http.get(xueqiuPankou + subscribedStocks[stockId].code, function(res) {
+            http.get(xueqiuPankou + stock.code, function(res) {
 
                 var data = '';
 
@@ -176,14 +180,14 @@ function Market(quant) {
                     var levels = 5;
 
                     for(var i = 0; i < levels; i++) {
-                        quoteQueue.buy.push({price: data['bp' + (i + 1)], volume: data['bc' + (i + 1)]});
-                        quoteQueue.sell.push({price: data['sp' + (i + 1)], volume: data['sc' + (i + 1)]});
+                        quoteQueue.buy.push({price: data['bp' + (i + 1)], volume: stock.lotSize * data['bc' + (i + 1)]});
+                        quoteQueue.sell.push({price: data['sp' + (i + 1)], volume: stock.lotSize * data['sc' + (i + 1)]});
                     }
 
-                    if(subscribedStocks[stockId] && !_.isEqual(subscribedStocks[stockId].quoteQueue, quoteQueue)) {
-                        subscribedStocks[stockId].quoteQueue = quoteQueue;
-                        subscribedStocks[stockId].save();
-                        quant && quant.emit('stockOpponentChange', subscribedStocks[stockId]);
+                    if(stock && !_.isEqual(stock.quoteQueue, quoteQueue)) {
+                        stock.quoteQueue = quoteQueue;
+                        stock.save();
+                        quant && quant.emit('stockOpponentChange', stock);
                     }
 
                     resolve(quoteQueue);
@@ -223,7 +227,7 @@ function Market(quant) {
                             var stock = subscribedStocks[stockId];
                             var code = stock.code;
 
-                            if(stock.current !== Number(data[code][0])) {
+                            if(process.env.DEBUG || stock.current !== Number(data[code][0])) {
 
                                 stock.current = data[code][0];
                                 stock.offset = data[code][1];
@@ -257,13 +261,13 @@ function Market(quant) {
         });
     };
 
-    this.loadSubscribes().then(() => {
+    // this.loadSubscribes().then(() => {
 
         setInterval(function polling() {
 
             var d = moment();
 
-            if(!(d.day() >= 1 && d.day() <= 5 && (d.isBetween({hour:9, minute:15}, {hour:11, minute:30}) || d.isBetween({hour:13}, {hour:15}, 'hour')))) {
+            if(!process.env.DEBUG && !(d.day() >= 1 && d.day() <= 5 && (d.isBetween({hour:9, minute:15}, {hour:11, minute:30}) || d.isBetween({hour:13}, {hour:15}, 'hour')))) {
                 return;
             }
 
@@ -279,7 +283,7 @@ function Market(quant) {
 
         }, pollingInterval);
 
-    });
+    // });
 }
 
 module.exports = function (quant) {
