@@ -740,7 +740,7 @@ var public_vars = public_vars || {};
 
 
 		// Timepicker
-		if($.isFunction($.fn.timepicker))
+		if($.isFunction($.fn.timepicker) && false)
 		{
 			$(".timepicker").each(function(i, el)
 			{

@@ -1,7 +1,9 @@
 <h2>任务详情</h2>
 <div class="row">
     <div class="col-md-2">
-        <div class="label label-success">交易中</div>
+        <div class="label label-success" ng-if='task.status=="in progress"'>交易中</div>
+        <div class="label label-warning" ng-if='task.status=="paused"'>暂停</div>
+        <div class="label label-danger" ng-if='task.status=="canceled"'>取消</div>
     </div>      
     <div class="col-md-10">
         <div class="progress">
@@ -14,10 +16,20 @@
 
 <div class="row">
     <div class="col-md-6">
-        开始时间： {{task.timeStart}}
+        开始时间：
+        <input type="text"  data-template="dropdown"
+             data-show-seconds="true" data-default-time="{{task.timeStart}}" 
+             ng-model='task.timeStart'
+             data-show-meridian="false" 
+             data-minute-step="5">
     </div>      
-    <div class="col-md-6" ng-show="task.status!=='in progress'">
-        结束{{task.stocks[0].name}}时间： {{task.timeEnd}}
+    <div class="col-md-6">
+        结束时间：
+        <input type="text" timepicker template="dropdown"
+             show-seconds="true" default-time="task.timeEnd" 
+             ng-model='task.timeEnd'
+             show-meridian="false" 
+             dataminute-step="5">
     </div>      
     <div class="col-sm-12">
             
@@ -30,9 +42,9 @@
                     <div class="label label-info" ng-bind="stock.code"></div>
                 </div>
                 <div class="pull-right" style="margin: 10px 10px 0 0;">
-                    ￥<input type="number" style="width: 60px" ng-model="stock.rules.lowestPrice" />~
-                    <input type="number" style="width: 60px" ng-model="stock.rules.highestPrice" />, 
-                    <input type="number" style="width: 60px" ng-model="stock.rules.timeStep" />S
+                    ￥<input type="number" style="width: 80px" ng-model="stock.rules.lowestPrice" />~
+                    <input type="number" style="width: 80px" ng-model="stock.rules.highestPrice" />, 
+                    <input type="number" style="width: 50px" ng-model="stock.rules.timeStep" />S
                 </div>
             </div>
             <div class="panel-body no-padding" ng-show="stock.showAccount">

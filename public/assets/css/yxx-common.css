@@ -5,7 +5,7 @@ input, button, select, textarea {
 }
 input[type=text],input[type=number] {
     height: 31px;
-    padding: 6px 12px;
+    padding: 6px 6px;
 }
 .form-group .label.ng-binding {margin-top: 7px;cursor: pointer;}
 .form-wizard {margin: 1em 0 2em;}

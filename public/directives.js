@@ -5,11 +5,33 @@ angular.module('yxaquant.plugin', [])
         link: function(scope, element, attrs) {
             $(element)
                 .datepicker({
-                    format: "yyyy-mm-dd"
+                    format: "yyyy-mm-dd",
+                    initialDate: new Date("2013-2-3"),
+                    weekStart: 6
                 })
                 .on('changeDate', function(ev){
                     $(this).datepicker( "hide" )
                 })
+        }
+    };
+})
+.directive('timepicker', function() {
+    return {
+        restrict: 'A',
+        scope: {
+            defaultTime: '&'
+        },
+        link: function(scope, element, attrs) {
+            var $this = $(element),
+                opts = {
+                    showSeconds: attrs.showSeconds || false,
+                    defaultTime: scope.defaultTime || 'current',
+                    showMeridian: attrs.showMeridian == 'true' || false,
+                    minuteStep: attrs.minuteStep || 15,
+                    secondStep: attrs.secondStep || 15
+                };
+
+            $this.timepicker(opts);
         }
     };
 })
@@ -85,14 +107,14 @@ angular.module('yxaquant.plugin', [])
                     if (['marketCapital', 'floatMarketCapital'].indexOf(key) > -1) {
                         params[key] = params[key].map(function (i) {
                             if (typeof i == 'string' && i == 'Infinity')
-                                return i
+                                return ''
                             else 
                                 return i*Math.pow(10, 8)
 
                         })
                     }
                     if (scope.filter[key])
-                        params[key] = params[key].join('-')
+                        params[key] = params[key].join('~')
                 })
                 params.keyword = scope.filter.keyword
                 scope.getStocks(params)
@@ -145,7 +167,7 @@ angular.module('yxaquant.plugin', [])
 
             function easeInVal(y) {
                 var x = Math.ceil( (1 - Math.sin(Math.PI*0.5*(1+(y/+elData.max)))) * elData.maxShow*(1+marginForInfinity) )
-                if (x > elData.maxShow) x = 'Infinity'
+                if (x > elData.maxShow) x = '不限'
                 return x
             }
 
