@@ -3,7 +3,7 @@
         <a href="/dashboard"><i class="fa fa-home"></i></a>
     </li>
     <li class="active">
-        <strong>帐户详细</strong>
+        <strong>帐户详请</strong>
     </li>
 </ol>
 <br class="hidden-print" />
@@ -52,10 +52,10 @@
                 <td class="text-center" ng-bind='$index+1'></td>
                 <td ng-bind='s.name'></td>
                 <td ng-bind='s.cost'></td>
-                <td ng-bind='s.profit'></td>
+                <td ng-bind='s.profit | currency:"¥"'></td>
                 <td ng-bind="s.marketCapital | currency:''"></td>
-                <td ng-bind='s.profitRatio'></td>
-                <td ng-bind='s.volume'></td>
+                <td ng-bind='s.profitRatio * 100 + "%"'></td>
+                <td ng-bind='s.volume | number'></td>
             </tr>
         </tbody>
     </table>
