@@ -201,6 +201,15 @@ module.exports = function(router, quant) {
 
             // 将任务发送到Quant, 返回发送给前台
             .then(() => {
+
+                if(task.timeStart < new Date()) {
+                    task.timeStart = new Date();
+                    task.status = 'in progress';
+                }
+                else {
+                    task.status = 'not started';
+                }
+
                 quant.loadTasks();
                 quant.start(task);
 
@@ -257,20 +266,55 @@ module.exports = function(router, quant) {
 
         // TODO 并不是所有信息都可以修改
         .put(function(req, res) {
-            Task.where({_id: req.params.taskId}).update(req.body, function(err, raw) {
-                if (err) {
-                    res.send(err);
-                    return;
+            
+            Task.findOne({_id: req.params.taskId}).exec()
+            .then(task => {
+                if(req.body.timeStart) {
+                    task.timeStart = req.body.timeStart;
                 }
 
-                Task.findById(req.params.taskId, function(err, task) {
-                    if (err)
-                        res.send(err);
-                    
-                    quant.loadTasks();
+                if(req.body.timeEnd) {
+                    task.timeEnd = req.body.timeEnd;
+                }
 
-                    res.json(task);
+                if(task.status === undefined) {
+                    task.status = 'not started';
+                }
+
+                if(req.body.status) {
+                    if(task.status === 'not started' && req.body.status === 'in progress') {
+                        task.status = req.body.status;
+                        task.timeStart = new Date();
+                    }
+                    else if(task.status === 'in progress' && req.body.status === 'paused') {
+                        task.status = req.body.status;
+                    }
+                    else if(task.status === 'paused' && req.body.status === 'in progress') {
+                        task.status = req.body.status;
+                    }
+                    else if(task.status === 'paused' && req.body.status === 'canceled') {
+                        task.status = req.body.status;
+                        task.timeEnd = new Date();
+                    }
+                }
+
+                if(req.body.stocks && req.body.stocks.length === task.stocks.length) {
+                    for(var i = 0; i < task.stocks.length; i++) {
+                        if(req.body.stocks[i].accounts.length !== task.stocks[i].accounts.length) {
+                            break;
+                        }
+                        for(var j = 0; j < task.stocks[i].accounts.length; j++) {
+                            _.merge(task.stocks[i].accounts[j].rules, req.body.stocks[i].accounts[j].rules);
+                        }
+                    }
+                }
+
+                task.save()
+                .then(task => {
+                    quant.loadTasks();
                 });
+
+                res.json(task);
             });
         })
 

@@ -15,8 +15,6 @@ function Market(quant) {
     this.subscribedStocks = {}; // 用于检测价格变化, 存储形式为{[id]: stock}
     this.subscribedStockIds = []; // 正在关注价格变化的股票的id
 
-    var subscribedStocks = this.subscribedStocks;
-    var subscribedStockIds = this.subscribedStockIds;
     /**
      * 从数据库Config载入subscribedStockIds, 并填充subscribedStocks
      * @return Promise 订阅的股票信息, subscribedStocks填充后resolve
@@ -32,17 +30,17 @@ function Market(quant) {
                     resolve();
                 }
                 
-                subscribedStockIds = subscribedStockIdsConfig.value;
+                _self.subscribedStockIds = subscribedStockIdsConfig.value;
                 
-                Stock.find({_id: {$in: subscribedStockIds}}).exec().then(result => {
+                Stock.find({_id: {$in: _self.subscribedStockIds}}).exec().then(result => {
                     
                     result.forEach(stock => {
-                        subscribedStocks[stock.id] = stock;
+                        _self.subscribedStocks[stock.id] = stock;
                     });
 
                     console.log('Subscribes loaded: ', result.map(stock => stock.code + ' ' + stock.name));
 
-                    resolve(subscribedStocks);
+                    resolve(_self.subscribedStocks);
                 });
             });
         });
@@ -55,7 +53,7 @@ function Market(quant) {
     this.subscribe = function (stockIds) {
         
         // 防止重复订阅
-        stockIds = _.difference(stockIds.map(id => id.toString()), subscribedStockIds);
+        stockIds = _.difference(stockIds.map(id => id.toString()), _self.subscribedStockIds);
 
         // 无需订阅时也resolve Promise
         if(!stockIds || !stockIds.length) {
@@ -70,13 +68,13 @@ function Market(quant) {
         .then(stocksInDB => {
             
             stocksInDB.forEach(stock => {
-                subscribedStocks[stock.id] = stock;
-                subscribedStockIds.push(stock.id);
+                _self.subscribedStocks[stock.id] = stock;
+                _self.subscribedStockIds.push(stock.id);
             });
 
             Config.findOneAndUpdate(
                 {key: 'subscribedStockIds'},
-                {value: subscribedStockIds},
+                {value: _self.subscribedStockIds},
                 {new: true, upsert: true}
             ).exec();
         });
@@ -87,8 +85,8 @@ function Market(quant) {
      * @return Promise 写入数据库后resolve
      */
     this.unsubscribe = function (stockIds) {
-        subscribedStockIds = _.difference(subscribedStockIds, stockIds);
-        return Config.findOneAndUpdate({key: 'subscribedStockIds'}, {value: subscribedStockIds}).exec();
+        _self.subscribedStockIds = _.difference(_self.subscribedStockIds, stockIds);
+        return Config.findOneAndUpdate({key: 'subscribedStockIds'}, {value: _self.subscribedStockIds}).exec();
     };
 
     /**
@@ -137,7 +135,7 @@ function Market(quant) {
                         stock = stockData;
 
                         if(subscribedStocks[stock.id]) {
-                            subscribedStocks[stock.id] = stock;
+                            _self.subscribedStocks[stock.id] = stock;
                         }
 
                         stock.save((err, stock) => {
@@ -159,7 +157,7 @@ function Market(quant) {
 
         return new Promise((resolve, reject) => {
             
-            var stock = subscribedStocks[stockId];
+            var stock = _self.subscribedStocks[stockId];
 
             http.get(xueqiuPankou + stock.code, function(res) {
 
@@ -206,7 +204,7 @@ function Market(quant) {
 
         .then((newSubscribedStocks) => {
 
-            var codes = stockIds.map(stockId => subscribedStocks[stockId].code);
+            var codes = stockIds.map(stockId => _self.subscribedStocks[stockId].code);
             
             return new Promise((resolve, reject) => {
                 
@@ -224,7 +222,7 @@ function Market(quant) {
                         
                         var stocks = stockIds.map(stockId => {
 
-                            var stock = subscribedStocks[stockId];
+                            var stock = _self.subscribedStocks[stockId];
                             var code = stock.code;
 
                             if(process.env.DEBUG || stock.current !== Number(data[code][0])) {
@@ -271,13 +269,13 @@ function Market(quant) {
                 return;
             }
 
-            if(!subscribedStockIds.length) {
+            if(!_self.subscribedStockIds.length) {
                 return;
             }
             
-            _self.getQuotes(subscribedStockIds);
+            _self.getQuotes(_self.subscribedStockIds);
 
-            subscribedStockIds.forEach(code => {
+            _self.subscribedStockIds.forEach(code => {
                 _self.getOpponents(code);
             });
 

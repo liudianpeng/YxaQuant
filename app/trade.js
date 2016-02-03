@@ -9,10 +9,10 @@ function Trade (socketServer, quant) {
 
     this.declare = function (accountId, stockId, price, volume) {
 
-        // if(!socket) {
-        //     console.error('交易服务器未连接, 下单失败');
-        //     return false;
-        // }
+        if(!process.env.DEBUG && !socket) {
+            console.error('交易服务器未连接, 下单失败');
+            return false;
+        }
 
         if(!volume) {
             return;
@@ -40,8 +40,11 @@ function Trade (socketServer, quant) {
             recall: false
         });
 
-        // console.log('发送挂单信息', JSON.stringify(data));
-        // socket.write(JSON.stringify(data) + "\0");
+        if(!process.env.DEBUG) {
+            console.log('发送挂单信息', JSON.stringify(data));
+            socket.write(JSON.stringify(data) + "\0");
+        }
+        
         return true;
     }
 

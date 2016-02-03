@@ -8,6 +8,8 @@ var Task = require('./models/task');
 
 function Quant () {
 
+    var _self = this;
+
     EventEmitter.call(this);
     
     this.on('stockPriceChange', function(stock) {
@@ -49,6 +51,10 @@ function Quant () {
 
         // 遍历所有正在进行的任务, 将符合交易条件的, 写入待交易账户列表
         this.tasks.forEach(task => {
+
+            if(task.status !== 'in progress') {
+                return;
+            }
 
             task.stocks.forEach(stockInTask => {
                 
@@ -225,16 +231,44 @@ function Quant () {
     this.tasks = [];
 
     this.loadTasks = function () {
+
         return Task.find().exec().then(tasks => {
-            console.log(tasks.length + ' tasks loaded.');
+            _self.market.subscribedStocks = {};
+            _self.market.subscribedStockIds = [];
+
+            console.log(tasks.length + ' tasks loaded,', tasks.filter(task => task.status === 'in progress').length + ' tasks in progress.');
             this.tasks = tasks;
             this.tasks.forEach(task => {
+                if(task.status !== 'in progress') {
+                    return;
+                }
                 this.market.subscribe(task.stocks.map(stock => stock.id));
             });
         });
     };
 
+    // 到达开始或结束时间后, 改变任务状态
+    this.watchTasks = function () {
+        setInterval(() => {
+            this.tasks.forEach(task => {
+                if(task.status === 'not started' && task.timeStart > new Date()) {
+                    task.status = 'in progress';
+                }
+                else if(task.status === 'in progress' && task.timeEnd > new Date()) {
+                    task.status = 'paused';
+                }
+                if(task.isModified()) {
+                    task.save()
+                    .then(task => {
+                        quant.loadTasks();
+                    });
+                }
+            });
+        }, 1000);
+    };
+
     this.loadTasks();
+    this.watchTasks();
 };
 
 util.inherits(Quant, EventEmitter);
