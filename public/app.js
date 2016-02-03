@@ -10,11 +10,16 @@ angular.module('yxaquant', [
     'yxaquant.task',
     'yxaquant.user',
     'yxaquant.plugin',
-    'yxaquant.config'
+    'yxaquant.config',
+    'yxaquant.dashboard'
 ])
 .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     
     $routeProvider
+        .when('/', {
+            controller: 'DashboardController',
+            templateUrl: 'templates/dashboard.html'
+        })
         .when('/account', {
             controller: 'AccountListController',
             templateUrl: 'templates/account-list.html',

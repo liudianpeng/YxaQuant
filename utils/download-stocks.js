@@ -1,7 +1,8 @@
-var http = require('http');
-var _ = require('lodash');
-var mongoose = require('mongoose');
-var Stock = require('../app/models/stock');
+var _       = require('lodash');
+var http    = require('http');
+var mongoose= require('mongoose');
+var market  = require('../app/market')();
+var Stock   = require('../app/models/stock');
 var currentPage = 1, connections = 0, maxConnections = 20, totalCodes = [];
 
 mongoose.connect('mongodb://localhost/yxaquant');
@@ -75,10 +76,17 @@ http.get('http://xueqiu.com', function(res){
                             });
                             res.on('end', function(){
                                 connections--;
-                                var stockData = JSON.parse(data)[code];
+
+                                try {
+                                    var stockData = JSON.parse(data)[code];
+                                } 
+                                catch {
+                                    console.error('Failed at ' + code, stockData);
+                                    return;
+                                }
 
                                 if(!stockData.code || !stockData.name) {
-                                    console.error('Failed at ' + code, stockData, data);
+                                    console.error('Failed at ' + code, stockData);
                                     return;
                                 }
 

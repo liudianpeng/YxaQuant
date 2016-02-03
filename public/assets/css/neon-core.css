@@ -7689,7 +7689,7 @@ float: left;
   color: #e9423f;
 }
 body {
-  font-family: "Helvetica Neue", Helvetica, "Noto Sans", sans-serif;
+  font-family: "Helvetica Neue", Helvetica, "Noto Sans", STHeiti, 'Microsoft Yahei UI', 'Microsoft Yahei', sans-serif;
 }
 body.overflow-x-disabled {
   overflow-x: hidden;
