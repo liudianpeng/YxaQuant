@@ -49,7 +49,7 @@ module.exports = function(router) {
                 
                 if(req.query[property]) {
 
-                    var range = req.query[property].split('-');
+                    var range = req.query[property].split(/[~_]/);
                     var min = Number(range[0]), max = Number(range[1]);
                     var condition = {[property]:{}};
 
