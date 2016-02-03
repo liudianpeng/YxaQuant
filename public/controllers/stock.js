@@ -73,6 +73,64 @@ angular.module('yxaquant.stock', [])
 
     
 }])
+.controller('StockGroupCreateCtrl', ['$scope','group','SearchStock','$routeParams','$timeout','StockGroup',
+                            function ($scope,  group,  SearchStock,  $routeParams,  $timeout,  StockGroup) {
+    $scope.group = group
+    $scope.stock = {}
+
+    $scope.search = function (keyword) {
+        SearchStock.query({keyword: keyword}, function(data){
+            $scope.stock.searchList = data
+        })
+
+    }
+    $scope.chooseItem = function (item) {
+        $scope.stock.data = item
+        $scope.stock.keyword = $scope.stock.data.name
+    }
+    $scope.inputBlur = function () {
+        $timeout(function (argument) {
+            $scope.stock.focus=false 
+            if($scope.stock.data)
+                $scope.stock.keyword = $scope.stock.data.name
+            else
+                $scope.stock.keyword = ''
+        }, 100)
+
+    }
+    $scope.add = function () {
+        if ($scope.stock.data) {
+            var newStock = {
+                id: $scope.stock.data,
+                name: $scope.stock.data.name,
+                weight: 0
+            }
+            $scope.group.stocks.push(newStock)
+            $scope.stock = {}
+        } else {
+            search.focus();
+        }
+    }
+    $scope.delete = function (i) {
+        $scope.group.stocks.splice(i,1)
+    }
+    $scope.save = function () {
+        if ($scope.chosenStocks.length) $scope.group.stocks = $scope.group.stocks.concat($scope.chosenStocks)
+        
+        StockGroup.update($scope.group, function (data) {
+            console.log(data)
+            alert('已保存')
+        })
+    }
+
+    $scope.uniqStocks = function (stocks) {
+        return _.uniqBy(stocks, 'id')
+    }
+
+
+
+    
+}])
 
 .controller('StockListController', ['$scope','$routeParams','$location', 
                             function($scope,  $routeParams,  $location) {
