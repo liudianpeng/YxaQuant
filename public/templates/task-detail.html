@@ -17,11 +17,11 @@
 <div class="row">
     <div class="col-md-6">
         开始时间：
-        <input type="text"  data-template="dropdown"
-             data-show-seconds="true" data-default-time="{{task.timeStart}}" 
+        <input type="text" timepicker template="dropdown"
+             show-seconds="true" default-time="task.timeStart" 
              ng-model='task.timeStart'
-             data-show-meridian="false" 
-             data-minute-step="5">
+             show-meridian="false" 
+             dataminute-step="5">
     </div>      
     <div class="col-md-6">
         结束时间：
@@ -36,28 +36,30 @@
 
         <div class="panel panel-info" style="margin-bottom: 5em;" ng-repeat='stock in task.stocks' ng-init='stock.showAccount=false'>
             <div class="panel-heading">
-                <div class="panel-title"  ng-click="stock.showAccount=!stock.showAccount">
-                    <i class="fa fa-arrow-right" ng-class='{"fa-arrow-down": stock.showAccount}'></i>
-                    <h3 style="display: inline-block;" ng-bind="stock.name"> </h3>
-                    <div class="label label-info" ng-bind="stock.code"></div>
-                </div>
-                <div class="pull-right" style="margin: 10px 10px 0 0;">
-                    ￥<input type="number" style="width: 80px" ng-model="stock.rules.lowestPrice" />~
-                    <input type="number" style="width: 80px" ng-model="stock.rules.highestPrice" />, 
-                    <input type="number" style="width: 50px" ng-model="stock.rules.timeStep" />S
+                <div class="row">
+                    <div class="panel-title col-sm-3"  ng-click="stock.showAccount=!stock.showAccount">
+                        <i class="fa fa-arrow-right" ng-class='{"fa-arrow-down": stock.showAccount}'></i>
+                        <h3 style="display: inline-block;" ng-bind="stock.name"> </h3>
+                        <div class="label label-info" ng-bind="stock.code"></div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="progress" style="margin-top: 15px;">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100" style="width: {{ (sumup(stock.accounts, 'volumeCompleted')*100/sumup(stock.accounts, 'volume')) | number:0 }}%">
+                                <span class="sr-onlyY" ng-bind=" ((sumup(stock.accounts, 'volumeCompleted')*100/sumup(stock.accounts, 'volume')) | number:0) + '%'"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pull-right col-sm-4" style="margin-top: 8px;">
+                        ￥<input type="number" style="width: 80px" ng-model="stock.rules.lowestPrice" />~
+                        <input type="number" style="width: 80px" ng-model="stock.rules.highestPrice" />, 
+                        <input type="number" style="width: 50px" ng-model="stock.rules.timeStep" />S
+                    </div>
                 </div>
             </div>
             <div class="panel-body no-padding" ng-show="stock.showAccount">
                 <table class="table table-bordered datatable table-hover">
                     <tbody>
                         <tr>
-                            <td rowspan="2" width="400">
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100" style="width: {{ (sumup(stock.accounts, 'volumeCompleted')*100/sumup(stock.accounts, 'volume')) | number:0 }}%">
-                                        <span class="sr-onlyY" ng-bind=" ((sumup(stock.accounts, 'volumeCompleted')*100/sumup(stock.accounts, 'volume')) | number:0) + '%'"></span>
-                                    </div>
-                                </div>
-                            </td>
                             <td>已成交股数：</td>
                             <td ng-bind="sumup(stock.accounts, 'volume')"></td>
                             <td>已成交金额：</td>
