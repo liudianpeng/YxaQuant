@@ -1,7 +1,7 @@
 <ol class="breadcrumb bc-3" >
     <li> <a href="index.html"><i class="fa fa-home"></i></a> </li>
     <li> <a href="tables-main.html">创建任务</a> </li>
-    <li class="active"> <strong>选择帐户/交易类型</strong> </li>
+    <li class="active"> <strong>选择帐户</strong> </li>
 </ol>
 
 <form id="rootwizard" method="post" action="" class="form-horizontal form-wizard">
@@ -10,16 +10,16 @@
     </div>
     <ul>
         <li class="active">
-            <a href="#tab1" data-toggle="tab"><span>1</span>选择帐户/交易类型</a>
+            <a href="#tab1" data-toggle="tab"><span>1</span>选择帐户</a>
         </li>
         <li class="">
-            <a href="#tab2" data-toggle="tab" aria-expanded="true"><span>2</span>买入 or 卖出</a>
+            <a href="#tab2" data-toggle="tab" aria-expanded="true"><span>2</span>交易方向</a>
         </li>
         <li class="">
             <a href="#tab3" data-toggle="tab" aria-expanded="false"><span>3</span>选股</a>
         </li>
         <li class="">
-            <a href="#tab4" data-toggle="tab" aria-expanded="false"><span>4</span>详细设置</a>
+            <a href="#tab4" data-toggle="tab" aria-expanded="false"><span>4</span>参数设置</a>
         </li>
     </ul>
 </form>
@@ -56,7 +56,7 @@
 <div class="row">
     <div class="col-sm-12" style="text-align: center;">
         <button type="button" ng-click="comfirm('normal')" class="btn btn-success btn-lg">普通交易</button>
-        <button type="button" ng-click="comfirm('diff')" class="btn btn-success btn-lg">差价交易</button>
+        <button type="button" ng-click="comfirm('diff')" class="btn btn-success btn-lg" disabled>差价交易</button>
     </div>
 </div>
      

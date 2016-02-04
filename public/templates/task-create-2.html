@@ -1,7 +1,7 @@
 <ol class="breadcrumb bc-3" >
     <li> <a href="index.html"><i class="fa fa-home"></i></a> </li>
     <li> <a href="tables-main.html">创建任务</a> </li>
-    <li class="active"> <strong>买入 or 卖出</strong> </li>
+    <li class="active"> <strong>交易方向</strong> </li>
 </ol>
 <br/>
 <br/>
@@ -12,16 +12,16 @@
     </div>
     <ul>
         <li class="completed">
-            <a href="#tab1" data-toggle="tab"><span>1</span>选择帐户/交易类型</a>
+            <a href="#tab1" data-toggle="tab"><span>1</span>选择帐户</a>
         </li>
         <li class="active">
-            <a href="#tab2" data-toggle="tab" aria-expanded="true"><span>2</span>买入 or 卖出</a>
+            <a href="#tab2" data-toggle="tab" aria-expanded="true"><span>2</span>交易方向</a>
         </li>
         <li class="">
             <a href="#tab3" data-toggle="tab" aria-expanded="false"><span>3</span>选股</a>
         </li>
         <li class="">
-            <a href="#tab4" data-toggle="tab" aria-expanded="false"><span>4</span>详细设置</a>
+            <a href="#tab4" data-toggle="tab" aria-expanded="false"><span>4</span>参数设置</a>
         </li>
 
     </ul>
@@ -31,7 +31,8 @@
 <br/>
 <div class="row">
     <div class="col-sm-12" style="text-align: center;">
-        <a href="" type="button" ng-click="goto('buy')" class="btn btn-default btn-lg">买</a>
-        <a href="" ng-click="goto('sell')" class="btn btn-default btn-lg">卖</a>
+        <a href="" type="button" ng-click="goto('buy')" class="btn btn-danger btn-lg">买入</a>
+        <span style="margin:0 10px">|</span>
+        <a href="" ng-click="goto('sell')" class="btn btn-info btn-lg">卖出</a>
     </div>       
 </div>   

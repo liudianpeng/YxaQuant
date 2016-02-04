@@ -1,7 +1,7 @@
 <ol class="breadcrumb bc-3" >
     <li> <a href="index.html"><i class="fa fa-home"></i></a> </li>
     <li> <a href="tables-main.html">创建任务</a> </li>
-    <li class="active"> <strong>设置明细：</strong> </li>
+    <li class="active"> <strong>参数设置</strong> </li>
 </ol>
 
 <form id="rootwizard" method="post" action="" class="form-horizontal form-wizard">
@@ -10,16 +10,16 @@
     </div>
     <ul>
         <li class="completed">
-            <a href="#tab1" data-toggle="tab"><span>1</span>选择帐户/交易类型</a>
+            <a href="#tab1" data-toggle="tab"><span>1</span>选择帐户</a>
         </li>
         <li class="completed">
-            <a href="#tab2" data-toggle="tab" aria-expanded="true"><span>2</span>买入 or 卖出</a>
+            <a href="#tab2" data-toggle="tab" aria-expanded="true"><span>2</span>交易方向</a>
         </li>
         <li class="completed">
             <a href="#tab3" data-toggle="tab" aria-expanded="false"><span>3</span>选股</a>
         </li>
         <li class="active">
-            <a href="#tab4" data-toggle="tab" aria-expanded="false"><span>4</span>详细设置</a>
+            <a href="#tab4" data-toggle="tab" aria-expanded="false"><span>4</span>参数设置</a>
         </li>
 
     </ul>
@@ -30,39 +30,9 @@
     ng-init="calType = 'targetRatio'">
 
 <div class="row">
-    已选帐户：<span ng-repeat='account in accounts track by account.id'>{{account.name}}, </span> 
-    <h2>总设置：</h2>  
-</div>
-<div class="row">
-    <h4>(rules)</h4>
-    <table class="table table-bordered datatable">
-        <thead>
-            <tr>
-                <th>相对当前价最低百分比</th>
-                <th>相对当前价最高百分比</th>
-                <th>最小交易时间间隔</th>
-                <th>最大委差 0%-5%</th>
-                <th>对手盘档数 1-10</th>
-                <th>对手盘比例 0-1</th>
-                <th>起始日期</th>
-                <th>终止日期</th>
-                <th width="100">差价百分比</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="odd gradeX">
-                <td><input type="number" min="0" max="100" ng-model="lowestPercentage" />%   </td>
-                <td><input type="number" min="0" max="100" ng-model="highestPercentage" />%   </td>
-                <td><input type="number" min="0" max="100" ng-model="timeStep" />s   </td>
-                <td><input type="number" min="0" max="5" ng-model="quoteDiffPercentage" />%   </td>
-                <td><input type="number" min="1" max="10" ng-model="opponentLevels" />   </td>
-                <td><input type="number" min="0" max="100" ng-model="opponentRatio" />   </td>
-                <td><input type="text" style="width: 100px" ng-model="backtrackFromDate" datepicker />   </td>
-                <td><input type="text" style="width: 100px" ng-model="backtrackToDate" datepicker />   </td>
-                <td><input type="number" min="0" max="100" ng-model="priceDiffPercentage" />%   </td>
-            </tr>
-        </tbody>
-    </table>
+    已选帐户：<span ng-repeat='account in accounts track by account.id'>{{account.name}}</span> 
+    <hr>
+    <h3>批量设置</h3>  
 </div>
 <div class="row">
     <table class="table table-bordered datatable">
@@ -71,8 +41,6 @@
                 <th>持仓或交易比例</th>
                 <th>开始时间</th>
                 <th>最晚取消时间</th>
-                <th>目标持仓比例</th>
-                <th>本次交易比例</th>
             </tr>
         </thead>
         <tbody>
@@ -98,16 +66,32 @@
                         <input type="text" class="form-control" ng-model="endDate" datepicker />
                     </div>
                 </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="row">
+    <table class="table table-bordered datatable">
+        <thead>
+            <tr>
+                <th>相对当前价格区间</th>
+                <th>最小交易时间间隔</th>
+                <th>最大委差 (0%-5%)</th>
+                <th>对手盘档数 (1-10)</th>
+                <th>对手盘比率 (0-1)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="odd gradeX">
                 <td>
-                    <div class="col-sm-8">
-                        <input type="number" class="form-control" ng-model="targetRatio" />
-                    </div>
+                    <input type="number" min="-10" max="10" step="0.01" ng-model="lowestPercentage" /> %
+                    -
+                    <input type="number" min="-10" max="10" step="0.01" ng-model="highestPercentage" /> %
                 </td>
-                <td>
-                    <div class="col-sm-8">
-                        <input type="number" class="form-control" ng-model="ratio" />
-                    </div>
-                </td>
+                <td><input type="number" min="0" max="3600" ng-model="timeStep" /> s</td>
+                <td><input type="number" min="0" max="5" step="0.01" ng-model="quoteDiffPercentage" /> %</td>
+                <td><input type="number" min="1" max="10" ng-model="opponentLevels" /></td>
+                <td><input type="number" min="0" max="1" step="0.01" ng-model="opponentRatio" /></td>
             </tr>
         </tbody>
     </table>
@@ -150,12 +134,12 @@
             </div>
         </div>
         <div class="form-group">
-            <label  class="col-sm-3 control-label">最大委差</label>
+            <label  class="col-sm-3 control-label">最大委差 (%)</label>
             <div class="col-sm-3">
                 <div range 
                     class="slider slider-green" 
                     rv="stock.rules.priceDiffPercentage" 
-                    data-min="0" data-max="10" data-step="1" 
+                    data-min="0" data-max="10" data-step="0.1" 
                     data-value="{{stock.rules.priceDiffPercentage}}"></div>     
             </div>
         </div>
@@ -170,10 +154,14 @@
             </div>
         </div>
         <div class="form-group">
-            <label  class="col-sm-3 control-label">对手盘比例</label>
+            <label  class="col-sm-3 control-label">对手盘比率</label>
             
             <div class="col-sm-3">
-                <input type="number" min="0" max="100" class="form-control" ng-model="stock.rules.opponentRatio">
+                <div range 
+                    class="slider slider-green" 
+                    rv="stock.rules.opponentRatio" 
+                    data-min="0" data-max="1" data-step="0.01" 
+                    data-value="{{stock.rules.opponentRatio}}"></div>     
             </div>
         </div>
         
