@@ -97,6 +97,7 @@ http.get('http://xueqiu.com', function(res){
                                 stockData.code = stockData.symbol;
                                 stockData.currency = stockData.currencyUnit;
                                 stockData.type = 'stock';
+                                stockData.offset = stockData.change;
 
                                 Stock.findOneAndUpdate(
                                     {code: stockData.code}, 
