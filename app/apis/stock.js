@@ -50,15 +50,14 @@ module.exports = function(router) {
                 if(req.query[property]) {
 
                     var range = req.query[property].split(/[~_]/);
-                    var min = Number(range[0]), max = Number(range[1]);
                     var condition = {[property]:{}};
 
-                    if(min) {
-                        condition[property].$gte = min;
+                    if(!isNaN(range[0])) {
+                        condition[property].$gte = Number(range[0]);
                     }
 
-                    if(max) {
-                        condition[property].$lte = max;
+                    if(!isNaN(range[1])) {
+                        condition[property].$lte = Number(range[1]);
                     }
 
                     query.find(condition);
