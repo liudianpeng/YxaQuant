@@ -3,21 +3,17 @@
     <li class="active"> <strong>配置列表</strong> </li>
 </ol>
 
-<table class="table table-bordered table-striped datatable table-hover" datatable>
+<table class="table table-bordered table-striped table-fixed datatable table-hover" datatable>
     <thead>
         <tr>
-            <th>选择</th>
             <th>键</th>
-            <th>值</th>
+            <th style="width: 60%">值</th>
         </tr>
     </thead>
     <tbody>
         <tr ng-repeat="i in items">
-            <td>
-                <input type="checkbox" id="chk-1">
-            </td>
             <td ng-bind="i.key"></td>
-            <td ng-bind="i.value"></td>
+            <td class="ellipsis" ng-bind="i.value"></td>
         </tr>
     </tbody>
 </table>

@@ -7,9 +7,11 @@ input[type=text],input[type=number] {
     height: 31px;
     padding: 6px 6px;
 }
+.ellipsis {text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}
 .form-group .label.ng-binding {margin-top: 7px;cursor: pointer;}
 .form-wizard {margin: 1em 0 2em;}
 
 .progress {margin-bottom: 0;}
 
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {vertical-align: middle;}
+.table-fixed {table-layout: fixed;}
