@@ -22,15 +22,15 @@ module.exports = function(router) {
 
         // get all the stocks
         .get(function(req, res) {
-            if(!Stock.totalCount){
-                Stock.count().exec().then(value => Stock.totalCount = value);
-            }
-
             var limit = +req.query.limit || 20;
             var skip = +req.query.skip || 0;
 
             var queryPromises = [];
             var query = Stock.find().limit(limit).skip(skip);
+
+            if(!Stock.totalCount){
+                queryPromises.push(Stock.count().exec().then(value => Stock.totalCount = value));
+            }
 
             if(req.query.keyword) {
                 query.find({$or: [

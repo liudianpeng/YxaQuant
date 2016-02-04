@@ -1,6 +1,7 @@
 var Task = require('../models/task.js');
 var Account = require('../models/account.js');
 var Stock = require('../models/stock.js');
+var moment = require('moment');
 
 module.exports = function(router, quant) {
     // Task CURD
@@ -225,19 +226,31 @@ module.exports = function(router, quant) {
 
         // get all the tasks
         .get(function(req, res) {
-            if(!Task.totalCount){
-                Task.count().exec().then(value => Task.totalCount = value);
-            }
-
             var limit = +req.query.limit || 20;
             var skip = +req.query.skip || 0;
 
-            var query = {};
+            var queryPromises = [];
+            var query = Task.find().limit(limit).skip(skip);
 
-            Task.find(query)
-            .limit(limit)
-            .skip(skip)
-            .exec()
+            if(!Task.totalCount){
+                queryPromises.push(Task.count().exec().then(value => Task.totalCount = value));
+            }
+
+            if(req.query.today) {
+                if(JSON.parse(req.query.today)) {
+                    query.find({timeStart: {$gte: moment().startOf('day'), $lte: moment().endOf('day')}});
+                }
+                else {
+                    query.find({timeStart: {$not: {$gte: moment().startOf('day'), $lte: moment().endOf('day')}}});
+                }
+            } 
+
+            Promise.all(queryPromises)
+
+            .then(() => {
+                return query.exec();
+            })
+            
             .then(result => {
 
                 if(skip + result.length > Task.totalCount) {
