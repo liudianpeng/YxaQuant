@@ -7,12 +7,11 @@
     <thead>
         <tr>
             <th data-hide="phone">名称</th>
-            <th>币种</th>
             <th data-hide="phone">现价</th>
+            <th data-hide="phone,tablet">成交量</th>
             <th data-hide="phone,tablet">成交额</th>
             <th>涨跌</th>
             <th>涨跌幅</th>
-            <th>上年度市盈率</th>
             <th>本季度市盈率</th>
             <th>市净率</th>
         </tr>
@@ -20,12 +19,11 @@
     <tfoot>
         <tr>
             <th data-hide="phone">名称</th>
-            <th>币种</th>
             <th data-hide="phone">现价</th>
+            <th data-hide="phone,tablet">成交量</th>
             <th data-hide="phone,tablet">成交额</th>
             <th>涨跌</th>
             <th>涨跌幅</th>
-            <th>上年度市盈率</th>
             <th>本季度市盈率</th>
             <th>市净率</th>
         </tr>
@@ -33,15 +31,11 @@
     <tbody>
         <tr ng-class-odd="odd" ng-class-even="even" ng-repeat="i in items" ng-click="goto(i.id)">
             <td ><a href="/stock/{{i.id}}" ng-bind='i.name'></a></td>
-            <td ng-bind='i.currency'></td>
             <td ng-bind='i.current'></td>
+            <td ng-bind='i.volume'></td>
             <td ng-bind='i.amount'></td>
-            <td>
-                <span ng-if='i.lastClose-i.current < 0' class="label label-danger"><i class="fa fa-arrow-up"></i></span>
-                <span ng-if='i.lastClose-i.current > 0' class="label label-success"><i class="fa fa-arrow-down"></i></span>
-            </td>
-            <td ng-bind='((i.current-i.lastClose)*100/i.lastClose).toFixed(4)+"%"'></td>
-            <td ng-bind='i.peLyr'></td>
+            <td ng-bind='i.offset'></td>
+            <td ng-bind='i.percentage+"%"'></td>
             <td ng-bind='i.peTtm'></td>
             <td ng-bind='i.pb'></td>
         </tr>
