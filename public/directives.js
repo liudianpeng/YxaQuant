@@ -47,9 +47,8 @@ angular.module('yxaquant.plugin', [])
                 skip: 0,
                 limit: 20
             }
-
+            Object.assign(scope.filter, firstParams)
             scope.chosenStocks = scope.chosenStocks || []
-
             scope.getStocks = function (params) {
                 Stock.query(params).$promise.then(function (data) {
                     scope.stocks = data
@@ -66,23 +65,9 @@ angular.module('yxaquant.plugin', [])
                 })
             }
             // scope.getStocks(firstParams)
-
-            // set filter according to template
-            scope.filter = {
-                percentage: [-5,5],
-                pb: [0,5],
-                // peLyr: [0,5],
-                peTtm: [0,5],
-                // psr: [0,5],
-                marketCapital: [0,5],
-                floatMarketCapital: [0,5]
-            }
-            Object.assign(scope.filter, firstParams)
-
             scope.search = function () {
                 $location.path('/task')
             }
-
             scope.add = function () {
                 scope.stocks.push({})
             }
@@ -172,13 +157,11 @@ angular.module('yxaquant.plugin', [])
             }
 
             function anti_easeInVal(x) {
-                if (x == 'Infinity') 
+                if (x == 'Infinity' || x == elData.max) 
                     y = elData.maxShow*(1+marginForInfinity)
                 else
-                    y = ( 1 - x/(elData.maxShow*(1+marginForInfinity)) ) 
-                    y = Math.ceil( (1 - Math.sin(Math.PI*0.5*(1+(x/+elData.max)))) * elData.maxShow*(1+marginForInfinity) )
+                    y = (1 - Math.asin(1 - x/(elData.maxShow*(1+marginForInfinity)))/(Math.PI*0.5))*(+elData.max)
                 return y
-
             }
 
             var params = {
@@ -220,14 +203,12 @@ angular.module('yxaquant.plugin', [])
 
             // set init values to slider 
             if (isRange) {
-                params.values = JSON.parse(attrs.value)
+                params.initValues = JSON.parse(attrs.value)
                 if (elData.maxShow) {
-                    // params.values[0] = easeInVal(params.values[0])
-                    // params.values[1] = easeInVal(params.values[1])
-
+                    params.values = [anti_easeInVal(params.initValues[0]), anti_easeInVal(params.initValues[1])]
+                } else {
+                    params.values = params.initValues
                 }
-                var min_val = params.values[0]
-                var max_val = params.values[1]
             } else {
                 params.value = attrs.value
                 var value = params.value
@@ -261,11 +242,12 @@ angular.module('yxaquant.plugin', [])
                 $(element).slider(params)
                 var $handles = $(element).find('.ui-slider-handle');
 
-                $label_1.html((prefix ? prefix : '') + min_val + (postfix ? postfix : ''));
+                $label_1.html((prefix ? prefix : '') + params.initValues[0] + (postfix ? postfix : ''));
                 $handles.first().append( $label_1 );
 
-                $label_2.html((prefix ? prefix : '') + max_val+ (postfix ? postfix : ''));
+                $label_2.html((prefix ? prefix : '') + params.initValues[1]+ (postfix ? postfix : ''));
                 $handles.last().append( $label_2 );
+
             } else {
                 params.slide = function (e, ui) {
                     params.updateValToOutter(ui)
