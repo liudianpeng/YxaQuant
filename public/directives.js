@@ -1,4 +1,4 @@
-angular.module('yxaquant.plugin', [])
+angular.module('yxaquant.plugin', ['yxaquant.constants'])
 .directive('datepicker', function() {
     return {
         restrict: 'A',
@@ -35,7 +35,7 @@ angular.module('yxaquant.plugin', [])
         }
     };
 })
-.directive('selectStocks', function(Stock) {
+.directive('selectStocks', function(Stock, TXT) {
     return {
         restrict: 'E',
         templateUrl: '/templates/components/select-stocks.html',
@@ -87,11 +87,11 @@ angular.module('yxaquant.plugin', [])
                 keys.forEach(function (key) {
                     params[key] = scope.filter[key]
                     params[key] = params[key].map(function (i) {
-                        return i=='Infinity' ? '' : i
+                        return i == TXT.INFINITY ? '' : i
                     })
                     if (['marketCapital', 'floatMarketCapital'].indexOf(key) > -1) {
                         params[key] = params[key].map(function (i) {
-                            if (typeof i == 'string' && i == 'Infinity')
+                            if (typeof i == 'string' && i == '')
                                 return ''
                             else 
                                 return i*Math.pow(10, 8)
@@ -132,7 +132,7 @@ angular.module('yxaquant.plugin', [])
     }
 })
 
-.directive('range', function() {
+.directive('range', function(TXT) {
     return {
         restrict: 'A',
         scope: {
@@ -152,7 +152,7 @@ angular.module('yxaquant.plugin', [])
 
             function easeInVal(y) {
                 var x = Math.ceil( (1 - Math.sin(Math.PI*0.5*(1+(y/+elData.max)))) * elData.maxShow*(1+marginForInfinity) )
-                if (x > elData.maxShow) x = '不限'
+                if (x > elData.maxShow) x = TXT.INFINITY
                 return x
             }
 
@@ -162,6 +162,12 @@ angular.module('yxaquant.plugin', [])
                 else
                     y = (1 - Math.asin(1 - x/(elData.maxShow*(1+marginForInfinity)))/(Math.PI*0.5))*(+elData.max)
                 return y
+            }
+            function cleanInfinityTxt (txt) {
+                if (txt.indexOf(TXT.INFINITY) > -1) 
+                    return TXT.INFINITY
+                else
+                    return txt
             }
 
             var params = {
@@ -214,16 +220,13 @@ angular.module('yxaquant.plugin', [])
                 var value = params.value
             }
 
-            
             if (isRange) {
                 params.slide = function (e, ui) {
                     params.updateValToOutter(ui)
                     var min_val = (prefix ? prefix : '') + ui.values[0] + (postfix ? postfix : ''),
-                        max_val = (prefix ? prefix : '') + ui.values[1] + (postfix ? postfix : '');
-
-                    $label_1.html( min_val );
-                    $label_2.html( max_val );
-
+                            max_val = (prefix ? prefix : '') + ui.values[1] + (postfix ? postfix : '');
+                    $label_1.html( cleanInfinityTxt(min_val) );
+                    $label_2.html( cleanInfinityTxt(max_val) );
                     reps++;
                 }
                 params.change = function (e, ui) {
@@ -231,13 +234,12 @@ angular.module('yxaquant.plugin', [])
                     if(reps == 1) {
                         var min_val = (prefix ? prefix : '') + ui.values[0] + (postfix ? postfix : ''),
                             max_val = (prefix ? prefix : '') + ui.values[1] + (postfix ? postfix : '');
-
-                        $label_1.html( min_val );
-                        $label_2.html( max_val );
+                        $label_1.html( cleanInfinityTxt(min_val) );
+                        $label_2.html( cleanInfinityTxt(max_val) );
                     }
-
                     reps = 0;
                 }
+
                 // init
                 $(element).slider(params)
                 var $handles = $(element).find('.ui-slider-handle');

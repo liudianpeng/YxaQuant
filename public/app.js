@@ -11,7 +11,8 @@ angular.module('yxaquant', [
     'yxaquant.user',
     'yxaquant.plugin',
     'yxaquant.config',
-    'yxaquant.dashboard'
+    'yxaquant.dashboard',
+    'yxaquant.constants'
 ])
 .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     
