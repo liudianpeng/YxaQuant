@@ -12,7 +12,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat='i in uniqStocks(group.stocks.concat(chosenStocks))'>
+        <tr ng-repeat='i in uniqStocks(group.stocks, chosenStocks)'>
             <td ng-bind='i.name'></td>
             <td width=100>
                 <input type="number" class="form-control" ng-model='i.weight' style="width: 60px;" /> </td>

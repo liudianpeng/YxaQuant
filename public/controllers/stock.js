@@ -64,9 +64,11 @@ angular.module('yxaquant.stock', [])
             alert('已保存')
         })
     }
-
-    $scope.uniqStocks = function (stocks) {
-        return _.uniqBy(stocks, 'id')
+    $scope.uniqStocks = function (stocksA, stocksB) {
+        stocksA = stocksA || []
+        stocksB = stocksB || []
+        $scope.group.stocks = _.uniqBy(stocksA.concat(stocksB), 'id')
+        return $scope.group.stocks
     }
 
 
@@ -76,6 +78,7 @@ angular.module('yxaquant.stock', [])
 .controller('StockGroupCreateCtrl', ['$scope','group','SearchStock','$routeParams','$timeout','StockGroup',
                             function ($scope,  group,  SearchStock,  $routeParams,  $timeout,  StockGroup) {
     $scope.group = group
+    $scope.group.stocks = []
     $scope.stock = {}
 
     $scope.search = function (keyword) {
@@ -122,11 +125,12 @@ angular.module('yxaquant.stock', [])
             alert('已保存')
         })
     }
-
-    $scope.uniqStocks = function (stocks) {
-        return _.uniqBy(stocks, 'id')
+    $scope.uniqStocks = function (stocksA, stocksB) {
+        stocksA = stocksA || []
+        stocksB = stocksB || []
+        $scope.group.stocks = _.uniqBy(stocksA.concat(stocksB), 'id')
+        return $scope.group.stocks
     }
-
 
 
     
