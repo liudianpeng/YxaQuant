@@ -80,7 +80,7 @@ http.get('http://xueqiu.com', function(res){
                                 try {
                                     var stockData = JSON.parse(data)[code];
                                 } 
-                                catch {
+                                catch(e) {
                                     console.error('Failed at ' + code, stockData);
                                     return;
                                 }
