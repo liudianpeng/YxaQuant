@@ -2,7 +2,7 @@
     <div class="row">
         <div class="stock">
             <div class="form-group">
-                <label  class="col-sm-3 control-label">现价/昨收偏离率</label>
+                <label  class="col-sm-3 control-label">今日涨幅</label>
                 <div class="col-sm-3">
                     <div range 
                         class="slider slider-green" 
@@ -27,20 +27,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label  class="col-sm-3 control-label">上年度市盈率</label>
-                <div class="col-sm-3">
-                    <div range 
-                        class="slider slider-green" 
-                        ng-init='filter.peLyr=[0,5]'
-                        rv="filter.peLyr" 
-                        data-max-show="320"
-                        data-min="0" data-max="100" data-step="1" data-type="range"
-                        data-value="{{filter.peLyr}}"
-                        ></div>     
-                </div>
-            </div>
-            <div class="form-group">
-                <label  class="col-sm-3 control-label">本季度市盈率</label>
+                <label  class="col-sm-3 control-label">动态市盈率</label>
                 <div class="col-sm-3">
                     <div range 
                         class="slider slider-green" 
@@ -49,19 +36,6 @@
                         data-max-show="320"
                         data-min="0" data-max="100" data-step="1" data-type="range"
                         data-value="{{filter.peTtm}}"
-                        ></div>     
-                </div>
-            </div>
-            <div class="form-group">
-                <label  class="col-sm-3 control-label">市销率</label>
-                <div class="col-sm-3">
-                    <div range 
-                        class="slider slider-green" 
-                        ng-init='filter.psr=[0,5]'
-                        rv="filter.psr" 
-                        data-max-show="32"
-                        data-min="0" data-max="100" data-step="1" data-type="range"
-                        data-value="{{filter.psr}}"
                         ></div>     
                 </div>
             </div>
@@ -107,47 +81,26 @@
 <table class="table table-bordered datatable table-hover">
     <thead>
         <tr>
-            <th><input type="checkbox" ng-model="isAllChecked" ng-change='checkAll()' />全选</th>
+            <th><input type="checkbox" ng-model="isAllChecked" ng-change='checkAll()' /> 全选</th>
             <th data-hide="phone">名称</th>
-            <th>币种</th>
             <th data-hide="phone">现价</th>
             <th data-hide="phone,tablet">成交额</th>
             <th>涨跌</th>
             <th>涨跌幅</th>
-            <th>上年度市盈率</th>
-            <th>本季度市盈率</th>
+            <th>动态市盈率</th>
             <th>市净率</th>
         </tr>
     </thead>
-    <tfoot>
-        <tr>
-            <th><input type="checkbox" ng-model="isAllChecked" ng-change='checkAll()' />全选</th>
-            <th data-hide="phone">名称</th>
-            <th>币种</th>
-            <th data-hide="phone">现价</th>
-            <th data-hide="phone,tablet">成交额</th>
-            <th>涨跌</th>
-            <th>涨跌幅</th>
-            <th>上年度市盈率</th>
-            <th>本季度市盈率</th>
-            <th>市净率</th>
-        </tr>
-    </tfoot>
     <tbody>
         <tr ng-repeat="i in stocks track by i.id" ng-click="goto(i.id)">
             <td>
                 <input type="checkbox" ng-model="i.checked" ng-change='checkIt(i)' />
             </td>
             <td ><a href="/stock/{{i.id}}" ng-bind='i.name'></a></td>
-            <td ng-bind='i.currency'></td>
             <td ng-bind='i.current'></td>
             <td ng-bind='i.amount'></td>
-            <td>
-                <span ng-if='i.lastClose-i.current < 0' class="label label-danger"><i class="fa fa-arrow-up"></i></span>
-                <span ng-if='i.lastClose-i.current > 0' class="label label-success"><i class="fa fa-arrow-down"></i></span>
-            </td>
-            <td ng-bind='((i.current-i.lastClose)*100/i.lastClose).toFixed(4)+"%"'></td>
-            <td ng-bind='i.peLyr'></td>
+            <td ng-bind='i.offset'></td>
+            <td ng-bind='i.percentage + "%"'></td>
             <td ng-bind='i.peTtm'></td>
             <td ng-bind='i.pb'></td>
         </tr>

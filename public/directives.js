@@ -65,15 +65,15 @@ angular.module('yxaquant.plugin', [])
                     }
                 })
             }
-            scope.getStocks(firstParams)
+            // scope.getStocks(firstParams)
 
             // set filter according to template
             scope.filter = {
                 percentage: [-5,5],
                 pb: [0,5],
-                peLyr: [0,5],
+                // peLyr: [0,5],
                 peTtm: [0,5],
-                psr: [0,5],
+                // psr: [0,5],
                 marketCapital: [0,5],
                 floatMarketCapital: [0,5]
             }
@@ -97,7 +97,7 @@ angular.module('yxaquant.plugin', [])
 
             }
             scope.doSearch = function (key, val) {
-                var keys = ['percentage', 'pb', 'peLyr', 'peTtm', 'psr', 'marketCapital', 'floatMarketCapital']
+                var keys = ['percentage', 'pb', /*'peLyr', */'peTtm', /*'psr', */'marketCapital', 'floatMarketCapital']
                 var params = {}
                 keys.forEach(function (key) {
                     params[key] = scope.filter[key]

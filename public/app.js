@@ -72,6 +72,9 @@ angular.module('yxaquant', [
             controller: 'StockGroupCreateCtrl',
             templateUrl: 'templates/stock-group-detail.html',
             resolve: {
+                group: ['StockGroup', function(StockGroup){
+                    return new StockGroup();
+                }]
             }
         })
         .when('/stock-group/:id', {
