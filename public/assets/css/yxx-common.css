@@ -7,6 +7,11 @@ input[type=text],input[type=number] {
     height: 31px;
     padding: 6px 6px;
 }
+input.time {
+    height: 24px;
+    line-height: 24px;
+    width: 62px;
+}
 .ellipsis {text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}
 .form-group .label.ng-binding {margin-top: 7px;cursor: pointer;}
 .form-wizard {margin: 1em 0 2em;}
@@ -15,3 +20,4 @@ input[type=text],input[type=number] {
 
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {vertical-align: middle;}
 .table-fixed {table-layout: fixed;}
+.panel-heading input[type=number] {height: 24px; padding: 3px 5px;}

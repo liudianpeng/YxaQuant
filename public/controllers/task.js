@@ -41,7 +41,9 @@ angular.module('yxaquant.task', [])
 }])
 .controller('TaskDetailController', ['$scope', 'task', 'Task','$location', function ($scope, task, Task, $location) {
     var Random = Mock.Random
-    $scope.task = task
+    $scope.task = task;
+    $scope.task.timeStart && ($scope.task.timeStart = moment(task.timeStart).format('HH:mm:ss'));
+    $scope.task.timeEnd && ($scope.task.timeEnd = moment(task.timeEnd).format('HH:mm:ss'));
     $scope.sumup = function (arr, key) {
         return arr.reduce(function(sumup,account){
             return sumup + +account[key]
