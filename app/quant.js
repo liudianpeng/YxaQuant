@@ -14,7 +14,7 @@ function Quant () {
     
     this.on('stockPriceChange', function(stock) {
         console.log('stockPriceChange', stock.name, stock.current, stock.time);
-        var accounts = []; // 所有待交易账户
+        var accounts = []; // 该股所有待交易账户
         /** [{
             id: "", // 账户ID
             name: "", // 账户名称
@@ -207,22 +207,6 @@ function Quant () {
     this.on('transactionSucceed', function(data) {
         console.log('transactionSucceed', data);
     });
-
-    this.start = function(task) {
-        return task;
-    };
-
-    this.modify = function(task) {
-        return task;
-    };
-
-    this.pause = function(task) {
-        return task;
-    };
-
-    this.cancel = function(task) {
-        return task;
-    };
 
     this.trade = null;
     this.market = null;

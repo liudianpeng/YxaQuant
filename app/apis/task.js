@@ -13,6 +13,7 @@ module.exports = function(router, quant) {
             
             var task = new Task(req.body);
 
+            // 接受HH:mm:ss格式的仅时间字符串形式, 转为时间
             if(req.body.timeStart) {
                 task.timeStart = moment(moment().startOf('today').format('YYYY-MM-DD') + ' ' + req.body.timeStart);
             }
@@ -21,8 +22,10 @@ module.exports = function(router, quant) {
                 task.timeEnd = moment(moment().startOf('today').format('YYYY-MM-DD') + ' ' + req.body.timeEnd);
             }
 
+            // 订阅任务中涉及的股票的价格和盘口信息
             quant.market.subscribe(task.stocks.map(stock => stock.id))
             
+            // 分别从数据库获得涉及的账户信息和股票信息
             .then(stocks => {
                 var getStocks = quant.market.getQuotes(task.stocks.map(stock => stock.id));
                 var getAccounts = Account.find({_id: {$in: task.accountIds}}).exec();
@@ -33,8 +36,9 @@ module.exports = function(router, quant) {
                 
                 var stocks = value[0];
                 var accounts = value[1];
+
                 // 将股票加上交易规则和交易量参数
-                task.stocks = task.stocks.map(stockInTask => {
+                task.stocks.map(stockInTask => {
 
                     // 从数据库中获得任务中正在处理的同一支股票
                     var stockInMarket = stocks.filter(stock => {
@@ -76,16 +80,18 @@ module.exports = function(router, quant) {
                         // 将股票的交易规则复制到下面的账户
                         accountInStock.rules = stockInTask.rules;
                         
-                        // 查找并复制改账户对该股原本的持仓
+                        // 查找并复制该账户对该股原本的持仓
                         var holdThisStock = account.stocks.filter(holdStock => holdStock.id.toString() === stockInTask.id.toString());
 
                         if(holdThisStock.length) {
                             accountInStock.volumeBefore = holdThisStock[0].volume;
+                            accountInStock.volumeBeforeAvailable = holdThisStock[0].volumeAvailable;
                         }
                         else {
-                            accountInStock.volumeBefore = 0;
+                            accountInStock.volumeBefore = accountInStock.volumeBeforeAvailable = 0;
                         }
 
+                        // 获得交易前账户的现金数量
                         accountInStock.cashBefore = account.cash.reduce((previous, currency) => {
                             return previous + currency.amount * (currency.rate || 1);
                         }, 0);
@@ -103,8 +109,9 @@ module.exports = function(router, quant) {
                     }, 0);
 
                     // 计算此股票的所有待交易账户交易量
+                    // 按单股目标持仓比例
                     if(stockInTask.targetRatio) {
-                        stockInTask.accounts = stockInTask.accounts.map(account => {
+                        stockInTask.accounts.map(account => {
                             var marketCapital = stockInMarket.current * account.volumeBefore;
                             var ratio = marketCapital / (marketCapital + account.cashBefore);
                             var amount = (stockInTask.targetRatio - ratio) * (marketCapital + account.cashBefore) / stockInMarket.current;
@@ -112,8 +119,9 @@ module.exports = function(router, quant) {
                             return account;
                         });
                     }
+                    // 按单股交易比例
                     else if (stockInTask.ratio) {
-                        stockInTask.accounts = stockInTask.accounts.map(account => {
+                        stockInTask.accounts.map(account => {
                             account.volume = Math.round(account.volumeBefore * stockInTask.ratio / stockInMarket.lotSize) * stockInMarket.lotSize;
 
                             if(!task.direction) {
@@ -123,6 +131,7 @@ module.exports = function(router, quant) {
                             return account;
                         });
                     }
+                    // 按股数, 分摊到各账户
                     else if (stockInTask.volume) {
                         var totalCapital = stockInTask.accounts.reduce((previous, account) => {
                             var marketCapital = stockInMarket.current * account.volumeBefore;
@@ -138,12 +147,14 @@ module.exports = function(router, quant) {
                         });
                     }
 
+                    // 由各账户汇总该股总待交易股数
                     if(!stockInTask.volume) {
                         stockInTask.volume = stockInTask.accounts.reduce((previous, account) => {
                             return previous + account.volume;
                         }, 0);
                     }
 
+                    // 初始化各账户交易进度变量
                     stockInTask.accounts.map(account => {
                         account.volumeCompleted = 0;
                         account.volumeDeclared = 0;
@@ -151,6 +162,7 @@ module.exports = function(router, quant) {
                         return account;
                     });
 
+                    // 初始化该股票交易进度变量
                     stockInTask.volumeCompleted = 0;
                     stockInTask.volumeDeclared = 0;
                     stockInTask.volumeTodo = stockInTask.volume;
@@ -167,13 +179,16 @@ module.exports = function(router, quant) {
 
                 var accounts = {}; // [accountId]:account
 
+                // 买入时, 检查现金数量是否足够
                 if(task.direction) {
                     task.stocks.forEach(stock => {
                         stock.accounts.forEach(account => {
 
+                            // 由价格区间的最高价格计算现金下限
                             var safePrice = account.rules.highestPrice;
                             var safeCash = 0;
 
+                            // 如果没有设置最高价格, 则按照该股今日涨停价计算
                             if(!safePrice) {
                                 safePrice = quant.market.subscribedStocks[stock.id].riseStop;
                             }
@@ -189,6 +204,7 @@ module.exports = function(router, quant) {
                         });
                     });
                     
+                    // 逐个账户判断现金是否充足
                     for(var accountId in accounts) {
                         var account = accounts[accountId];
                         if(account.cashBefore < account.cashRequired) {
@@ -196,17 +212,19 @@ module.exports = function(router, quant) {
                         }
                     }
                 }
-                // 卖出时, 检测每种股票持股余额是否足够
+
+                // 卖出时, 检测每种股可卖票持股余额是否足够
                 else {
                     task.stocks.forEach(stock => {
                         stock.accounts.forEach(account => {
-                            if(account.volumeBefore < account.volume) {
+                            if(account.volumeBeforeAvailable < account.volume) {
                                 throw new Error(account.name + ' ' + stock.name + '没有足够的持仓供卖出。');
                             }
                         });
                     });
                 }
                 
+                // 自动生成任务状态
                 if(task.timeStart && task.timeStart < new Date()) {
                     task.timeStart = new Date();
                     task.status = 'in progress';
@@ -220,10 +238,8 @@ module.exports = function(router, quant) {
 
             // 将任务发送到Quant, 返回发送给前台
             .then(() => {
-
+                // 通知Quant加载新的任务
                 quant.loadTasks();
-                quant.start(task);
-
                 res.json(task);
             })
 
@@ -287,11 +303,13 @@ module.exports = function(router, quant) {
             });
         })
 
-        // TODO 并不是所有信息都可以修改
         .put(function(req, res) {
             
             Task.findOne({_id: req.params.taskId}).exec()
+
             .then(task => {
+
+                // 接受HH:mm:ss格式的仅时间字符串形式, 转为时间
                 if(req.body.timeStart) {
                     task.timeStart = moment(moment().format('YYYY-MM-DD') + ' ' + req.body.timeStart);
                 }
@@ -333,6 +351,7 @@ module.exports = function(router, quant) {
                 }
 
                 task.save()
+                
                 .then(task => {
                     quant.loadTasks();
                 });
