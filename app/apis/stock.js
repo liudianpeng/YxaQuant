@@ -50,13 +50,14 @@ module.exports = function(router) {
                 if(req.query[property]) {
 
                     var range = req.query[property].split(/[~_]/);
+                    console.log(req.query[property], range);
                     var condition = {[property]:{}};
 
-                    if(!isNaN(range[0])) {
+                    if(range[0] && !isNaN(range[0])) {
                         condition[property].$gte = Number(range[0]);
                     }
 
-                    if(!isNaN(range[1])) {
+                    if(range[1] && !isNaN(range[1])) {
                         condition[property].$lte = Number(range[1]);
                     }
 
