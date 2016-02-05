@@ -2,6 +2,7 @@ var Task = require('../models/task.js');
 var Account = require('../models/account.js');
 var Stock = require('../models/stock.js');
 var moment = require('moment');
+var _ = require('lodash');
 
 module.exports = function(router, quant) {
     // Task CURD
@@ -11,6 +12,14 @@ module.exports = function(router, quant) {
         .post(function(req, res, next) {
             
             var task = new Task(req.body);
+
+            if(req.body.timeStart) {
+                task.timeStart = moment(moment().startOf('today').format('YYYY-MM-DD') + ' ' + req.body.timeStart);
+            }
+
+            if(req.body.timeEnd) {
+                task.timeEnd = moment(moment().startOf('today').format('YYYY-MM-DD') + ' ' + req.body.timeEnd);
+            }
 
             quant.market.subscribe(task.stocks.map(stock => stock.id))
             
@@ -197,19 +206,20 @@ module.exports = function(router, quant) {
                         });
                     });
                 }
-                return task.save();
-            })
-
-            // 将任务发送到Quant, 返回发送给前台
-            .then(() => {
-
-                if(task.timeStart < new Date()) {
+                
+                if(task.timeStart && task.timeStart < new Date()) {
                     task.timeStart = new Date();
                     task.status = 'in progress';
                 }
                 else {
                     task.status = 'not started';
                 }
+
+                return task.save();
+            })
+
+            // 将任务发送到Quant, 返回发送给前台
+            .then(() => {
 
                 quant.loadTasks();
                 quant.start(task);
@@ -283,11 +293,11 @@ module.exports = function(router, quant) {
             Task.findOne({_id: req.params.taskId}).exec()
             .then(task => {
                 if(req.body.timeStart) {
-                    task.timeStart = req.body.timeStart;
+                    task.timeStart = moment(moment().format('YYYY-MM-DD') + ' ' + req.body.timeStart);
                 }
 
                 if(req.body.timeEnd) {
-                    task.timeEnd = req.body.timeEnd;
+                    task.timeEnd = moment(moment().format('YYYY-MM-DD') + ' ' + req.body.timeEnd);
                 }
 
                 if(task.status === undefined) {

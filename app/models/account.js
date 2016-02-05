@@ -23,7 +23,8 @@ var accountSchema = new Schema({
     }],
     cash: [{
         currency: String,
-        amount: Number
+        amount: Number,
+        rate: Number
     }]
 });
 

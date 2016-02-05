@@ -3,7 +3,7 @@
     <li> <a href="tables-main.html">创建任务</a> </li>
     <li class="active"> <strong>参数设置</strong> </li>
 </ol>
-
+<br>
 <form id="rootwizard" method="post" action="" class="form-horizontal form-wizard">
     <div class="steps-progress" style="margin-left: 11.14286%; margin-right: 11.14286%;">
         <div class="progress-indicator" style="width: 85%;"></div>
@@ -25,117 +25,138 @@
     </ul>
 </form>
 
-<form role="form" class="form-horizontal form-groups-bordered" 
-    ng-submit="submit()" 
-    ng-init="calType = 'targetRatio'">
+<form role="form" class="form-horizontal form-groups-bordered" ng-submit="submit()">
+
+<hr>
 
 <div class="row">
-    已选帐户：<span ng-repeat='account in accounts track by account.id'>{{account.name}}</span> 
-    <hr>
-    <h3>批量设置</h3>  
-</div>
-<div class="row">
-    <table class="table table-bordered datatable">
-        <thead>
-            <tr>
-                <th>持仓或交易比例</th>
-                <th>开始时间</th>
-                <th>最晚取消时间</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="odd gradeX">
-                <td>
-                    <label class="col-sm-6 control-label" style="padding:0;">
-                        <select class="form-control" ng-model="calType">
-                            <option value="targetRatio">目标持仓比例</option>
-                            <option value="ratio">本次交易比例</option>
-                        </select>
-                    </label>
-                    <div class="col-sm-6">
-                        <input type="text" id="test" class="form-control" ng-model='calNum' />
-                    </div>
-                </td>
-                <td>
-                    <div class="col-sm-12">
-                        <input type="text" class="form-control" ng-model="startDate" datepicker />
-                    </div>
-                </td>
-                <td>
-                    <div class="col-sm-12">
-                        <input type="text" class="form-control" ng-model="endDate" datepicker />
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<div class="row">
-    <table class="table table-bordered datatable">
-        <thead>
-            <tr>
-                <th>相对当前价格区间</th>
-                <th>最小交易时间间隔</th>
-                <th>最大委差 (0%-5%)</th>
-                <th>对手盘档数 (1-10)</th>
-                <th>对手盘比率 (0-1)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="odd gradeX">
-                <td>
-                    <input type="number" min="-10" max="10" step="0.01" ng-model="lowestPercentage" /> %
-                    -
-                    <input type="number" min="-10" max="10" step="0.01" ng-model="highestPercentage" /> %
-                </td>
-                <td><input type="number" min="0" max="3600" ng-model="timeStep" /> s</td>
-                <td><input type="number" min="0" max="5" step="0.01" ng-model="quoteDiffPercentage" /> %</td>
-                <td><input type="number" min="1" max="10" ng-model="opponentLevels" /></td>
-                <td><input type="number" min="0" max="1" step="0.01" ng-model="opponentRatio" /></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<div class="row">
-    <div class="stock" 
-        ng-repeat='stock in stocks' 
-        ng-init="stock.rules.priceDiffPercentage = stock.rules.opponentLevels = 0;
-            stock.calType = 'targetRatio'">
-        <h3 class="col-sm-7" ng-bind='stock.name' style="text-align: center;"></h3>
+    <div class="col-sm-offset-2 col-sm-4">
+        <h3 class="text-center">已选帐户</h3>  
+        <div class="tile-stats tile-blue" ng-repeat='account in accounts track by account.id' style="min-height:100px">
+            <div class="icon"><i class="entypo-credit-card"></i></div>
+            <h3>{{ account.name }}</h3>
+            <p>{{ account.provider.name }}</p>
+        </div>
+    </div>
+    <div class="stock col-sm-4">
+        <h3 style="text-align: center;">批量设置</h3>
         <div class="clear"></div>
         <div class="form-group">
-            <label  class="col-sm-3 control-label">最低价</label>
-            <div class="col-sm-3">
-                <input type="number" class="form-control" ng-model="stock.rules.lowestPrice">
+            <label class="col-sm-3 control-label">价格区间</label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <input type="number" class="form-control" ng-model="task.rules.lowestPercentage">
+                    <div class="input-group-addon">-</div>
+                    <input type="number" class="form-control" ng-model="task.rules.highestPercentage">
+                    <div class="input-group-addon">%</div>
+                </div>
             </div>
         </div>
         <div class="form-group">
-            <label  class="col-sm-3 control-label">最高价</label>
-            <div class="col-sm-3">
-                <input type="number" class="form-control" ng-model="stock.rules.highestPrice">
+            <label class="col-sm-3 control-label">起止时间</label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <input type="text" class="form-control" timepicker ng-model="task.timeStart">
+                    <div class="input-group-addon">-</div>
+                    <input type="text" class="form-control" timepicker ng-model="task.timeEnd">
+                </div>
             </div>
         </div>
         <div class="form-group">
             <label  class="col-sm-3 control-label">最小交易时间间隔</label>
-            <div class="col-sm-3">
-                <input type="number" class="form-control" ng-model="stock.rules.timeStep">
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <input type="number" class="form-control" ng-model="task.rules.timeStep">
+                    <div class="input-group-addon">秒</div>
+                </div>
             </div>
         </div>
         <div class="form-group">
-            <label  class="col-sm-2 col-sm-offset-1 control-label" style="padding:0;">
-                <select class="form-control" ng-model="stock.calType">
-                    <option value="targetRatio">目标持仓比例</option>
-                    <option value="ratio">本次交易比例</option>
+            <label  class="col-sm-3 control-label" style="padding:0;">
+                <select class="form-control" ng-model="task.volumeCalType">
+                    <option value="targetPercentage">目标持仓比例</option>
+                    <option value="percentage">本次交易比例</option>
                     <option value="volume">本次交易股数</option>
                 </select>
             </label>
-            <div class="col-sm-3">
-                <input type="number" class="form-control" ng-model='stock.calNum'>
+            <div class="col-sm-9">
+                <input type="number" class="form-control" ng-model='task.volumeCalNum'>
             </div>
         </div>
         <div class="form-group">
-            <label  class="col-sm-3 control-label">最大委差 (%)</label>
-            <div class="col-sm-3">
+            <label  class="col-sm-3 control-label">最大委差</label>
+            <div class="col-sm-9">
+                <div range 
+                    class="slider slider-green" 
+                    rv="stock.rules.priceDiffPercentage" 
+                    data-min="0" data-max="10" data-step="0.1" 
+                    data-value="{{task.rules.priceDiffPercentage}}"></div>     
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">对手盘档数</label>
+            <div class="col-sm-9">
+                <div range 
+                    class="slider slider-green" 
+                    rv="stock.rules.opponentLevels" 
+                    data-min="0" data-max="10" data-step="1" 
+                    data-value="{{task.rules.opponentLevels}}"></div>     
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">对手盘比例</label>
+            
+            <div class="col-sm-9">
+                <div range 
+                    class="slider slider-green" 
+                    rv="stock.rules.opponentPercentage" 
+                    data-min="0" data-max="100" 
+                    data-value="{{task.rules.opponentPercentage}}"></div>     
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="stock col-sm-4" 
+        ng-repeat='stock in stocks'>
+        <h3 ng-bind='stock.name' style="text-align: center;"></h3>
+        <div class="clear"></div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">最小交易时间间隔</label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <input type="number" class="form-control" ng-model="stock.rules.timeStep">
+                    <div class="input-group-addon">秒</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">价格区间</label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <div class="input-group-addon">¥</div>
+                    <input type="number" class="form-control" ng-model="stock.rules.lowestPrice">
+                    <div class="input-group-addon">-</div>
+                    <input type="number" class="form-control" ng-model="stock.rules.highestPrice">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label" style="padding:0;">
+                <select class="form-control" ng-model="stock.volumeCalType">
+                    <option value="targetPercentage">目标持仓比例</option>
+                    <option value="percentage">本次交易比例</option>
+                    <option value="volume">本次交易股数</option>
+                </select>
+            </label>
+            <div class="col-sm-9">
+                <input type="number" class="form-control" ng-model='stock.volumeCalNum'>
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">最大委差</label>
+            <div class="col-sm-9">
                 <div range 
                     class="slider slider-green" 
                     rv="stock.rules.priceDiffPercentage" 
@@ -145,7 +166,7 @@
         </div>
         <div class="form-group">
             <label  class="col-sm-3 control-label">对手盘档数</label>
-            <div class="col-sm-3">
+            <div class="col-sm-9">
                 <div range 
                     class="slider slider-green" 
                     rv="stock.rules.opponentLevels" 
@@ -154,24 +175,22 @@
             </div>
         </div>
         <div class="form-group">
-            <label  class="col-sm-3 control-label">对手盘比率</label>
+            <label  class="col-sm-3 control-label">对手盘比例</label>
             
-            <div class="col-sm-3">
+            <div class="col-sm-9">
                 <div range 
                     class="slider slider-green" 
-                    rv="stock.rules.opponentRatio" 
-                    data-min="0" data-max="1" data-step="0.01" 
-                    data-value="{{stock.rules.opponentRatio}}"></div>     
+                    rv="stock.rules.opponentPercentage" 
+                    data-min="0" data-max="100" 
+                    data-value="{{stock.rules.opponentPercentage}}"></div>     
             </div>
-        </div>
-        
-        
-                    
-    </div>
-    <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-3">
-            <button type="submit" class="btn btn-default">确认</button>
         </div>
     </div>
 </div>   
+<hr class="clear">
+<div class="form-group">
+    <div class="col-sm-offset-1 col-sm-3">
+        <button type="submit" class="btn btn-primary btn-lg">保存任务</button>
+    </div>
+</div>
 </form>

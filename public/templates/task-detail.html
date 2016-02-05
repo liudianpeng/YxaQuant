@@ -4,11 +4,11 @@
 </ol>
 
 <div class="pull-right">
-    <button type="submit" ng-click='start()' class="btn btn-info" ng-if='task.status=="not started"'>开始</button>
+    <button type="submit" ng-click='start()' class="btn btn-info" ng-if='task.status=="not started" || task.status=="paused"'>开始</button>
     <button type="submit" ng-click='pause()' class="btn btn-warning" ng-if='task.status=="in progress"'>暂停</button>
     <button type="submit" ng-click='cancel()' class="btn btn-danger" ng-if='task.status=="paused"'>取消</button>
     <span style="margin: 0 10px;">|</span>
-    <button type="submit" ng-click='save()' class="btn btn-default" ng-if="moment(task.timeStart).date !== moment().date">修改</button>
+    <button type="submit" ng-click='save()' class="btn btn-default" ng-disabled="!task.isToday">修改</button>
 </div>
 
 <div class="row" style="clear: both;">
@@ -51,8 +51,11 @@
                     <div class="label label-info" ng-bind="stock.code"></div>
                 </div>
                 <div class="progress" style="margin-top: 14px;width: 50%;float: left;">
-                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100" style="width: {{ (sumup(stock.accounts, 'volumeCompleted')*100/sumup(stock.accounts, 'volume')) | number:0 }}%">
-                        <span class="sr-onlyY" ng-bind=" ((sumup(stock.accounts, 'volumeCompleted')*100/sumup(stock.accounts, 'volume')) | number:0) + '%'"></span>
+                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ stock.volumeDeclared / stock.volume * 100 }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ stock.volumeDeclared / stock.volume * 100 }}%">
+                        <span class="sr-onlyY" ng-bind="(stock.volumeDeclared / stock.volume * 100).toFixed() + '%'"></span>
+                    </div>
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ stock.volumeCompleted / stock.volume * 100 }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ stock.volumeCompleted / stock.volume * 100 }}%">
+                        <span class="sr-onlyY" ng-bind="(stock.volumeCompleted / stock.volume * 100).toFixed() + '%'"></span>
                     </div>
                 </div>
                 <div class="pull-right" style="padding: 10px 15px;">

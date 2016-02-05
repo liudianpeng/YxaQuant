@@ -42,8 +42,12 @@ angular.module('yxaquant.task', [])
 .controller('TaskDetailController', ['$scope', 'task', 'Task','$location', function ($scope, task, Task, $location) {
     var Random = Mock.Random
     $scope.task = task;
+    $scope.task.date = moment($scope.task.timeStart).format('YYYY-MM-DD');
+    $scope.task.isToday = $scope.task.date === moment().format('YYYY-MM-DD');
+
     $scope.task.timeStart && ($scope.task.timeStart = moment(task.timeStart).format('HH:mm:ss'));
     $scope.task.timeEnd && ($scope.task.timeEnd = moment(task.timeEnd).format('HH:mm:ss'));
+    
     $scope.sumup = function (arr, key) {
         return arr.reduce(function(sumup,account){
             return sumup + +account[key]
@@ -54,17 +58,17 @@ angular.module('yxaquant.task', [])
             console.log(data)
         })
     }
+    $scope.start = function () {
+        task.status = 'in progress';
+        task.$save();
+    }
     $scope.pause = function () {
         task.status = 'paused'
-        Task.update(task, function (data) {
-            console.log(data)
-        })
+        task.$save();
     }
     $scope.cancel = function () {
         task.status = 'canceled'
-        Task.update(task, function (data) {
-            console.log(data)
-        })
+        task.$save();
     }
 }])
 .controller('TaskCreateStep_1_Ctrl', 
@@ -110,38 +114,69 @@ angular.module('yxaquant.task', [])
         $location.path("/task/create/4").search($routeParams)
     }
 }])
-.controller('TaskCreateStep_4_Ctrl', ['$scope', '$location', 'tasks','stocks','accounts', 'Task','$timeout', '$routeParams',
-                            function ( $scope,   $location,   tasks,  stocks,  accounts,   Task,  $timeout,   $routeParams) {
-    $scope.accounts = accounts
-    $scope.stocks = stocks
-    $scope.submit = function () {
-        var data = {
-            type: $routeParams.type,
-            direction: $routeParams.direction=='buy',
-            timeStart: $scope.startDate,
-            timeEnd: $scope.endDate,
-            targetRatio: $scope.targetRatio,
-            ratio: $scope.ratio,
-            accountIds: $scope.accounts.map(function(i){ return i.id }),
-            stocks: $scope.stocks.map(function(stock){
-                var stockData = {
-                    id: stock.id,
-                    rules: {
-                        priceDiffPercentage: stock.rules.priceDiffPercentage,
-                        opponentRatio: stock.rules.opponentRatio,
-                        opponentLevels: stock.rules.opponentLevels,
-                        timeStep: stock.rules.timeStep,
-                        lowestPrice: stock.rules.lowestPrice,
-                        highestPrice: stock.rules.highestPrice
-                    }
-                }
-                stockData[stock.calType] = stock.calNum 
-                return stockData
-            })
-        }
-        Task.create(data, function(data){
-            $location.path( "/task/"+data.id ).search({})
+.controller('TaskCreateStep_4_Ctrl', ['$scope', '$location', 'stocks','accounts', 'Task','$timeout', '$routeParams',
+                            function ( $scope,   $location,   stocks,  accounts,   Task,  $timeout,   $routeParams) {
+    $scope.accounts = accounts;
+    $scope.task = new Task({
+        type: $routeParams.type,
+        direction: $routeParams.direction=='buy',
+        rules: {
+            lowestPercentage: -1.00,
+            highestPercentage: 1.00,
+            timeStep: 5,
+            priceDiffPercentage: 1,
+            opponentPercentage: 60,
+            opponentLevels: 1
+        },
+        volumeCalType: 'targetPercentage',
+        accountIds: $scope.accounts.map(function(account){
+            return account.id;
+        }),
+        stocks: stocks.map(function(stock){
+            var stockInTask = {
+                id: stock.id,
+                name: stock.name,
+                code: stock.code,
+                rules: {}
+            };
+
+            return stockInTask;
         })
+    });
+
+    $scope.submit = function () {
+
+        $scope.task[$scope.task.volumeCalType] = $scope.task.volumeCalNum;
+
+        if($scope.task.rules.opponentPercentage)
+            $scope.task.rules.opponentRatio = $scope.task.rules.opponentPercentage / 100;
+
+        if($scope.task.percentage)
+            $scope.task.ratio = $scope.task.percentage / 100;
+
+        if($scope.task.targetPercentage)
+            $scope.task.targetRatio = $scope.task.targetPercentage / 100;
+
+        $scope.task.stocks.forEach(function(stock) {
+            
+            if(stock.volumeCalNum && stock.volumeCalType) {
+                stockInTask[stock.volumeCalType] = stock.volumeCalNum;
+            }
+
+            if(stock.rules.opponentPercentage)
+                stock.rules.opponentRatio = stock.rules.opponentPercentage / 100;
+
+            if(stock.percentage)
+                stock.ratio = stock.percentage / 100;
+
+            if(stock.targetPercentage)
+                stock.targetRatio = stock.targetPercentage / 100;
+            
+        });
+
+        $scope.task.$save(function(task){
+            $location.path( "/task/"+task.id ).search({});
+        });
     }
 }])
 

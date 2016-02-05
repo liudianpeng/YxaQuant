@@ -18,14 +18,11 @@ angular.module('yxaquant.plugin', ['yxaquant.constants'])
 .directive('timepicker', function() {
     return {
         restrict: 'A',
-        scope: {
-            defaultTime: '&'
-        },
         link: function(scope, element, attrs) {
             var $this = $(element),
                 opts = {
                     showSeconds: attrs.showSeconds || false,
-                    defaultTime: scope.defaultTime || 'current',
+                    defaultTime: null,
                     showMeridian: attrs.showMeridian == 'true' || false,
                     minuteStep: attrs.minuteStep || 15,
                     secondStep: attrs.secondStep || 15

@@ -186,13 +186,12 @@ function Quant () {
                 var stockOrigin = _.find(taskOrigin.stocks, stockOrigin => stockOrigin.id.toString() === stock.id);
                 var accountOrigin = _.find(stockOrigin.accounts, {id: account.id});
                 
-                console.log(task.volumeToDeclare);
                 accountOrigin.volumeTodo -= task.volumeToDeclare;
                 stockOrigin.volumeTodo -= task.volumeToDeclare;
 
                 accountOrigin.volumeDeclared += task.volumeToDeclare;
-                stockOrigin.volumeDeclared += task.volumeDeclared;
-                taskOrigin.save(); 
+                stockOrigin.volumeDeclared += task.volumeToDeclare;
+                taskOrigin.save();
             });
         });
     });
@@ -252,9 +251,11 @@ function Quant () {
         setInterval(() => {
             this.tasks.forEach(task => {
                 if(task.status === 'not started' && task.timeStart > new Date()) {
+                    console.info('Task' + task.id + ' started');
                     task.status = 'in progress';
                 }
-                else if(task.status === 'in progress' && task.timeEnd > new Date()) {
+                else if(task.status === 'in progress' && task.timeEnd < new Date()) {
+                    console.info('Task' + task.id + ' paused');
                     task.status = 'paused';
                 }
                 if(task.isModified()) {

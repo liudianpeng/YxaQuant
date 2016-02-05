@@ -50,7 +50,7 @@ module.exports = function(router) {
                 if(req.query[property]) {
 
                     var range = req.query[property].split(/[~_]/);
-                    console.log(req.query[property], range);
+
                     var condition = {[property]:{}};
 
                     if(range[0] && !isNaN(range[0])) {
