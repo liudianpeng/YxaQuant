@@ -74,6 +74,40 @@
                     </div>
                 </div>
             </div>
+            <div class="form-group">
+                <label  class="col-sm-3 control-label">从投资组合中选</label>
+                <div class="col-md-3" ng-repeat="stock in stocks" style="margin-bottom: 1em;">
+                    <div class="input-group minimal">
+                        <input type="text" class="form-control" placeholder="输入" 
+                            ng-disabled="!isBuy"
+                            ng-focus="stock.focus=true" 
+                            ng-change="search(stock, stock.keyword)" 
+                            ng-model="stock.keyword"
+                            ng-blur="inputBlur(stock)">
+                        <span class="input-group-addon" ng-click="delete($index)"><i class="entypo-cancel"></i></span>
+                        <span class="tt-dropdown-menu" ng-show="stock.focus" style="position: absolute; top: 100%; left: 0px; z-index: 100;right: auto;">
+                            <div class="tt-dataset-typeahead_remote">
+                                <span class="tt-suggestions" >
+                                    <div class="tt-suggestion" 
+                                        style="white-space: nowrap; cursor: pointer;" 
+                                        ng-click="chooseItem(stock,item)"
+                                        ng-repeat="item in stock.searchList">
+                                        <p style="white-space: normal;" ng-bind="item.name"></p>
+                                    </div>
+                                </span>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input type="text" ng-model='filter.keyword' class="form-control">
+                        <span class="input-group-btn">
+                            <button class="btn btn-success" ng-model="filter.keyword" type="button" ng-click='doSearch()'>搜索</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>   
 </form>
